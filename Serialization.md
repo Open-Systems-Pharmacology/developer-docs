@@ -178,7 +178,25 @@ Moving now to a more complicated use case: sometimes we have a class that has a 
    }
 ```
 
-In such a case the `Datarepository` that is `ObservedData` also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to the `ObservedData`. It is important though in this case to keep in mind than when deserializing we have to make sure the `ObservedData` has been deserialized before deserializing the corresponding `WeightedObservedFata`, otherwise we might end up with an exception. The observed data of a project is a very good example of this, since they are referenced in many different places of a project. Note for example that if you write a new class that has a `WeightedObservedData` member, when you are serializing it you would also be implicitely keeping a reference to the Observed Data underneath that object - and therefore will have to be carefull that the (de)serialization in your project is correct.
+and its [serializer](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Serialization/Xml/WeightedObservedDataXmlSerializer.cs):
+
+```
+   public class WeightedObservedDataXmlSerializer : OSPSuiteXmlSerializer<WeightedObservedData>
+   {
+      public override void PerformMapping()
+      {
+         .
+         .
+         .
+         MapReference(x => x.ObservedData);
+      }
+   }
+```
+
+In such a case the `Datarepository` that is `ObservedData` also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to that `ObservedData`. 
+It is important though in this case to keep in mind than when deserializing we have to make sure the `ObservedData`  is available when deserializing the corresponding `WeightedObservedData`, otherwise we might end up with an exception. That would mean that either the `ObservedData` has been (de)serialized before the (de)serialization of `WeightedObservedData` or within the same (de)serialization action (meaning that a `WeightedObservedData` object references an `ObservedData` object and both objects are withing the root note and the action is (de)serializing that common root node).
+
+The observed data of a project is a very good example of this, since they are referenced in many different places of a project. Note for example that if you write a new class that has a `WeightedObservedData` member, when you are serializing it you would also be implicitely keeping a reference to the Observed Data underneath that object - and therefore will have to be carefull that the (de)serialization in your project is correct.
 
 # TypedSerialize(...) - TypedDeserialize(...)
 
