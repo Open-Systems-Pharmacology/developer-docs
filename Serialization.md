@@ -4,7 +4,7 @@
 
 The XML serialization engine used in the Open Systems Pharmacology Project can be found in the [OSPSuite.Serializer solution](https://github.com/Open-Systems-Pharmacology/OSPSuite.Serializer). The way the xml mapping works is pretty straightforward, mapping objects to xml elements and keeping the treelike structure where it exists, storing object names and serializing and deserializing according to Ids. This actually makes the xml for a project (a .pkml file for PKSim f.e.) intelligible, and one can even go through the contents of a project. 
 
-'''
+```
   <Simulation id="XMVCOCRQwky6ttpq36MONA" name="Simple">
     <BuildConfiguration>
       <Molecules id="dJRCM06S7UG-ZbT3H6GNAQ" name="Simple" bbVersion="0">
@@ -24,12 +24,12 @@ The XML serialization engine used in the Open Systems Pharmacology Project can b
               .
             </UsedCalculationMethods>
           </MoleculeBuilder>
-'''
+```
 
 
 The only case where things are a bit more complicated is the Formula Cache. If you open the xml segment of the Formula Cache in a .pkml file you will see something like the following:
 
-'''
+```
  <FormulaCache>
           <Formulas>
             <Formula id="nyGiXWaSW0OYhQJ__lyZhg" name="Concentration_formula" dim="Concentration (molar)" formula="M/V">
@@ -50,11 +50,11 @@ The only case where things are a bit more complicated is the Formula Cache. If y
             .
             .
          </Formulas>
-'''
+```
 The above excerpt is a simple PK-Sim project, and more specifically the S1_concentrBased.pkml that is part of the test data of PKSim codebase.
 As you can see, in the Formula Cache, instead of having the actual formula strings, we have path numbers that refer to the StringMap that follows:
 
-'''
+```
  <StringMap>
             <Map s=".." id="0" />
             <Map s="M" id="1" />
@@ -70,7 +70,7 @@ As you can see, in the Formula Cache, instead of having the actual formula strin
             .
             .
  </StringMap>
-'''
+```
 
 This has occurred historically in order to avoid duplication of strings in bigger project files and thus help reduce the project file size. 
 
@@ -83,15 +83,15 @@ You will then have to write a an override for the 'PerformMapping()' function, t
 
 For example:
 
-'''
+```
 public class NewClass
 {
    public string Name { get; set; }
 
 }
-'''
+```
 
-'''
+```
 public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
 {
    public override void PerformMapping()
@@ -99,13 +99,13 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
       Map(x => x.Name);
    }
 }
-'''
+```
 
 Of if your new class implements an interface that already has an abstract serializer, it is that one that you will need to extend. For example if you are writing a new Building Block class (that would be implementing the interface IBuildingBlock), the serializer signature would be  
 
-'''
+```
 public class NewClassSerializer : BuildingBlockXmlSerializer<NewClass>
-'''
+```
 
 
 Now let's talk a bit about the mapping a classes properties in the PerformMapping() override. The most frequent use cases would be:
@@ -118,7 +118,7 @@ When you want to serialize a property of a class and a serializer already exists
 
 If the class property that you need to serialize is an IEnumerable (a list, a OSPSuite Cache collection,), and there exists a serializer for the type of objects stored in th IEnumerable, you need to define the serialization of that property with the MapEnumerable() function, where you pass the enumerable and an method used to add objects to the defined IEnumerable. As an example, with an readonly list:
 
-'''
+```
 public class NewClass
 {
    private readonly List<object> _allData;
@@ -145,13 +145,13 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
    }
 }
 
-'''
+```
 
 # MapReference(...)
 
 Sometimes we have a class that has a reference to another object. Take the class 'WeightedObservedData' in OSPSuite.Core for example:
 
-'''
+```
    public class WeightedObservedData
    {
       public virtual DataRepository ObservedData { get; }
@@ -167,11 +167,11 @@ Sometimes we have a class that has a reference to another object. Take the class
       .
       .
    }
-'''
+```
 
 In such a case the 'Datarepository' that is 'ObservedData' also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to the 'ObservedData'. It is important though in this case to keep in mind than when deserializing we have to make sure the 'ObservedData' has been deserialized before deserializing the corresponding 'WeightedObservedFata', otherwise we might end up with an exception.
 
 # TypedSerialize(...) - TypedDeserialize(...)
 
-In case the above functionalities do not cover your use case, you can also use 'TypedSerialize(TObject objectToSerialize, TContext context)' and 'TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)' to be able to specify the actions that should happen before and after (de)serialization.
+In case the above functionalities do not cover your use case, you can also use 'TypedSerialize(TObject objectToSerialize, TContext context)' and 'TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)' to be able to specify the actions that should happen before and after (de)serialization. This is the functionality used f.e. for the (de)serialization of the FormulaCache and its corresponding StringMap (as discussed in the xml structure section above). 
 
