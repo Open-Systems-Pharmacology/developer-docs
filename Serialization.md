@@ -154,9 +154,11 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
 
 ```
 
+For 90% of the cases when creating a serializer for a new class, the above should be adequate and writing the serializer should be pretty straightforward: just adding the corresponding `Map(...)` and `MapEnumerable(...)` calls for the class properties that need to be serialized to the `PerformMapping(...)` override of the serializer.
+
 # MapReference(...)
 
-Sometimes we have a class that has a reference to another object. Take the class `WeightedObservedData` in OSPSuite.Core for example:
+Moving now to a more complicated use case: sometimes we have a class that has a reference to another object. Take the class [WeightedObservedData](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Domain/WeightedObservedData.cs) in OSPSuite.Core for example:
 
 ```
    public class WeightedObservedData
