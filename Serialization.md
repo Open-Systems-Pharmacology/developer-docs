@@ -110,11 +110,11 @@ public class NewClassSerializer : BuildingBlockXmlSerializer<NewClass>
 
 Now let's talk a bit about the mapping a classes properties in the PerformMapping() override. The most frequent use cases would be:
 
-# Map()
+# Map(...)
 
 When you want to serialize a property of a class and a serializer already exists for the type of property you want to serialize (as is f.e. for string, int and the other basic types, or in case there is a serializer already written for this object in the solution), you only need to use Map function like in the above example with 'Map(x => x.Name);'. You  do not need to explicitly define what needs to be deserialized or how, the framework will take care of that for you. 
 
-# MapEnumerable()
+# MapEnumerable(...)
 
 If the class property that you need to serialize is an IEnumerable (a list, a OSPSuite Cache collection,), and there exists a serializer for the type of objects stored in th IEnumerable, you need to define the serialization of that property with the MapEnumerable() function, where you pass the enumerable and an method used to add objects to the defined IEnumerable. As an example, with an readonly list:
 
@@ -146,4 +146,32 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
 }
 
 '''
+
+# MapReference(...)
+
+Sometimes we have a class that has a reference to another object. Take the class 'WeightedObservedData' in OSPSuite.Core for example:
+
+'''
+   public class WeightedObservedData
+   {
+      public virtual DataRepository ObservedData { get; }
+      .
+      .
+      .
+      public WeightedObservedData(DataRepository observedData)
+      {
+         ObservedData = observedData;
+         .
+         .
+      }
+      .
+      .
+   }
+'''
+
+In such a case the 'Datarepository' that is 'ObservedData' also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to the 'ObservedData'. It is important though in this case to keep in mind than when deserializing we have to make sure the 'ObservedData' has been deserialized before deserializing the corresponding 'WeightedObservedFata', otherwise we might end up with an exception.
+
+# TypedSerialize(...) - TypedDeserialize(...)
+
+In case the above functionalities do not cover your use case, you can also use 'TypedSerialize(TObject objectToSerialize, TContext context)' and 'TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)' to be able to specify the actions that should happen before and after (de)serialization.
 
