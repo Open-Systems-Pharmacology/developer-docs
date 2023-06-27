@@ -51,7 +51,7 @@ The only case where things are a bit more complicated is the Formula Cache. If y
             .
          </Formulas>
 ```
-The above excerpt is a simple PK-Sim project, and more specifically the S1_concentrBased.pkml that is part of the test data of PKSim codebase.
+The above excerpt is a simple PK-Sim project, and more specifically the [S1_concentrBased.pkml](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/tests/PKSim.Tests/Data/S1_concentrBased.pkml) that is part of the test data of PKSim codebase.
 As you can see, in the Formula Cache, instead of having the actual formula strings, we have path numbers that refer to the StringMap that follows:
 
 ```
@@ -74,16 +74,19 @@ As you can see, in the Formula Cache, instead of having the actual formula strin
 
 This has occurred historically in order to avoid duplication of strings in bigger project files and thus help reduce the project file size. 
 
+## Xml Attribute Mapping
+
+The functionality of mapping to specific xml attributes is handled by AttributeMappers that are added to the AttributeMapperRepository either in [OSPSuiteXmlSerializerRepository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Serialization/Xml/OSPSuiteXmlSerializerRepository.cs) in OSPSuite.Core or in the individual solutions in [PKSimXmlSerializerRepository](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/Serialization/Xml/Serializers/PKSimXmlSerializerRepository.cs) and [MoBiXmlSerializerRepository](https://github.com/Open-Systems-Pharmacology/MoBi/blob/develop/src/MoBi.Presentation/Serialization/Xml/Serializer/MoBiXmlSerializerRepository.cs). This is how for example you can specify for the `Species` in PK-Sim the name gets serialized in the xml and the rest gets saved in the database.
 
 ## Project (De)Serialization
 
-Let's talk first for a PK-Sim project. In 'ProjectMetaDataToProjectMapper.cs' of the PK-Sim solution the order of (de)serialization is defined. When starting the application f.e. we get the project structure from the database and then we further load the contents from the project file. In MoBi correspondingly the project (de)serialization is also defined in 'ProjectMetaDataToProjectMapper.cs' of the MoBi solution. The main difference between the two is that the entities in PK-Sim are lazy loaded, whereas in MoBi we load everything on startup.
+Let's talk first for a PK-Sim project. In [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the PK-Sim solution the order of (de)serialization is defined. When starting the application f.e. we get the project structure from the database and then we further load the contents from the project file. In MoBi correspondingly the project (de)serialization is also defined in [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/MoBi/blob/develop/src/MoBi.Core/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the MoBi solution. The main difference between the two is that the entities in PK-Sim are lazy loaded, whereas in MoBi we load everything on startup.
 
 ## Writing a serializer for a new class
 
-When creating a new class in OSPSuite of an object that will then need to be saved to the project file, a new serializer will also have to be written for that class. Let's call our new class 'NewClass'. If the class gets created in OSPSuite.Core and is not implementing an interface that already has an abstract serializer, the convention would be to write a serializer called 'NewClassSerializer : OSPSuiteXmlSerializer<NewClass>'. 
+When creating a new class in OSPSuite of an object that will then need to be saved to the project file, a new serializer will also have to be written for that class. Let's call our new class `NewClass`. If the class gets created in OSPSuite.Core and is not implementing an interface that already has an abstract serializer, the convention would be to write a serializer called `NewClassSerializer : OSPSuiteXmlSerializer<NewClass>`. 
 
-You will then have to write a an override for the 'PerformMapping()' function, that serializes the properties of the class:
+You will then have to write a an override for the `PerformMapping()` function, that serializes the properties of the class:
 
 For example:
 
@@ -112,11 +115,11 @@ public class NewClassSerializer : BuildingBlockXmlSerializer<NewClass>
 ```
 
 
-Now let's talk a bit about the mapping a classes properties in the PerformMapping() override. The most frequent use cases would be:
+Now let's talk a bit about the mapping a classes properties in the `PerformMapping()` override. The most frequent use cases would be:
 
 # Map(...)
 
-When you want to serialize a property of a class and a serializer already exists for the type of property you want to serialize (as is f.e. for string, int and the other basic types, or in case there is a serializer already written for this object in the solution), you only need to use Map function like in the above example with 'Map(x => x.Name);'. You  do not need to explicitly define what needs to be deserialized or how, the framework will take care of that for you. 
+When you want to serialize a property of a class and a serializer already exists for the type of property you want to serialize (as is f.e. for string, int and the other basic types, or in case there is a serializer already written for this object in the solution), you only need to use Map function like in the above example with `Map(x => x.Name);`. You  do not need to explicitly define what needs to be deserialized or how, the framework will take care of that for you. Additionaly, you can use the mapping extensions to specify the xml element name to which your property will be mapped by calling `Map(x => x.Name).WithMappingName(mappingName);`, where mappingName is a string.
 
 # MapEnumerable(...)
 
@@ -153,7 +156,7 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
 
 # MapReference(...)
 
-Sometimes we have a class that has a reference to another object. Take the class 'WeightedObservedData' in OSPSuite.Core for example:
+Sometimes we have a class that has a reference to another object. Take the class `WeightedObservedData` in OSPSuite.Core for example:
 
 ```
    public class WeightedObservedData
@@ -173,9 +176,9 @@ Sometimes we have a class that has a reference to another object. Take the class
    }
 ```
 
-In such a case the 'Datarepository' that is 'ObservedData' also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to the 'ObservedData'. It is important though in this case to keep in mind than when deserializing we have to make sure the 'ObservedData' has been deserialized before deserializing the corresponding 'WeightedObservedFata', otherwise we might end up with an exception. The observed data of a project is a very good example of this, since they are referenced in many different places of a project. Note for example that if you write a new class that has a 'WeightedObservedData' member, when you are serializing it you would also be implicitely keeping a reference to the Observed Data underneath that object - and therefore will have to be carefull that the (de)serialization in your project is correct.
+In such a case the `Datarepository` that is `ObservedData` also exists in the Project and gets serialized and deserialized separately. We would not like to keep multiple copies of the same object in our project file, and therefore what we are going to write in the xml is a reference to the `ObservedData`. It is important though in this case to keep in mind than when deserializing we have to make sure the `ObservedData` has been deserialized before deserializing the corresponding `WeightedObservedFata`, otherwise we might end up with an exception. The observed data of a project is a very good example of this, since they are referenced in many different places of a project. Note for example that if you write a new class that has a `WeightedObservedData` member, when you are serializing it you would also be implicitely keeping a reference to the Observed Data underneath that object - and therefore will have to be carefull that the (de)serialization in your project is correct.
 
 # TypedSerialize(...) - TypedDeserialize(...)
 
-In case the above functionalities do not cover your use case, you can also use 'TypedSerialize(TObject objectToSerialize, TContext context)' and 'TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)' to be able to specify the actions that should happen before and after (de)serialization. This is the functionality used f.e. for the (de)serialization of the FormulaCache and its corresponding StringMap (as discussed in the xml structure section above). 
+In case the above functionalities do not cover your use case, you can also use `TypedSerialize(TObject objectToSerialize, TContext context)` and `TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)` to be able to specify the actions that should happen before and after (de)serialization. This is the functionality used f.e. for the (de)serialization of the FormulaCache and its corresponding StringMap (as discussed in the xml structure section above). 
 
