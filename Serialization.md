@@ -2,7 +2,7 @@
 
 ## General
 
-The XML serialization engine used in the Open Systems Pharmacology Project can be found in the [OSPSuite.Serializer solution](https://github.com/Open-Systems-Pharmacology/OSPSuite.Serializer). The way the xml mapping works is pretty straightforward, mapping objects to xml elements and keeping the treelike structure where it exists, storing object names and serializing and deserializing according to Ids. This actually makes the xml for a project (a .pkml file for PKSim f.e.) intelligible, and one can even go through the contents of a project. 
+The XML serialization engine used in the Open Systems Pharmacology Project can be found in the [OSPSuite.Serializer solution](https://github.com/Open-Systems-Pharmacology/OSPSuite.Serializer). The way the xml mapping works is pretty straightforward, mapping objects to xml elements and keeping the treelike structure where it exists, storing object names and serializing and deserializing according to Ids. This actually makes the xml for a project (a .pkml file for PKSim e.g.) intelligible, and one can even go through the contents of a project. 
 
 ```
   <Simulation id="XMVCOCRQwky6ttpq36MONA" name="Simple">
@@ -51,7 +51,7 @@ The only case where things are a bit more complicated is the Formula Cache. If y
             .
          </Formulas>
 ```
-The above excerpt is a simple PK-Sim project, and more specifically the [S1_concentrBased.pkml](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/tests/PKSim.Tests/Data/S1_concentrBased.pkml) that is part of the test data of PKSim codebase.
+The above excerpt is a simple simulation created in PK-Sim and exported to pkml, and more specifically the [S1_concentrBased.pkml](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/tests/PKSim.Tests/Data/S1_concentrBased.pkml) that is part of the test data of PKSim codebase.
 As you can see, in the Formula Cache, instead of having the actual formula strings, we have path numbers that refer to the StringMap that follows:
 
 ```
@@ -80,7 +80,7 @@ The functionality of mapping to specific xml attributes is handled by AttributeM
 
 ## Project (De)Serialization
 
-Let's talk first for a PK-Sim project. In [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the PK-Sim solution the order of (de)serialization is defined. When starting the application f.e. we get the project structure from the database and then we further load the contents from the project file. In MoBi correspondingly the project (de)serialization is also defined in [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/MoBi/blob/develop/src/MoBi.Core/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the MoBi solution. The main difference between the two is that the entities in PK-Sim are lazy loaded, whereas in MoBi we load everything on startup.
+Let's talk first for a PK-Sim project. In [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the PK-Sim solution the order of (de)serialization is defined. When starting the application e.g. we get the project structure from the database and then we further load the contents from the project file. In MoBi correspondingly the project (de)serialization is also defined in [ProjectMetaDataToProjectMapper.cs](https://github.com/Open-Systems-Pharmacology/MoBi/blob/develop/src/MoBi.Core/Serialization/ORM/Mappers/ProjectMetaDataToProjectMapper.cs) of the MoBi solution. The main difference between the two is that the entities in PK-Sim are lazy loaded, whereas in MoBi we load everything on startup.
 
 ## Writing a serializer for a new class
 
@@ -108,7 +108,7 @@ public class NewClassSerializer : OSPSuiteXmlSerializer<NewClass>
 }
 ```
 
-Of if your new class implements an interface that already has an abstract serializer, it is that one that you will need to extend. For example if you are writing a new Building Block class (that would be implementing the interface IBuildingBlock), the serializer signature would be  
+In case your new class implements an interface that already has an abstract serializer, it is that one that you will need to extend. For example if you are writing a new Building Block class (that would be implementing the interface IBuildingBlock), the serializer signature would be  
 
 ```
 public class NewClassSerializer : BuildingBlockXmlSerializer<NewClass>
@@ -119,7 +119,7 @@ Now let's talk a bit about the mapping a classes properties in the `PerformMappi
 
 # Map(...)
 
-When you want to serialize a property of a class and a serializer already exists for the type of property you want to serialize (as is f.e. for string, int and the other basic types, or in case there is a serializer already written for this object in the solution), you only need to use Map function like in the above example with `Map(x => x.Name);`. You  do not need to explicitly define what needs to be deserialized or how, the framework will take care of that for you. Additionaly, you can use the mapping extensions to specify the xml element name to which your property will be mapped by calling `Map(x => x.Name).WithMappingName(mappingName);`, where mappingName is a string.
+When you want to serialize a property of a class and a serializer already exists for the type of property you want to serialize (as is e.g. for string, int and the other basic types, or in case there is a serializer already written for this object in the solution), you only need to use Map function like in the above example with `Map(x => x.Name);`. You  do not need to explicitly define what needs to be deserialized or how, the framework will take care of that for you. Additionaly, you can use the mapping extensions to specify the xml element name to which your property will be mapped by calling `Map(x => x.Name).WithMappingName(mappingName);`, where mappingName is a string.
 
 # MapEnumerable(...)
 
@@ -180,5 +180,5 @@ In such a case the `Datarepository` that is `ObservedData` also exists in the Pr
 
 # TypedSerialize(...) - TypedDeserialize(...)
 
-In case the above functionalities do not cover your use case, you can also use `TypedSerialize(TObject objectToSerialize, TContext context)` and `TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)` to be able to specify the actions that should happen before and after (de)serialization. This is the functionality used f.e. for the (de)serialization of the FormulaCache and its corresponding StringMap (as discussed in the xml structure section above). 
+In case the above functionalities do not cover your use case, you can also use `TypedSerialize(TObject objectToSerialize, TContext context)` and `TypedDeserialize(TObject objectToDeserialize, XElement outputToDeserialize, TContext context)` to be able to specify the actions that should happen before and after (de)serialization. This is the functionality used e.g. for the (de)serialization of the FormulaCache and its corresponding StringMap (as discussed in the xml structure section above). 
 
