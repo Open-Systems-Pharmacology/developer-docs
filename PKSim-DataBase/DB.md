@@ -85,8 +85,6 @@ A **container** is a model entity that can have children. In the context of PK-S
 
 Processes are defined as containers with `container_type="PROCESS"` and must be inserted into **tab_container_names** first; once done they can be inserted into **tab_processes** and further process-specific tables.
 
-**TODO: add tab_containers to the picture**
-
 ![](images/overview_processes.png)
 
 
@@ -326,6 +324,10 @@ One of the reasons for introducing calculation methods and parameter value versi
 ## Value origins
 
 ![](images/overview_value_origins.png)
+
+## Representation Info
+
+![](images/overview_representation_info.png)
 
 ## Enumerations
 
