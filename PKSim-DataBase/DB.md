@@ -106,20 +106,20 @@ In the context of PK-Sim, everything except parameters and observers is a contai
   * Processes with the group *UNDEFINED* are processes where the group is not relevant (typically all *passive* processes).
 
     | GROUP_NAME                    | PARENT_GROUP       |
-| ----------------------------- | ------------------ |
-| ACTIVE_TRANSPORT              | COMPOUND_PROCESSES |
-| ACTIVE_TRANSPORT_INTRINSIC    | COMPOUND_PROCESSES |
-| APPLICATION                   |                    |
-| ENZYMATIC_STABILITY           | COMPOUND_PROCESSES |
-| ENZYMATIC_STABILITY_INTRINSIC | COMPOUND_PROCESSES |
-| INDIVIDUAL_ACTIVE_PROCESS     |                    |
-| INDUCTION_PROCESSES           | COMPOUND_PROCESSES |
-| INHIBITION_PROCESSES          | COMPOUND_PROCESSES |
-| PROTEIN                       |                    |
-| SIMULATION_ACTIVE_PROCESS     |                    |
-| SPECIFIC_BINDING              | COMPOUND_PROCESSES |
-| SYSTEMIC_PROCESSES            | COMPOUND_PROCESSES |
-| UNDEFINED                     |                    |
+    | ----------------------------- | ------------------ |
+    | ACTIVE_TRANSPORT              | COMPOUND_PROCESSES |
+    | ACTIVE_TRANSPORT_INTRINSIC    | COMPOUND_PROCESSES |
+    | APPLICATION                   |                    |
+    | ENZYMATIC_STABILITY           | COMPOUND_PROCESSES |
+    | ENZYMATIC_STABILITY_INTRINSIC | COMPOUND_PROCESSES |
+    | INDIVIDUAL_ACTIVE_PROCESS     |                    |
+    | INDUCTION_PROCESSES           | COMPOUND_PROCESSES |
+    | INHIBITION_PROCESSES          | COMPOUND_PROCESSES |
+    | PROTEIN                       |                    |
+    | SIMULATION_ACTIVE_PROCESS     |                    |
+    | SPECIFIC_BINDING              | COMPOUND_PROCESSES |
+    | SYSTEMIC_PROCESSES            | COMPOUND_PROCESSES |
+    | UNDEFINED                     |                    |
 
 * **kinetic_type** is used for the mapping
   `{Compound process template, Individual process template} ▶️ Simulation process`
@@ -135,13 +135,13 @@ In the context of PK-Sim, everything except parameters and observers is a contai
   * there are different individual active transport templates - specified by their source and target (Interstitial<=>Intracellular, Interstitial<=>Plasma, Blood Cells <=> Plasma etc.)
   (kinetic type is not specified on the individual building block level and thus is set to "*Undefined*")
 
-    | process                                         | group_name                | kinetic_type |
-  | - | ------------------------- | ------------ |
-  | ActiveEffluxSpecificIntracellularToInterstitial | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-  | ActiveInfluxSpecificInterstitialToIntracellular | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-  | ActiveEffluxSpecificInterstitialToPlasma        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-  | ActiveInfluxSpecificPlasmaToInterstitial        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-  |  ...       | ...                       | ...          |
+    | process                                              | group_name                | kinetic_type |
+    | :--------------------------------------------------- | ------------------------- | ------------ |
+    | ActiveEffluxSpecificIntracellularToInterstitial | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+    | ActiveInfluxSpecificInterstitialToIntracellular | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+    | ActiveEffluxSpecificInterstitialToPlasma        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+    | ActiveInfluxSpecificPlasmaToInterstitial        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+    |  ...       | ...                       | ...          |
 
   * In the simulation
     * `ActiveTransportSpecific_MM (Compound) +   
@@ -167,35 +167,35 @@ In the context of PK-Sim, everything except parameters and observers is a contai
 * **process_type** is used for more detailed process specification within a group. (TODO better description)
 
   | group_name                    | process_type             |
-| ----------------------------- | ------------------------ |
-| ACTIVE_TRANSPORT              | ActiveTransport          |
-| ACTIVE_TRANSPORT_INTRINSIC    | ActiveTransport          |
-| APPLICATION                   | Application              |
-| ENZYMATIC_STABILITY           | Metabolization           |
-| ENZYMATIC_STABILITY_INTRINSIC | Metabolization           |
-| INDIVIDUAL_ACTIVE_PROCESS     | BiDirectional            |
-| INDIVIDUAL_ACTIVE_PROCESS     | Efflux                   |
-| INDIVIDUAL_ACTIVE_PROCESS     | Influx                   |
-| INDIVIDUAL_ACTIVE_PROCESS     | PgpLike                  |
-| INDUCTION_PROCESSES           | Induction                |
-| INHIBITION_PROCESSES          | CompetitiveInhibition    |
-| INHIBITION_PROCESSES          | IrreversibleInhibition   |
-| INHIBITION_PROCESSES          | MixedInhibition          |
-| INHIBITION_PROCESSES          | NoncompetitiveInhibition |
-| INHIBITION_PROCESSES          | UncompetitiveInhibition  |
-| PROTEIN                       | Creation                 |
-| SIMULATION_ACTIVE_PROCESS     | BiDirectional            |
-| SIMULATION_ACTIVE_PROCESS     | Efflux                   |
-| SIMULATION_ACTIVE_PROCESS     | Induction                |
-| SIMULATION_ACTIVE_PROCESS     | Influx                   |
-| SIMULATION_ACTIVE_PROCESS     | IrreversibleInhibition   |
-| SIMULATION_ACTIVE_PROCESS     | PgpLike                  |
-| SPECIFIC_BINDING              | SpecificBinding          |
-| SYSTEMIC_PROCESSES            | Elimination              |
-| SYSTEMIC_PROCESSES            | EliminationGFR           |
-| SYSTEMIC_PROCESSES            | Metabolization           |
-| SYSTEMIC_PROCESSES            | Secretion                |
-| UNDEFINED                     | Passive                  |
+  | ----------------------------- | ------------------------ |
+  | ACTIVE_TRANSPORT              | ActiveTransport          |
+  | ACTIVE_TRANSPORT_INTRINSIC    | ActiveTransport          |
+  | APPLICATION                   | Application              |
+  | ENZYMATIC_STABILITY           | Metabolization           |
+  | ENZYMATIC_STABILITY_INTRINSIC | Metabolization           |
+  | INDIVIDUAL_ACTIVE_PROCESS     | BiDirectional            |
+  | INDIVIDUAL_ACTIVE_PROCESS     | Efflux                   |
+  | INDIVIDUAL_ACTIVE_PROCESS     | Influx                   |
+  | INDIVIDUAL_ACTIVE_PROCESS     | PgpLike                  |
+  | INDUCTION_PROCESSES           | Induction                |
+  | INHIBITION_PROCESSES          | CompetitiveInhibition    |
+  | INHIBITION_PROCESSES          | IrreversibleInhibition   |
+  | INHIBITION_PROCESSES          | MixedInhibition          |
+  | INHIBITION_PROCESSES          | NoncompetitiveInhibition |
+  | INHIBITION_PROCESSES          | UncompetitiveInhibition  |
+  | PROTEIN                       | Creation                 |
+  | SIMULATION_ACTIVE_PROCESS     | BiDirectional            |
+  | SIMULATION_ACTIVE_PROCESS     | Efflux                   |
+  | SIMULATION_ACTIVE_PROCESS     | Induction                |
+  | SIMULATION_ACTIVE_PROCESS     | Influx                   |
+  | SIMULATION_ACTIVE_PROCESS     | IrreversibleInhibition   |
+  | SIMULATION_ACTIVE_PROCESS     | PgpLike                  |
+  | SPECIFIC_BINDING              | SpecificBinding          |
+  | SYSTEMIC_PROCESSES            | Elimination              |
+  | SYSTEMIC_PROCESSES            | EliminationGFR           |
+  | SYSTEMIC_PROCESSES            | Metabolization           |
+  | SYSTEMIC_PROCESSES            | Secretion                |
+  | UNDEFINED                     | Passive                  |
 
 * **action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`} (TODO better description)
 
