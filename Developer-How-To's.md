@@ -48,7 +48,7 @@ Examples of packages that can serve as inspiration:
 - Multi-select: `CTRL+SHIFT+ALT+M`
 
 ### Profiling with R-Studio
-Profiling of code can be done within R-Studio with the package `profvis`, a descirption of the process is given [here](https://support.rstudio.com/hc/en-us/articles/218221837-Profiling-with-RStudio). In short, pass the code to be profiled as argument to the function `profvis`:
+Profiling of code can be done within R-Studio with the package `profvis`, a description of the process is given [here](https://support.rstudio.com/hc/en-us/articles/218221837-Profiling-with-RStudio). In short, pass the code to be profiled as argument to the function `profvis`:
 
 ```
 profvis({
@@ -67,7 +67,7 @@ profvis({
 - `{ospsuite}` uses snapshots to test the behavior of plot functions. Read [Introduction to snapshot testing in R](https://esqlabs.github.io/intro-to-snapshot-testing/#/title-slide) for information on how to.
 - Short summary:
   - The first time a test with snapshot is executed, it creates a snapshot file that will be considered **the truth**. Therefore it is important to check 
-this file for its validty.
+this file for its validity.
   - If the behavior of the tested function changes, the test will fail, as the new output will differ from the snapshot.
   - Run `snapshot_review()` to compare the new output with the snapshot.
   - If the new behavior is correct, accept the snapshot by calling `snapshot_accept()`.

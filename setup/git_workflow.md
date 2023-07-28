@@ -13,7 +13,7 @@ We will use `git rebase` for all other type of code integration (sub tasks of a 
 
 * The git version to use is `1.8.5` or newer. This will allow the setting of the configuration option `git pull -rebase = preserve`. This option specify that _on pull, rebase should be used instead of merge_. But incoming merge commit should be preserved.
 
-* Unless required otherwise, all work should be performed on a fork of the repository. A _Pull Request (PR)_, will be used to incorpate changes into the `develop` branch.
+* Unless required otherwise, all work should be performed on a fork of the repository. A _Pull Request (PR)_, will be used to incorporate changes into the `develop` branch.
 
 # Use Case: Implementing Task "426 it should be possible to delete observed data"
 _Note:_ A task is a cohesive unit of work. This can be part of a bigger feature or a bug fix. We assume that a fork of the repository has already been created.
@@ -45,7 +45,7 @@ _Note:_ A task is a cohesive unit of work. This can be part of a bigger feature 
  git push -u origin 426-delete-observed-data
  ```
 
- At that stage, your local branch `426-delete-observed-data` is set to track the remote branch `426-delete-observed-data` so you will be able to use the simple `git push` command from now on to udate your repo.
+ At that stage, your local branch `426-delete-observed-data` is set to track the remote branch `426-delete-observed-data` so you will be able to use the simple `git push` command from now on to update your repo.
 
 5. Create pull request on github so that your change may be reviewed. The pull request should be between the `develop` branch on the `upstream` repo and the `feature` branch on your `fork`. The PR message **should** use the task id and the whole description of the task. For example `Fixes #426 it should be possible to delete observed data`.
 

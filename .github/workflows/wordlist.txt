@@ -228,3 +228,5 @@ rsession
 rstudio
 sdk
 centOS
+mobi
+microsoft

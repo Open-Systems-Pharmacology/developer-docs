@@ -63,7 +63,7 @@ sudo apt install r-base
 
 # Install R Packages
 
-Within a R sesssion in a terminal
+Within a R session in a terminal
 
 ```
 install.package('devtools')
@@ -76,7 +76,7 @@ git clone https://github.com/Open-Systems-Pharmacology/rClr.git
 cd rClr
 ```
 
-Within a R sesssion in a terminal
+Within a R session in a terminal
 ```
 devtools::install_local("PATH TO INSTALL")
 ```
@@ -88,7 +88,7 @@ then from within a R session (replace with the path of the package)
 devtools::install_local("/home/michael/Desktop/ospsuite_9.0.18/ospsuite")
 ```
 
-Install ramaining dependencies for Reporting Engine
+Install remaining dependencies for Reporting Engine
 ```
 devtools::install_github("Open-Systems-Pharmacology/TLF-Library")
 devtools::install_github("Open-Systems-Pharmacology/OSPSuite.ReportingEngine")

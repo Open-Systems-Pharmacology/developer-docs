@@ -27,7 +27,7 @@ Usually in this abstract class we would define the `Context() override` and also
 
 The `Context()` is the setup of the test, where the environment and necessary objects are created. Functionalities that will be used overall in the test class should be defined and created here. As part of this `Context()` we could assign the `sut` (System Under Test) - alternatively this could be part of the `Because()` that we will see in the next segment, specifically if our test case concerns the instantiation of the object. 
 
-Apart from this `Context()` that would then be called (and if necessary also overriden) for every test case which inherits from this abstract class, we can also create a GlobalContext() override, where we instantiate resource-heavy objects that are used overall in the test class, since objects in the GlobalContext() are only instantiated once per test class.
+Apart from this `Context()` that would then be called (and if necessary also overridden) for every test case which inherits from this abstract class, we can also create a GlobalContext() override, where we instantiate resource-heavy objects that are used overall in the test class, since objects in the GlobalContext() are only instantiated once per test class.
 
 
 ## The individual test cases
