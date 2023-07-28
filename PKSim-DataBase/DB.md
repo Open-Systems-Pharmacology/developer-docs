@@ -22,7 +22,8 @@ Each of the following subsections focuses on one aspect and shows only a **subse
 
 ## Containers
 
-A **container** is a model entity that can have children. In the context of PK-Sim, everything except parameters and observers is a container.
+A *container* is a model entity that can have children. 
+In the context of PK-Sim, everything except parameters and observers is a container.
 
 ![](images/overview_containers.png)
 
@@ -83,21 +84,28 @@ A **container** is a model entity that can have children. In the context of PK-S
 
 ## Processes
 
-Processes are defined as containers with `container_type="PROCESS"` and must be inserted into **tab_container_names** first; once done they can be inserted into **tab_processes** and further process-specific tables.
+*Processes* are defined as containers with `container_type="PROCESS"` and must be inserted into **tab_container_names** first; once done they can be inserted into **tab_processes** and further process-specific tables.
 
 ![](images/overview_processes.png)
 
+**tab_processes** contains the following information about a process:
 
+* **template** defines whether a process is always added to the selected model or only on demand.
 
-**tab_processes.template** defines whether a process is always added to the selected model or only on demand.
+  * For example, all passive transports or FcRn binding reactions in a protein model have `template = 0`
 
-* For example, all passive transports or FcRn binding reactions in a protein model have `template = 0`
+  * For example, active transports or metabolization reactions which are added only if the corresponding process was configured in a simulation in PK-Sim have `template = 1`
 
-* For example, active transports or metabolization reactions which are added only if the corresponding process was configured in a simulation in PK-Sim have `template = 1`
+* **group_name** is used to identify where (in which building blocks or simulations) the processes are used in PK-Sim.
 
-**tab_processes.group** is used to identify where the processes are used in PK-Sim.
+  * Processes with the **parent** group *COMPOUND_PROCESSES* are templates for active processes (active transport, specific binding, elimination, metabolization, inhibition, induction, ...) used in the compound building block of PK-Sim.
+  * Processes with the group *APPLICATION* are application transports.
+  * Processes with the group *INDIVIDUAL_ACTIVE_PROCESS* are templates for *active transports*, used in an *Expression Profile* building block. These templates have no parameters and are further specified in **tab_transports** (s. below).
+  * Processes with the group *PROTEIN* describe *production* and *degradation* of proteins (enzymes, transporters, binding partners).
+  * Processes with the group *SIMULATION_ACTIVE_PROCESS* describe the processes which are created in a simulation from both compound process template and individual (expression profile) process template.
+  * Processes with the group *UNDEFINED* are processes where the group is not relevant (typically all *passive* processes).
 
-| GROUP_NAME                    | PARENT_GROUP       |
+    | GROUP_NAME                    | PARENT_GROUP       |
 | ----------------------------- | ------------------ |
 | ACTIVE_TRANSPORT              | COMPOUND_PROCESSES |
 | ACTIVE_TRANSPORT_INTRINSIC    | COMPOUND_PROCESSES |
@@ -113,57 +121,52 @@ Processes are defined as containers with `container_type="PROCESS"` and must be 
 | SYSTEMIC_PROCESSES            | COMPOUND_PROCESSES |
 | UNDEFINED                     |                    |
 
-* Processes with the **parent** group *COMPOUND_PROCESSES* are templates for active processes (active transport, specific binding, elimination, metabolization, inhibition, induction, ...) used in the compound building block of PK-Sim.
-* Processes with the group *APPLICATION* are application transports.
-* Processes with the group *INDIVIDUAL_ACTIVE_PROCESS* are templates for *active transports*, used in an *Expression Profile* building block. These templates have no parameters and are further specified in **tab_transports** (s. below).
-* Processes with the group *PROTEIN* describe *production* and *degradation* of proteins (enzymes, transporters, binding partners).
-* Processes with the group *SIMULATION_ACTIVE_PROCESS* describe the processes which are created in a simulation from both compound process template and individual (expression profile) process template.
-* Processes with the group *UNDEFINED* are processes where the group is not relevant (typically all *passive* processes).
+* **kinetic_type** is used for the mapping
+  `{Compound process template, Individual process template} ▶️ Simulation process`
+  
+  Example: active transports
+  * for the active transports there are currently 2 compound templates:
 
-**tab_processes.kinetic_type** is used for the mapping                                                                                            `{Compound process template, Individual process template} ==> Simulation process`
+    | process                      | group_name       | kinetic_type |
+    | ---------------------------- | ---------------- | ------------ |
+    | ActiveTransportSpecific_Hill | ACTIVE_TRANSPORT | Hill         |
+    | ActiveTransportSpecific_MM   | ACTIVE_TRANSPORT | MM           |
 
-Example: active transports
+  * there are different individual active transport templates - specified by their source and target (Interstitial<=>Intracellular, Interstitial<=>Plasma, Blood Cells <=> Plasma etc.)
+  (kinetic type is not specified on the individual building block level and thus is set to "*Undefined*")
 
-* for the active transports there are currently 2 compound templates:
+    | process                                         | group_name                | kinetic_type |
+  | - | ------------------------- | ------------ |
+  | ActiveEffluxSpecificIntracellularToInterstitial | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+  | ActiveInfluxSpecificInterstitialToIntracellular | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+  | ActiveEffluxSpecificInterstitialToPlasma        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+  | ActiveInfluxSpecificPlasmaToInterstitial        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
+  |  ...       | ...                       | ...          |
 
-| process                      | group_name       | kinetic_type |
-| ---------------------------- | ---------------- | ------------ |
-| ActiveTransportSpecific_Hill | ACTIVE_TRANSPORT | Hill         |
-| ActiveTransportSpecific_MM   | ACTIVE_TRANSPORT | MM           |
+  * In the simulation
+    * `ActiveTransportSpecific_MM (Compound) +   
+    ActiveEffluxSpecificIntracellularToInterstitial (Individual) ▶️ 
+    ActiveEffluxSpecificIntracellularToInterstitial_MM (Simulation)`
 
-* there are different individual active transport templates - specified by their source and target (Interstitial<=>Intracellular, Interstitial<=>Plasma, Blood Cells <=> Plasma etc.)
+    * `ActiveTransportSpecific_Hill (Compound) + 
+    ActiveEffluxSpecificIntracellularToInterstitial (Individual) ▶️ 
+    ActiveEffluxSpecificIntracellularToInterstitial_Hill (Simulation)`
 
-(kinetic type is not specified on the individual building block level and thus is set to "*Undefined*")
+    | process                                              | group_name                | kinetic_type |
+    | :--------------------------------------------------- | ------------------------- | ------------ |
+    | ActiveEffluxSpecificIntracellularToInterstitial_Hill | SIMULATION_ACTIVE_PROCESS | Hill         |
+    | ActiveEffluxSpecificIntracellularToInterstitial_MM   | SIMULATION_ACTIVE_PROCESS | MM           |
+    | ActiveInfluxSpecificInterstitialToIntracellular_Hill | SIMULATION_ACTIVE_PROCESS | Hill         |
+    | ActiveInfluxSpecificInterstitialToIntracellular_MM   | SIMULATION_ACTIVE_PROCESS | MM           |
+    | ActiveEffluxSpecificInterstitialToPlasma_Hill        | SIMULATION_ACTIVE_PROCESS | Hill         |
+    | ActiveEffluxSpecificInterstitialToPlasma_MM          | SIMULATION_ACTIVE_PROCESS | MM           |
+    | ActiveInfluxSpecificPlasmaToInterstitial_Hill        | SIMULATION_ACTIVE_PROCESS | Hill         |
+    | ActiveInfluxSpecificPlasmaToInterstitial_MM          | SIMULATION_ACTIVE_PROCESS | MM           |
+    | ...                                                  | ...                       | ...          |
 
-| process                                         | group_name                | kinetic_type |
-| - | ------------------------- | ------------ |
-| ActiveEffluxSpecificIntracellularToInterstitial | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-| ActiveInfluxSpecificInterstitialToIntracellular | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-| ActiveEffluxSpecificInterstitialToPlasma        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-| ActiveInfluxSpecificPlasmaToInterstitial        | INDIVIDUAL_ACTIVE_PROCESS | Undefined    |
-|  ...       | ...                       | ...          |
+* **process_type** is used for more detailed process specification within a group. (TODO better description)
 
-* In the simulation
-
-`ActiveTransportSpecific_MM (Compound) + ActiveEffluxSpecificIntracellularToInterstitial (Individual) ▶️ ActiveEffluxSpecificIntracellularToInterstitial_MM (Simulation)`
-
-`ActiveTransportSpecific_Hill (Compound) + ActiveEffluxSpecificIntracellularToInterstitial (Individual) ▶️ ActiveEffluxSpecificIntracellularToInterstitial_Hill (Simulation)`
-
-| process                                              | group_name                | kinetic_type |
-| :--------------------------------------------------- | ------------------------- | ------------ |
-| ActiveEffluxSpecificIntracellularToInterstitial_Hill | SIMULATION_ACTIVE_PROCESS | Hill         |
-| ActiveEffluxSpecificIntracellularToInterstitial_MM   | SIMULATION_ACTIVE_PROCESS | MM           |
-| ActiveInfluxSpecificInterstitialToIntracellular_Hill | SIMULATION_ACTIVE_PROCESS | Hill         |
-| ActiveInfluxSpecificInterstitialToIntracellular_MM   | SIMULATION_ACTIVE_PROCESS | MM           |
-| ActiveEffluxSpecificInterstitialToPlasma_Hill        | SIMULATION_ACTIVE_PROCESS | Hill         |
-| ActiveEffluxSpecificInterstitialToPlasma_MM          | SIMULATION_ACTIVE_PROCESS | MM           |
-| ActiveInfluxSpecificPlasmaToInterstitial_Hill        | SIMULATION_ACTIVE_PROCESS | Hill         |
-| ActiveInfluxSpecificPlasmaToInterstitial_MM          | SIMULATION_ACTIVE_PROCESS | MM           |
-| ...                                                  | ...                       | ...          |
-
-**tab_processes.process_type** is used for more detailed process specification within a group. (TODO better description)
-
-| group_name                    | process_type             |
+  | group_name                    | process_type             |
 | ----------------------------- | ------------------------ |
 | ACTIVE_TRANSPORT              | ActiveTransport          |
 | ACTIVE_TRANSPORT_INTRINSIC    | ActiveTransport          |
@@ -194,15 +197,18 @@ Example: active transports
 | SYSTEMIC_PROCESSES            | Secretion                |
 | UNDEFINED                     | Passive                  |
 
-**tab_processes.action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`} (TODO better description)
+* **action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`} (TODO better description)
 
-**tab_processes.create_process_rate_parameter** defines if the `Process Rate` parameter for should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
+* **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
 
-**tab_process_descriptor_conditions** describes source and target container criteria for transports and (source) container criteria for reactions
+**tab_process_descriptor_conditions** describes source and target container criteria for transports and source container criteria for reactions
 
-**tab_process_molecules** describes some reactions which are **always** part of a model (like FcRn binding)
+* **tag_type** can be one of `{SOURCE, TARGET}`
 
-* **tab_process_molecules.direction** can be of `IN` (educt), `OUT` (product) or `MODIFIER`
+**tab_process_molecules** describes the reactions which are **always** part of a model (like e.g. *FcRn binding* in the large molecules model)
+(TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
+
+* **direction** can be of `IN` (educt), `OUT` (product) or `MODIFIER`
 
 **tab_process_rates** describes the rate (kinetic) of a process
 
@@ -214,25 +220,60 @@ Example: active transports
   | ActiveEffluxSpecificIntracellularToInterstitial    | LinksCommon        | Zero_Rate                                      |
   | ActiveEffluxSpecificIntracellularToInterstitial_MM | LinksCommon        | ActiveEffluxSpecificWithTransporterInTarget_MM |
 
-**tab_model_transport_molecule_names** restricts which molecules are transported by a (passive) transport for particular model. As per default, a transport will transfer all floating molecules from its source container to the target container. In this table, some molecules can be excluded (`should_transport=0`) or transport can be restricted only to the specific molecules (`should_transport=1`). S. the [Passive Transports documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#passive-transports)
+**tab_model_transport_molecule_names** restricts which molecules are transported by a passive transport for particular model. As per default, passive transport will transfer all floating molecules from its source container to the target container. In this table, some molecules can be excluded (`should_transport=0`) or transport can be restricted only to the specific molecules (`should_transport=1`). S. the [Passive Transports documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#passive-transports) 
+(TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 
-**tab_transports** defines which (active) transports can be created in the model. (TODO better description, s. also the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
+**tab_transports** defines which active transports can be created in the model. 
+(TODO better description)
+(TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
+(TODO https://github.com/Yuri05/DB_Questions/discussions/5)
 
-**tab_transport_directions** (TODO s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2310)
+**tab_transport_directions** defines all available transport directions
+(TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 
-**tab_active_transports** (TODO https://github.com/Yuri05/DB_Questions/discussions/5)
+**tab_known_transporters** Defines a *global* transporter direction for a `{Species, Gene}` combination. 
+When adding a transporter in PK-Sim that is not available in this data table: the transporter direction is set to default and the user is informed that the transporter was not found in the database.
+See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
+
+**tab_known_transporters_containers** The *global* transporter direction defines the default transporter direction and polarity in each organ. However, some organs may have different transporter properties. To account for this, the *local* transporter direction and/or polarity can be overridden in some organs by entries in this table.
+See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
 
 ## Species and populations
 
-**Species** defines the type of an individual (Human, Dog, Rat, Mouse, ...)
+*Species* defines the type of an individual (Human, Dog, Rat, Mouse, ...)
 
-**Population** defines a subtype of a species. For each species, 1 or more populations can be defined.
+*Population* defines a subtype of a species. For each species, 1 or more populations can be defined.
 
 ![](images/overview_species_and_populations.png)
 
-**tab_species.user_defined** (TODO https://github.com/Yuri05/DB_Questions/discussions/6)
+**tab_species** defines a species.
 
-**tab_species.is_human** (TODO https://github.com/Yuri05/DB_Questions/discussions/7)
+* **user_defined** (TODO https://github.com/Yuri05/DB_Questions/discussions/6)
+
+* **is_human** (TODO https://github.com/Yuri05/DB_Questions/discussions/7)
+
+**tab_populations** defines which populations are available for a given species.
+
+* **is_age_dependent** Specifies whether some population parameters have age-dependent information (such parameters are then defined in **tab_container_parameter_curves**). If a population is age dependent:
+  * Age must be provided as an input when creating an individual
+  * Age range must be provided as an input when creating a population
+  * *Aging* option is available when creating a simulation
+  * Age dependent *ontogeny information* will be used for proteins etc.
+* **is_height_dependent** Specifies whether height information is available for the given population. If a population is height dependent:
+  * Height must be provided as an input when creating an individual
+  * Height range must be provided as an input when creating a population
+  * Organ volumes and some other anatomical parameters are scaled with the height when creating an individual, in simulations with aging etc.
+  * Body surface area can be calculated
+
+**tab_genders** provides definition of all available genders. 
+
+**tab_population_genders** define genders available for a population. If no gender-specific data is available: gender is set to `UNKNOWN`.
+
+**tab_population_age** defines the age range and the default age for the newly created individuals for all age-dependent populations. 
+
+* **default_age_unit** is the default *user interface* unit used when creating individuals/populations for the given population.
+
+**tab_population_containers** specifies which containers are available for the given population (s. the [Containers](#containers) section for the explanation how this information is used when creating a simulation).
 
 **tab_species_calculation_methods** If a parameter is defined by **formula** - this formula must be described by a *calculation method* (s. the [Calculation methods and parameter value versions](#calculation-methods-and-parameter-value-versions) section for details). In such a case, this calculation method must be assigned to the species, which happens in **tab_species_calculation_methods**. 
 
@@ -240,7 +281,7 @@ Example: active transports
 
 **tab_species_parameter_value_versions** is the counterpart of *tab_species_calculation_methods* for parameters defined by a **constant value**. All constant values must be described by a *parameter value version* (s. the [Calculation methods and parameter value versions](#calculation-methods-and-parameter-value-versions) section for details).
 
-One of the reasons for introducing calculation methods and parameter value versions is that sometimes we have more than one possible alternative for defining a set of parameters.
+One of the reasons for introducing calculation methods and parameter value versions is that sometimes we have **more than one possible alternative** for defining a set of parameters.
 
 * E.g. we have several alternatives for the calculation of body surface area in humans. The corresponding entries in the table **tab_species_calculation_methods** are shown below. 
 
@@ -252,6 +293,46 @@ One of the reasons for introducing calculation methods and parameter value versi
   The fact that the above calculation methods are **alternatives** is defined by the fact that both have the same **category** defined in **tab_calculation_methods** (see section [Calculation Methods and Parameter Value Versions](#calculation-methods-and-parameter-value-versions) for details). In PK-Sim, the user then has to select exactly one of these calculation methods (in the above example - during the individual creation, because the described parameters belong to the individual building block).
   
   ![](images/Screen01_SelectCalculationMethod.png)
+
+
+
+**tab_model_species** defines which species can be used in combination with the given model.
+
+**tab_population_disease_states** The PK-Sim database stores information for **healthy** individuals. For some populations, additional information is available for some disease states. This table indicates which disease states are available for a population. If any:
+
+* User can choose between healthy and one of the diseased states
+
+* If a disease state has been selected: additional input parameters may be required. In the database, these parameters are specified in a parentless container whose name is identical to the name of the selected disease state, e.g:
+
+  | container_id | container_type | container_name | parameter_name | group_name     | building_block_type | is_input | …    |
+  | ------------ | -------------- | -------------- | -------------- | -------------- | ------------------- | -------- | ---- |
+  | 5954         | DISEASE_STATE  | CKD            | eGFR           | DISEASE_STATES | INDIVIDUAL          | 1        | …    |
+* Disease-specific parameter values are currently NOT stored in the PK-Sim database. 
+  Instead, PK-Sim provides a "DiseaseState" class for each available disease state. In this class, a healthy individual is taken and then modified according to the specification of the given disease state. Examples:
+  
+    * CKD (Chronic Kidney Disease) disease state: [CKDDiseaseStateImplementation.cs](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Services/CKDDiseaseStateImplementation.cs)
+    * HI (Hepatic Impairment) disease state: [HIDiseaseStateImplementation.cs](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Services/HIDiseaseStateImplementation.cs)
+
+    ![](images/Screen02_DiseaseState.png)
+
+**tab_disease_states** Describes all currently available disease states.
+
+**tab_ontogenies** Defines ontogeny factors for some known proteins for a combination of `{Protein, Species}`
+(s. the [Documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#basic-physico-chemistry) for details)
+
+* **molecule** name of the protein.
+* **species** name of the species
+* **group_name** specifies the localization of the ontogeny information:
+  * `ONTOGENY_PLASMA` is used to set ontogeny factor for the plasma protein binding (s. [Documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#basic-physico-chemistry) for details)
+  * For enzymes, transporters and binding partners (other than plasma binding partners), ontogeny information can be stored in 2 different ways:
+    * Either the same (global) ontogeny factor for all containers. In this case, the group name is set to `ONTOGENY_LIVER_ALL`
+    * Or two ontogeny factors: the first one for the intestine and the second one for the rest of the body. In this case, the group name for these 2 factors is set to `ONTOGENY_DUODENUM` and `ONTOGENY_LIVER_NO_GI`, respectively.
+* For for a combination of `{Protein, Species, Group}`, ontogeny information is stored in the form of the supporting points `{Postmenstrual age (PMA), Ontogeny factor, Geometric Standard Deviation}`.
+  * If the individual's PMA is equal to one of the supporting points: the corresponding ontogeny factor value is used for the calculation.
+  * If the PMA of the individual is less than the minimum PMA of the supporting points: the ontogeny factor corresponding to the minimum PMA is used.
+  * If the PMA of the individual is greater than the maximum PMA of the supporting points: the ontogeny factor corresponding to the maximum PMA is used.
+  * In other cases, the ontogeny factor is calculated by linear interpolation from two supporting points.
+
 
 ## Container parameters
 
