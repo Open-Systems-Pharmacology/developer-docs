@@ -364,12 +364,6 @@ One of the reasons for introducing calculation methods and parameter value versi
 
 
 
-## Categories
-
-![](images/overview_categories.png)
-
-
-
 ## Entities defined by formulas
 
 ![](images/overview_formula_objects.png)

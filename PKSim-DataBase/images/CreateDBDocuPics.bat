@@ -27,7 +27,6 @@ call schemacrawler.bat %scOptions% --tables="tab_distribution_types|tab_containe
 call schemacrawler.bat %scOptions% --tables="tab_kinetic_types|tab_processes" --output-file=overview_enums_4.png
 call schemacrawler.bat %scOptions% --tables="tab_organ_types" --output-file=overview_enums_5.png
 call schemacrawler.bat %scOptions% --tables="tab_active_transport_types|tab_known_transporters|tab_process_types|tab_processes" --output-file=overview_enums_6.png
-call schemacrawler.bat %scOptions% --tables="tab_categories|tab_calculation_methods|tab_parameter_value_versions" --output-file=overview_categories.png
 call schemacrawler.bat %scOptions% --tables="tab_tags|tab_container_tags|tab_calculation_method_parameter_descr_conditions|tab_calculation_method_rate_descriptor_conditions|tab_container_parameter_descriptor_conditions|tab_criteria_conditions|tab_observer_descriptor_conditions|tab_process_descriptor_conditions" --output-file=overview_tags.png
 call schemacrawler.bat %scOptions% --tables="tab_container_molecule_start_formulas|tab_container_parameter_curves|tab_container_parameter_rates|tab_container_parameter_values|tab_references|tab_value_origins" --output-file=overview_value_origins.png
 call schemacrawler.bat %scOptions% --tables="tab_molecule_parameters|tab_protein_names|tab_protein_synonyms|tab_ontogenies" --output-file=overview_proteins.png
