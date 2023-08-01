@@ -1,5 +1,9 @@
 # General remarks
 
+When a database value describes a numeric property of a quantity (e.g., parameter value, allowed value range, etc.), the value is always stored in the **base unit of the dimension of the quantity**. 
+
+Check the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml) to see what the base unit of a dimension is!
+
 Some of the common properties used in many tables:
 
 * **display_name** The name of the entity to be used in the UI in PK-Sim.
@@ -13,6 +17,11 @@ Some of the common properties used in many tables:
 * **icon_name** Defines which icon is used for the entity. 
 
   If not empty: the icon with the given name must be present in the `OSPSuite.Assets.Images`
+
+* {**min_value**, **min_isallowed**, **max_value**, **max_isallowed**} specifies the allowed range of values for a numeric quantity. 
+  * **min_isallowed** and **max_isallowed** define whether the corresponding bounded value range is open or closed.
+  * **min_value** can be empty. In this case the lower bound is `-Infinity`. The value of **min_isallowed** will then be ignored.
+  * **max_value** can be empty. In this case the upper bound is `+Infinity`. The value of **max_isallowed** will then be ignored.
 
 Boolean values are always represented as **integers restricted to {0, 1}**.
 
@@ -238,7 +247,7 @@ See [Localizations, directions, and initial concentrations of transport proteins
 **tab_known_transporters_containers** The *global* transporter direction defines the default transporter direction and polarity in each organ. However, some organs may have different transporter properties. To account for this, the *local* transporter direction and/or polarity can be overridden in some organs by entries in this table.
 See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
 
-## Species and populations
+## Species and populations <a id="section-species-and-populations"></a>
 
 *Species* defines the type of an individual (Human, Dog, Rat, Mouse, ...)
 
@@ -275,11 +284,11 @@ See [Localizations, directions, and initial concentrations of transport proteins
 
 **tab_population_containers** specifies which containers are available for the given population (s. the [Containers](#containers) section for the explanation how this information is used when creating a simulation).
 
-**tab_species_calculation_methods** If a parameter is defined by **formula** - this formula must be described by a *calculation method* (s. the [Calculation methods and parameter value versions](#calculation-methods-and-parameter-value-versions) section for details). In such a case, this calculation method must be assigned to the species, which happens in **tab_species_calculation_methods**. 
+**tab_species_calculation_methods** If a parameter is defined by **formula** - this formula must be described by a *calculation method* (s. the [Calculation methods and parameter value versions](#section-cm-and-pvv) section for details). In such a case, this calculation method must be assigned to the species, which happens in **tab_species_calculation_methods**. 
 
 * E.g. the calculation method `Lumen_Geometry` describes the calculation of some GI-related parameters based on the age and body height, which is currently applicable only to the species `Human`. Thus this calculation method is defined only for `Human` in the table
 
-**tab_species_parameter_value_versions** is the counterpart of *tab_species_calculation_methods* for parameters defined by a **constant value**. All constant values must be described by a *parameter value version* (s. the [Calculation methods and parameter value versions](#calculation-methods-and-parameter-value-versions) section for details).
+**tab_species_parameter_value_versions** is the counterpart of *tab_species_calculation_methods* for parameters defined by a **constant value**. All constant values must be described by a *parameter value version* (s. the [Calculation methods and parameter value versions](#section-cm-and-pvv) section for details).
 
 One of the reasons for introducing calculation methods and parameter value versions is that sometimes we have **more than one possible alternative** for defining a set of parameters.
 
@@ -290,7 +299,7 @@ One of the reasons for introducing calculation methods and parameter value versi
   | Human   | Body surface area - Du Bois   |
   | Human   | Body surface area - Mosteller |
 
-  The fact that the above calculation methods are **alternatives** is defined by the fact that both have the same **category** defined in **tab_calculation_methods** (see section [Calculation Methods and Parameter Value Versions](#calculation-methods-and-parameter-value-versions) for details). In PK-Sim, the user then has to select exactly one of these calculation methods (in the above example - during the individual creation, because the described parameters belong to the individual building block).
+  The fact that the above calculation methods are **alternatives** is defined by the fact that both have the same **category** defined in **tab_calculation_methods** (see section [Calculation Methods and Parameter Value Versions](#section-cm-and-pvv) for details). In PK-Sim, the user then has to select exactly one of these calculation methods (in the above example - during the individual creation, because the described parameters belong to the individual building block).
   
   ![](images/Screen01_SelectCalculationMethod.png)
 
@@ -336,9 +345,112 @@ One of the reasons for introducing calculation methods and parameter value versi
 
 ## Container parameters
 
+This section describes the definition of `{Container, Parameter}` combinations.
+Another (dynamic) way to define parameters is described in the section [Calculation method parameters](#calculation-method-parameters) below.
+
 ![](images/overview_container_parameters.png)
 
+**tab_parameters** describes an abstract parameter (e.g. "Volume"), which can be inserted in  various containers.
 
+* **dimension** must be one of the dimensions defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
+* **default_unit** [OPTIONAL] The default unit to use in the UI (unless the user specifies otherwise). Must be one of the units defined for the parameter dimension in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml). If empty: the default unit from the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml) for the parameter dimension is used.
+
+**tab_container_parameters** Specifies a `{Container, Parameter}` combination.
+
+* {**container_id**, **container_type**, **container_name**} specifies the container.
+
+* **parameter_name** specifies the parameter.
+
+* **visible** specifies if the parameter is shown in the PK-Sim UI (when sent to MoBi, this flag is translated into the *Advanced parameter* property.)
+
+* **read_only** specifies if the parameter can be edited by user in the PK-Sim UI
+
+* **can_be_varied** is used to allow the variation of some read-only parameters outside of PK-Sim (e.g. in MoBi or via the R interface).
+
+  Example: for the Arterial Blood container, the following parameters are defined in PK-Sim:
+
+  | container_name | parameter_name                 | can_be_varied | read_only | visible |
+  | -------------- | ------------------------------ | ------------- | --------- | ------- |
+  | ArterialBlood  | Allometric scale factor        | 0             | 1         | 0       |
+  | ArterialBlood  | Density (tissue)               | 1             | 1         | 0       |
+  | ArterialBlood  | Fraction vascular              | 1             | 1         | 1       |
+  | ArterialBlood  | Peripheral blood flow fraction | 1             | 0         | 1       |
+  | ArterialBlood  | Volume                         | 1             | 0         | 1       |
+  | ArterialBlood  | Weight (tissue)                | 1             | 1         | 0       |
+
+  If we create a sensitivity analysis in PK-Sim, only the parameters `Peripheral Blood Flow Fraction` and `Volume` will be available for variation because of the flag combination `{visible=1, read_only=0, can_be_varied=1}`.
+
+  However, if we send the simulation to MoBi and create a sensitivity analysis there, all parameters from the table above, except `Allometric Scale Factor`, will be available for variation (in *Advanced Mode*), due to `can_be_varied=1`.
+
+* **can_be_varied_in_population** specifies (together with **is_changed_by_create_individual** - s. below) if a parameter defined by value or by formula (s. below) can be used for the [User Defined Variability‌](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-creating-populations#user-defined-variability) in populations or population simulations.
+
+* **group_name** defines how parameters are displayed in the PK-Sim UI (s. below and also see the description in the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-simulations#running-a-simulation-in-an-individual)).
+
+* **build_mode** can be one of the following: `LOCAL`, `GLOBAL`, or `PROPERTY` (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#parameters-formulas-and-tags) for details).
+
+* **building_block_type** can be one of the following: `COMPOUND`, `EVENT`, `FORMULATION`, `INDIVIDUAL`, `PROTOCOL`, `SIMULATION`. Used to determine which parameters can be added to a container at the building block level and which at the simulation level.
+
+* **is_input** is used to specify whether a parameter that has NOT been changed by the user should be exported to the project snapshot or not.
+
+  Why we need this: some parameters have default values **just for user convenience**. In principle, these values should be empty/NaN by default. However, to reduce the amount of user input required, the parameters have been set to some value. 
+
+  For example, when creating a new compound, the default value is "`Is small molecule = 1`". When the user creates a new small molecule compound, this value is apparently kept AS IS. But in fact it's a user input, which is implicit here, meaning that the value of "`Is small molecule`" must be exported to the snapshot in any case.
+
+* **is_changed_by_create_individual** indicates whether a parameter is changed by the *Create Individual algorithm*. This includes both *directly* modified parameters (= age-dependent parameters specified in **tab_container_parameter_curves**, see below) and *indirectly* modified parameters (such as the blood flows). Parameters with `is_changed_by_create_individual = 1` always appear in the *Distribution* tab of PK-Sim and are not available for user-defined variability.
+
+**tab_groups** defines the group hierarchy. In the parameter view of individuals/populations/simulations in PK-Sim, each visible parameter is displayed within its group. (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-creating-individuals#anatomy-and-physiology) for details)
+
+* **parent_group** specifies the parent group (if any). Groups without a parent are displayed at the top level.
+* **is_advanced** defines whether the group is displayed in the simple view or only in the advanced view.
+* **visible** determines whether the group is visible in the parameter view. If a parameter is visible but belongs to a hidden group, it can still be displayed in either the Hierarchy View mode or in the "All" Parameters group.
+* **pop_display_name** [OPTIONAL] is used to display parameters in the "User Defined Variability" and "Distribution" tabs of populations and population simulations. If empty: the **display_name** of the group is used.
+* **full_name** is not used by PK-Sim. Shown in MoBi when a simulation is sent from PK-Sim (MoBi does not provide hierarchical parameter view by group like PK-Sim).
+* **unique_id** Unique group id used to identify a group in MoBi or when importing a simulation from pkml in PK-Sim. Should never be changed in the DB!
+  With each new OSP release a **GroupRepository.xml** file is generated by PK-Sim and placed under **C:\ProgramData\Open Systems Pharmacology\MoBi\X.Y**. Here the complete group information (display name, description, icon, ..) is stored. In pkml files, only the unique group ID is stored. 
+
+**tab_molecule_parameters** describes some global protein parameters (like "Reference concentration" etc.)
+
+The value of a container parameter can be defined in one of three possible ways:
+
+1. By a *formula* specified in **tab_container_parameter_rates** (s. the sections [Formulas (Calculation method - rates)](section-formulas) and [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+
+   A formula is neither species nor population dependent.
+
+2. By *constant value* specified in **tab_container_parameter_values** (s. the section [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+
+   A constant value is species dependent but not population dependent.
+
+3. By *age-dependent probability distribution* specified in **tab_container_parameter_curves** (described in detail below).
+
+It is possible, that for a combination {`container_id, container_type, container_name, parameter_name`} we have *several entries* in different tables (e.g. several formulas or formula and value etc.).
+
+When creating a building block or simulation, some entries are filtered out because the calculation method or parameter value version of the entry does not belong to the species/population/model of the created building block/simulation. 
+
+If we still have more than one entry - the corresponding calculation methods or parameter value versions must be of the **same category** (i.e. they represent possible **alternatives** for the parameter definition). See the sections [Species and Populations](#section-species-and-populations) and [Calculation Methods and Parameter Value Versions](#section-cm-and-pvv) for more details.
+
+**tab_container_parameter_curves** describes age-dependent and/or distributed parameters.
+
+How does it work (all bullet points below apply for a combination 
+{`parameter_value_version, species, container_id, container_type, container_name, parameter_name, population, gender, gestational_age`}):
+
+* N supporting age points are defined (N>=1): *Age_min*, … , *Age_max*
+* For an individual of given age: *mean* and *sd* value are interpolated based on the mean and sd of defined supported points
+  * For `Age < Age_min`: `mean(Age) = mean(Age_min)` and `sd(Age) = sd(Age_min)`
+  * For `Age > Age_max`: `mean(Age) = mean(Age_max)` and `sd(Age) = sd(Age_max)`
+  * For `Age_min ≤ Age ≤ Age_max`: both *mean* and *sd* are linearly interpolated between their 2 adjacent supporting points (if the *Age* is one of the supporting points, then *mean* and *sd* are obviously taken from it without interpolation).
+* Distribution type must be always the same for all ages.
+* If we have only age dependency but no distribution, we set `distribution_type=”discrete”` (constant) and `sd = 0` for all supporting points.
+* If both *mean* and *sd* are constant for all ages: we define only 1 supporting point (usually with `Age = 0`).
+
+**tab_compound_process_parameter_mapping** When creating a process in a compound building block, the values of the *Calculation parameters* of this process are taken from the mapped parameters of the **default individual** for the **default population** (the latter is specified in the PK-Sim options) of the species defined by the user during the process creation (see the [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#adme-properties) for details).
+
+**tab_container_parameter_rhs** If a parameter is defined by a differential equation, the right-hand side (RHS) of that equation is given in this table.
+
+**tab_container_parameter_descriptor_conditions** is used to restrict the creation of local protein parameters to specific containers.
+
+* **tag** Tag of a container in which the parameter should (or should not) be created.
+* **condition** One of the values defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
+* **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
 
 ## Calculation method parameters
 
@@ -346,13 +458,13 @@ One of the reasons for introducing calculation methods and parameter value versi
 
 
 
-## Formulas (Calculation method - rates)
+## Formulas (Calculation method - rates) <a id="section-formulas"></a>
 
 ![](images/overview_calculation_method_rates.png)
 
 
 
-## Calculation methods and parameter value versions
+## Calculation methods and parameter value versions <a id="section-cm-and-pvv"></a>
 
 ![](images/overview_CM_and_PVV.png)
 
