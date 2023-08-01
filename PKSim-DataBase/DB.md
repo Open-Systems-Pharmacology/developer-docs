@@ -412,7 +412,7 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 
 The value of a container parameter can be defined in one of three possible ways:
 
-1. By a *formula* specified in **tab_container_parameter_rates** (s. the sections [Formulas (Calculation method - rates)](section-formulas) and [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+1. By a *formula* specified in **tab_container_parameter_rates** (s. the sections [Formulas (Calculation method - rates)](#section-formulas) and [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
 
    A formula is neither species nor population dependent.
 
