@@ -230,3 +230,9 @@ sdk
 centOS
 mobi
 microsoft
+rhs
+RHS
+sd
+SD
+ProgramData
+isallowed
