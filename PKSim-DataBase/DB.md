@@ -495,9 +495,9 @@ An **explicit formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_
 * $C_1, ... C_j$ ($j \geq 0$) are molecule concentrations
 * $TIME$ is the current time (related to the begin of the simulation run)
 
-A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME; Q\_$#$i)$ where:
+A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME;$ `Q_#i` $)$ where:
 
-* $Q\_$#$i$ is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
+* `Q_#i` is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
 * all other arguments have the same meaning as in an explicit formula
 
 A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-table-formulas-with-offset) for details):
