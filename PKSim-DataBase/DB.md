@@ -502,7 +502,7 @@ A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1
 
 A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-table-formulas-with-offset) for details):
 
-* **table object** with the `Table_formula` (defined by the support points {$time_i;value_i$})
+* **table object** with the `Table_formula` (defined by the support points { $time_i;value_i$} )
 * **offset object** with the `Offset_formula`.
 
 The X argument of the table object is always the (simulation) time, and the formula returns the value
@@ -510,7 +510,7 @@ The X argument of the table object is always the (simulation) time, and the form
 
 A **table formula with X argument** is a generalization of *table formula with offset* and is defined by 2 quantities
 
-* **table object** with the `Table_formula` (defined by the support points {$x_i;value_i$}).
+* **table object** with the `Table_formula` (defined by the support points { $x_i;value_i$} ).
 * **X argument object** with the `XArgument_formula`.
 
 The table's X argument is arbitrary, and the formula returns the value
