@@ -1,4 +1,4 @@
-# General remarks
+# General remarks  <a id="section-general-remarks"></a>
 
 When a database value describes a numeric property of a quantity (e.g., parameter value, allowed value range, etc.), the value is always stored in the **base unit of the dimension of the quantity**. 
 
@@ -25,11 +25,13 @@ Some of the common properties used in many tables:
 
 Boolean values are always represented as **integers restricted to {0, 1}**.
 
+:grey_exclamation: Before renaming or removing basic entities (parameters, containers, observers): you should always check if the modified entity is explicitly used by its name in PK-Sim. If so, further code changes are required to reflect the database change! In some cases, the database objects that appear to be unused (when looking only at the database) are actually used in PK-Sim to create objects on the fly. 
+
 # Overview diagrams
 
 Each of the following subsections focuses on one aspect and shows only a **subset** of the database tables relevant to that topic. The last subsection shows the complete schema with all tables.
 
-## Containers
+## Containers  <a id="section-containers"></a>
 
 A *container* is a model entity that can have children. 
 In the context of PK-Sim, everything except parameters and observers is a container.
@@ -41,6 +43,8 @@ In the context of PK-Sim, everything except parameters and observers is a contai
 * **container_type** is used, for example, to map a container to the correct container class in PK-Sim.
 * **extension** is not used by PK-Sim and is only useful for some database update scripts.
 * **icon_name** defines which icon is used for a container. 
+
+There are some "special" containers defined in *tab_container_names* that are not used in the container hierarchy defined in *tab_containers*. These containers are only used for **referential integrity when defining some relative object paths** (see the [Formulas](#section-formulas) section for more details).
 
 **tab_containers** defines the container hierarchy and includes **all possible containers** which can appear in a model. When a model is created, some containers are filtered out based on the information in **tab_model_containers** and **tab_population_containers** (s. below)
 
@@ -91,7 +95,7 @@ In the context of PK-Sim, everything except parameters and observers is a contai
   * container is added to the model in any case
   * containers of this type usually should not be defined in *tab_population_containers* (TODO https://github.com/Yuri05/DB_Questions/discussions/1)
 
-## Processes
+## Processes  <a id="section-processes"></a>
 
 *Processes* are defined as containers with `container_type="PROCESS"` and must be inserted into **tab_container_names** first; once done they can be inserted into **tab_processes** and further process-specific tables.
 
@@ -311,7 +315,7 @@ One of the reasons for introducing calculation methods and parameter value versi
 
 * User can choose between healthy and one of the diseased states
 
-* If a disease state has been selected: additional input parameters may be required. In the database, these parameters are specified in a parentless container whose name is identical to the name of the selected disease state, e.g:
+* If a disease state has been selected: additional input parameters may be required. In the database, these parameters are specified in a parentless container whose name is identical to the name of the selected disease state and with `container_type=DISEASE_STATE`, e.g:
 
   | container_id | container_type | container_name | parameter_name | group_name     | building_block_type | is_input | …    |
   | ------------ | -------------- | -------------- | -------------- | -------------- | ------------------- | -------- | ---- |
@@ -343,7 +347,7 @@ One of the reasons for introducing calculation methods and parameter value versi
   * In other cases, the ontogeny factor is calculated by linear interpolation from two supporting points.
 
 
-## Container parameters
+## Container parameters <a id="section-container-parameters"></a>
 
 This section describes the definition of `{Container, Parameter}` combinations.
 Another (dynamic) way to define parameters is described in the section [Calculation method parameters](#calculation-method-parameters) below.
@@ -452,17 +456,250 @@ How does it work (all bullet points below apply for a combination
 * **condition** One of the values defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 * **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
 
-## Calculation method parameters
+## Calculation method parameters <a id="section-calculation-method-parameters"></a>
+
+Apart from the container parameters described above, some parameters are created *dynamically* when the model uses a particular calculation method.
+
+Some calculation methods rely on a large number of **supporting parameters**, which are only used to create other parameters and are of no interest once the "main" parameters are created.
+
+To avoid adding tons of supporting parameters for all possible combinations of calculation methods, the concept of "Calculation method parameters" was introduced, which allows adding supporting parameters on demand.
+
+To enable calculation method parameters also in MoBi: with each new OSP release a **AllCalculationMethods.pkml** file is generated by PK-Sim and placed under **C:\ProgramData\Open Systems Pharmacology\MoBi\X.Y**. Here the complete supporting parameter information (parameter properties, location, formula) is stored. 
 
 ![](images/overview_calculation_method_parameters.png)
 
+**tab_calculation_method_parameter_rates** defines which parameters are added dynamically.
+Another task of this table is to dynamically assign formulas to the "main" parameters initially defined by a *black-box formula*. The latter is described in more detail in the section [Black Box Formulas](#black-box-formulas).
 
+* **parameter_id** unique id, only used internally in the database.
+* **parameter_name** name of the supporting parameter to add.
+* **group_name**, **can_be_varied**, **can_be_varied_in_population**, **read_only**, **visible** have the same meaning as for the container parameters.
+* {**calculation_method**, **rate**} define for which calculation method and with which formula the parameter will be added.
+
+**tab_calculation_method_parameter_descr_conditions** defines the containers in which a supporting parameter should be created. Containers are described by their tags; single criteria conditions for a parameter id are combined by `AND`.
 
 ## Formulas (Calculation method - rates) <a id="section-formulas"></a>
 
+This section describes the formulas defined in the PK-Sim database. This includes:
+
+* formulas defined by an analytical equation (*explicit formulas*) 
+* *sum formulas*
+* table formulas with offset
+* table formulas with X argument
+
+An **explicit formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME)$ where:
+
+* $f$ is an analytical function
+* $P_1, ... P_n$ ($n \geq 0$) are model parameters 
+* $M_1, ..., M_k$ ($k \geq 0$) are molecule amounts 
+* $C_1, ... C_j$ ($j \geq 0$) are molecule concentrations
+* $TIME$ is the current time (related to the begin of the simulation run)
+
+A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME; Q\_\#i)$ where:
+
+* $Q\_\#i$ is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
+* all other arguments have the same meaning as in an explicit formula
+
+A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-table-formulas-with-offset) for details):
+
+* **table object** with the `Table_formula` (defined by the support points {$time_i;value_i$})
+* **offset object** with the `Offset_formula`.
+
+The X argument of the table object is always the (simulation) time, and the formula returns the value
+`Table_formula(Time - Offset_formula(Time;...))`.
+
+A **table formula with X argument** is a generalization of *table formula with offset* and is defined by 2 quantities
+
+* **table object** with the `Table_formula` (defined by the support points {$x_i;value_i$}).
+* **X argument object** with the `XArgument_formula`.
+
+The table's X argument is arbitrary, and the formula returns the value
+$Table\_formula(XArgument\_formula(...))$.
+
+S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas) and [Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#sum-formulas) for more details on formulas.
+
 ![](images/overview_calculation_method_rates.png)
 
+**tab_rates** describes an abstract formula.
 
+**tab_calculation_methods** describes a calculation method. A calculation method describes how a **group of quantities** (parameters, molecule initial values, etc.) are defined by their formulas. A decision about which quantities should be described by the same calculation method is usually based on information about which formulas would change when the user switches from one (sub)model to another. For example, if the user chooses a different method for calculating the *Body Surface Area* (BSA) - only the BSA parameter itself is affected, and thus only this parameter is described by the corresponding calculation methods. If the user chooses another method for calculating the surface area between the plasma and the interstitial space - the *Surface Area (Plasma/Interstitial)* parameters in all tissues organs are affected: thus all these parameters are grouped in the same calculation method.
+
+* **category** calculation methods belonging to the same category are alternatives, which can be selected by user (s. also the section [Container Parameters](#section-container-parameters))
+
+**tab_categories** specifies the categories of calculation methods.
+
+* **category_type** describes for which building block or simulation all calculation methods of the given category are valid. For example, if the category type of a calculation method is "Individual" - the calculation method will be used when creating an individual. Valid values of the category type are defined by the [`enum CategoryType`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/Category.cs).
+
+**tab_calculation_method_rates** defines the formula equation for the combination {`calculation_method, formula_rate`}.
+
+* **calculation_method** defines the calculation method. Some calculation methods have a special meaning and are described in more detail in the next subsections:
+  * `BlackBox_CalculationMethod`
+  * `DynamicSumFormulas`
+  * `DiseaseStates`
+* **formula_rate** defines the formula. 
+  * For some frequently used constant rates specific formulas were defined:
+    * `Zero_Rate`
+    * `One_Rate`
+    * `Thousand_Rate`
+    * `NaN_Rate`
+  * Some calculation methods have a special meaning and are described in more detail in the next subsections:
+    * `TableFormulaWithOffset_*`
+    * `TableFormulaWithXArgument_*`
+  
+* **formula** defines the equation for the combination {`calculation_method, formula_rate`}. Which operators, standard functions, etc. are allowed is described in the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas). 
+  * It is allowed to leave the **formula** field empty. Quantity with empty formula becomes mandatory user input in PK-Sim UI. This means that only **visible and editable quantities** are allowed to have an empty formula.
+  * Formula can be set to $\pm \infty$. Valid values for this are:
+    * `Inf` or `Infinity`
+    * `-Inf` or `-Infinity`
+
+  * It is important to write **efficient formulas**. Check the [WIKI **Writing efficient formulas**](https://github.com/Open-Systems-Pharmacology/OSPSuite.FuncParser/wiki/Writing-efficient-formulas) for details.
+  * Constant values in equations should be avoided. It is always better to define a new parameter, set it to the constant value, and then use that parameter in the equation. Exceptions are constants whose meaning is immediately clear (e.g. `1`, `0`, `ln(2)`, etc.). Because: 
+    * In the parameter definition, we can add description, value origin, etc. All of this information is missing when you use a constant directly in an equation.
+    * Unit information is lost and this can easily lead to errors (happens quite often in MoBi, when users add constants to their formulas, see e.g. [this discussion](https://github.com/Open-Systems-Pharmacology/Forum/issues/491)).
+  
+* **dimension** the dimension of the formula. Used e.g. by the dimension check in MoBi to make sure that the quantities using the given formula have the same dimension.
+
+**tab_rate_container_parameters** parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`container_id, container_type, container_name, parameter_name`}.
+
+* **alias** is the alias of the referenced parameter used in the calculation. The rules for defining aliases are
+  * Aliases of all quantities referenced in the formula must be unique and not empty.
+  * Alias cannot be a number.
+  * Alias must not contain any of the characters 
+    `+ - * \ / ^ . , < > = ! ( ) [ ] { } ' " ? : ¬ | & ;`
+  * Alias must not contain blanks.
+  * Alias cannot be one of the predefined *standard constants* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
+  * Alias cannot be one of the predefined *standard functions* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
+  * Alias cannot be one of the predefined *logical operators* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
+
+**tab_rate_container_molecules** molecules referenced by the formula of the combination {`calculation_method, formula_rate`}. Molecules are given by the combination of {`container_id, container_type, container_name, molecule`}.
+
+* **alias** is the alias of the referenced parameter used in the calculation. Alias rules apply (s. above).
+* **use_amount** specifies whether the *amount* or *concentration* of the given molecule is used.
+
+**tab_rate_generic_parameters** parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`path_id,  parameter_name`}.
+
+* **path_id** refers to the (relative) object path stored in the table **tab_object_paths** (s. below).
+* **alias** is the alias of the referenced parameter used in the calculation. Alias rules apply (s. above).
+
+**tab_rate_generic_molecules** parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`path_id,  molecule`}.
+
+* **path_id** refers to the (relative) object path stored in the table **tab_object_paths** (s. below).
+* **alias** is the alias of the referenced molecule used in the calculation. Alias rules apply (s. above).
+* **use_amount** specifies whether the *amount* or *concentration* of the given molecule is used.
+
+There are some "special" containers defined in *tab_container_names* that are not used in the container hierarchy defined in *tab_containers*. These containers are only used for **referential integrity when defining some relative object paths**. (TODO s. [the issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2692))
+
+<details><summary><b>Special containers</b></summary>
+
+| ref_container_name     | description                                                 |
+| ---------------------- | ----------------------------------------------------------- |
+| .                      | Me                                                          |
+| ..                     | Parent                                                      |
+| \<COMPLEX\>              | Dummy, will be replaced by complex name in PK-Sim           |
+| \<FormulationName\>      | \<FormulationName\>                                           |
+| \<MOLECULE\>             | Dummy, will be replaced by compound name in PK-Sim          |
+| \<PROCESS\>              | Template for Compound process in simulation                 |
+| \<PROTEIN\>              | Template for protein                                        |
+| \<REACTION\>             | Dummy, will be replaced by reaction name in PK-Sim          |
+| ALL_FLOATING_MOLECULES | Path entry referencing all floating molecules (Assignments) |
+| FIRST_NEIGHBOR         | Path entry for the first neighbor                           |
+| FcRn                   | FcRn                                                        |
+| FcRn_Complex           | FcRn_Complex                                                |
+| LigandEndo             | LigandEndo                                                  |
+| LigandEndo_Complex     | LigandEndo_Complex                                          |
+| NEIGHBORHOOD           | Path entry for the neighborhood                             |
+| SECOND_NEIGHBOR        | Path entry for the second neighbor                          |
+| SOURCE                 | Path entry for source amount                                |
+| TARGET                 | Path entry for target amount                                |
+| TRANSPORT              | Path entry for the transport                                |
+
+</details>
+
+**tab_object_paths** describes (relative) paths of quantities used in a formula (see the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas) for details). Each entry of an object path is stored separately, with its own id and the id of its parent path entry. Tables *tab_rate_generic_XXX* have the reference to the **bottom element of the object path** (see the example below).
+
+* **path_id** is the unique id of the path entry.
+* **parent_path_id** is the id of the parent path entry. If there is no parent path entry: the parent path id is set equal to the path id!
+* {**ref_container_type**, **ref_container_name**} name and type of the container which is referenced by the path entry.
+
+Example: 
+
+*tab_object_paths* contains the following path entries:
+
+| path_id | parent_path_id | ref_container_type | ref_container_name  |
+| ------- | -------------- | ------------------ | ------------------- |
+| 260     | 259            | GENERAL            | MOLECULE            |
+| 259     | 2078           | NEIGHBORHOOD       | Brain_pls_Brain_int |
+| 2078    | 2078           | GENERAL            | Neighborhoods       |
+
+These entries represent the path `Neighborhoods|Brain_pls_Brain_int|MOLECULE`.
+
+In *tab_rates_generic_parameters* the path is referenced like this:
+
+| calculation_method                                   | formula_rate                  | path_id | parameter_name                              | alias     |
+| ---------------------------------------------------- | ----------------------------- | ------- | ------------------------------------------- | --------- |
+| Interstitial partition coefficient method  - Schmitt | PARAM_K_water_int_brn_Schmitt | **260** | Partition coefficient (interstitial/plasma) | K_int_pls |
+
+With this, the full path to the referenced parameter is: 
+`Neighborhoods|Brain_pls_Brain_int|MOLECULE|Partition coefficient (interstitial/plasma)`
+
+### Sum formulas  <a id="sum-formulas">
+
+See the [OSP Suite documentation - Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#sum-formulas) for more details.
+
+Sum formulas in the PK-Sim database must have the calculation method **DynamicSumFormulas**.
+
+Compared to the full flexibility of the sum formulas provided in MoBi, there are some restrictions:
+
+* *Control variable* (`Q` in the screenshot below) can only be defined **with 1 letter**.
+* Quantity references **relative to the summed object** (the highlighted part of the definition below) are not possible.
+* The operator for combining the conditions of each criterion is always `And'.
+
+![](images/Screen03_SumFormula.png)
+
+**tab_calculation_method_rate_descriptor_conditions** defines the criteria of the quantities to be summed up for the combination {`calculation_method, rate`}.
+
+* **condition** one of the values defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
+* **tag** the tag of the single condition.
+
+### "Black box" formulas <a id="black-box-formulas">
+
+Some molecule-dependent parameters defined within the spatial structure have a formula that depends on the calculation methods of the specific molecule. Examples of such parameters are partition coefficients, cellular permeabilities, etc.
+
+Within the spatial structure, these parameters are defined by a dummy formula - *black-box formula* - which is replaced by a concrete formula for each molecule.
+
+All black box formulas are combined within the calculation method `BlackBox_CalculationMethod'.
+
+The concrete (calculation method dependent) formulas are then defined in the table **tab_calculation_method_parameter_rates** (and exported to **AllCalculationMethods.pkml** for MoBi) - see the section [Calculation method parameters](#section-calculation-method-parameters). 
+
+Example of how black box parameters are displayed in MoBi:
+
+![](images/Screen04_BlackBoxFormula.png)
+
+### Disease state parameters
+
+Parameters specific to disease states are grouped under the `DiseaseStates` calculation method.
+
+### Table formulas with offset
+
+If a formula_rate starts with the prefix **TableFormulaWithOffset_** (e.g. `TableFormulaWithOffset_FractionDose`) - PK-Sim will create a table formula with offset.
+
+PK-Sim then expects that **exactly 2 referenced quantities are defined for the formula**: one quantity with the alias `Table` and another quantity with the alias `Offset`. Example:
+
+| calculation_method   | formula_rate                        | path_id | parameter_name  | alias      |
+| -------------------- | ----------------------------------- | ------- | --------------- | ---------- |
+| ApplicationParameter | TableFormulaWithOffset_FractionDose | 139     | Start time      | **Offset** |
+| ApplicationParameter | TableFormulaWithOffset_FractionDose | 253     | Fraction (dose) | **Table**  |
+
+### Table formulas with X argument
+
+If a formula_rate starts with the prefix **TableFormulaWithXArgument_** (e.g. `TableFormulaWithXArgument_Solubility`) - PK-Sim will create a table formula with X Argument.
+
+PK-Sim then expects, that **exactly 2 referenced quantities are defined for the formula**: one quantity with the alias `Table` and another quantity with the alias `XArg`. Example:
+
+| calculation_method | formula_rate                         | path_id | parameter_name   | alias     |
+| ------------------ | ------------------------------------ | ------- | ---------------- | --------- |
+| Lumen_PKSim        | TableFormulaWithXArgument_Solubility | 140     | pH               | **XArg**  |
+| Lumen_PKSim        | TableFormulaWithXArgument_Solubility | 240     | Solubility table | **Table** |
 
 ## Calculation methods and parameter value versions <a id="section-cm-and-pvv"></a>
 
@@ -470,53 +707,53 @@ How does it work (all bullet points below apply for a combination
 
 
 
-## Applications and formulations
+## Applications and formulations <a id="section-applications-formulations"></a>
 
 ![](images/overview_applications_formulations.png)
 
 
 
-## Entities defined by formulas
+## Entities defined by formulas <a id="section-formula-entities"></a>
 
 ![](images/overview_formula_objects.png)
 
 
-
-## Events
+## Events <a id="section-events"></a>
 
 ![](images/overview_events.png)
 
 
-
-## Observers
+## Observers <a id="section-observers"></a>
 
 ![](images/overview_observers.png)
 
-## Proteins
+
+## Proteins <a id="section-proteins"></a>
 
 ![](images/overview_proteins.png)
 
-## Models
+
+## Models <a id="section-models"></a>
 
 ![](images/overview_models.png)
 
 
-
-## Tags
+## Tags <a id="section-tags"></a>
 
 ![](images/overview_tags.png)
 
 
-
-## Value origins
+## Value origins <a id="section-value-origins"></a>
 
 ![](images/overview_value_origins.png)
 
-## Representation Info
+
+## Representation Info <a id="section-representation-info"></a>
 
 ![](images/overview_representation_info.png)
 
-## Enumerations
+
+## Enumerations <a id="section-enumerations"></a>
 
 ![](images/overview_enums_1.png)
 
@@ -530,6 +767,7 @@ How does it work (all bullet points below apply for a combination
 
 ![](images/overview_enums_6.png)
 
-# Full schema
+
+# Full schema <a id="section-full-schema"></a>
 
 ![](images/full_db_tables.png)
