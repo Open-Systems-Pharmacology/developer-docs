@@ -237,3 +237,17 @@ SD
 ProgramData
 isallowed
 GroupRepository
+XArg
+TableFormulaWithXArgument
+TableFormulaWithOffset
+FractionDose
+AllCalculationMethods
+CalculationMethod
+BlackBox
+DynamicSumFormulas
+PARAM
+LigandEndo
+infty
+XArgument
+geq
+descr

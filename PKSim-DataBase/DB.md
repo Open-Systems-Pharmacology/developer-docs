@@ -286,7 +286,7 @@ See [Localizations, directions, and initial concentrations of transport proteins
 
 * **default_age_unit** is the default *user interface* unit used when creating individuals/populations for the given population.
 
-**tab_population_containers** specifies which containers are available for the given population (s. the [Containers](#containers) section for the explanation how this information is used when creating a simulation).
+**tab_population_containers** specifies which containers are available for the given population (s. the [Containers](#section-containers) section for the explanation how this information is used when creating a simulation).
 
 **tab_species_calculation_methods** If a parameter is defined by **formula** - this formula must be described by a *calculation method* (s. the [Calculation methods and parameter value versions](#section-cm-and-pvv) section for details). In such a case, this calculation method must be assigned to the species, which happens in **tab_species_calculation_methods**. 
 
@@ -350,7 +350,7 @@ One of the reasons for introducing calculation methods and parameter value versi
 ## Container parameters <a id="section-container-parameters"></a>
 
 This section describes the definition of `{Container, Parameter}` combinations.
-Another (dynamic) way to define parameters is described in the section [Calculation method parameters](#calculation-method-parameters) below.
+Another (dynamic) way to define parameters is described in the section [Calculation method parameters](#section-calculation-method-parameters) below.
 
 ![](images/overview_container_parameters.png)
 
@@ -495,9 +495,9 @@ An **explicit formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_
 * $C_1, ... C_j$ ($j \geq 0$) are molecule concentrations
 * $TIME$ is the current time (related to the begin of the simulation run)
 
-A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME; Q\_\#i)$ where:
+A **sum formula** is defined by the equation $f(P_1, ... P_n; M_1, ..., M_k; C_1, ... C_j; TIME; Q\_$#$i)$ where:
 
-* $Q\_\#i$ is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
+* $Q\_$#$i$ is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
 * all other arguments have the same meaning as in an explicit formula
 
 A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-table-formulas-with-offset) for details):
