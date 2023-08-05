@@ -25,7 +25,7 @@ Some of the common properties used in many tables:
 
 Boolean values are always represented as **integers restricted to {0, 1}**.
 
-:grey_exclamation: Before renaming or removing basic entities (parameters, containers, observers): you should always check if the modified entity is explicitly used by its name in PK-Sim. If so, further code changes are required to reflect the database change! In some cases, the database objects that appear to be unused (when looking only at the database) are actually used in PK-Sim to create objects on the fly. 
+:grey_exclamation: Before renaming or removing basic entities (parameters, containers, observers): you should always **check if the modified entity is explicitly used by its name in PK-Sim or in the OSPSuite.Core**. If so, further code changes are required to reflect the database change! In some cases, the database objects that appear to be unused (when looking only at the database) are actually used in PK-Sim to create objects on the fly. 
 
 # Overview diagrams
 
@@ -453,8 +453,11 @@ How does it work (all bullet points below apply for a combination
 **tab_container_parameter_descriptor_conditions** is used to restrict the creation of local protein parameters to specific containers.
 
 * **tag** Tag of a container in which the parameter should (or should not) be created.
-* **condition** One of the values defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
+* **condition** Criteria condition for the tag. 
 * **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
+
+**tab_conditions** specifies available (container) criteria conditions. 
+Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
 ## Calculation method parameters <a id="section-calculation-method-parameters"></a>
 
@@ -639,7 +642,7 @@ In *tab_rates_generic_parameters* the path is referenced like this:
 | ---------------------------------------------------- | ----------------------------- | ------- | ------------------------------------------- | --------- |
 | Interstitial partition coefficient method  - Schmitt | PARAM_K_water_int_brn_Schmitt | **260** | Partition coefficient (interstitial/plasma) | K_int_pls |
 
-With this, the full path to the referenced parameter is: 
+With this, the full path to the referenced parameter is: <br>
 `Neighborhoods|Brain_pls_Brain_int|MOLECULE|Partition coefficient (interstitial/plasma)`
 
 ### Sum formulas  <a id="sum-formulas">
@@ -658,8 +661,11 @@ Compared to the full flexibility of the sum formulas provided in MoBi, there are
 
 **tab_calculation_method_rate_descriptor_conditions** defines the criteria of the quantities to be summed up for the combination {`calculation_method, rate`}.
 
-* **condition** one of the values defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
+* **condition** criteria condition for the target container.
 * **tag** the tag of the single condition.
+
+**tab_conditions** specifies available (container) criteria conditions. 
+Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
 ### "Black box" formulas <a id="black-box-formulas">
 
@@ -705,18 +711,96 @@ PK-Sim then expects, that **exactly 2 referenced quantities are defined for the 
 
 ![](images/overview_CM_and_PVV.png)
 
+**tab_models** defines available PBPK models, which can be selected during the simulation creation (e.g. "Small molecules model", "Large molecules model" etc.).
 
+* **short_display_name** is used in some places in the UI, where the fully qualified model display name is too long.
+
+**tab_calculation_methods** defines a *calculation method* (**CM**). A calculation method describes how a **group of quantities** (parameters, molecule initial values, etc.) are defined by their formulas. A decision about which quantities should be described by the same CM is usually based on information about which formulas would change when the user switches from one (sub)model to another. For example, if the user chooses a different method for calculating the *Body Surface Area* (BSA) - only the BSA parameter itself is affected, and thus only this parameter is described by the corresponding calculation method. If the user chooses another method for calculating the surface area between the plasma and the interstitial space - the *Surface Area (Plasma/Interstitial)* parameters in all tissues organs are affected: thus all these parameters are grouped in the same calculation method. More details on calculation methods are provided in the section [Formulas (Calculation method - rates)](#section-formulas).
+
+* **category** calculation methods belonging to the same category are alternatives, which can be selected by user.
+
+**tab_parameter_value_versions** defines a *parameter value version* (**PVV**). A parameter value version describes how a **group of parameters** are defined by their constant values or their distributions. A decision about which parameters should be described by the same PVV is usually based on information about which parameters would change when the user switches from one PVV to another. More details on parameter value versions are provided in the sections [Species and populations](#section-species-and-populations) and [Container parameters](#section-container-parameters).
+
+**tab_categories** specifies the categories of calculation methods and parameter value versions.
+
+* **category_type** describes for which building block or simulation all calculation methods or parameter value versions of the given category are valid. For example, if the category type of a calculation method is "Individual" - the calculation method will be used when creating an individual. Valid values of the category type are defined by the [`enum CategoryType`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/Category.cs).
+
+**tab_species_calculation_methods** defines which calculation methods are available for the given species.
+
+**tab_species_parameter_value_versions** is the counterpart of *tab_species_calculation_methods* and defines which parameter value versions are available for the given species.
+
+**tab_model_calculation_methods** defines which calculation methods are available for a model.
+
+Now, when it comes to creating a building block or simulation, the algorithm for determining which CMs and PVVs to use is as follows:
+
+1. Identify all PVVs with the category type corresponding to the type of the block/simulation.
+2. If the building block type is "Individual": remove all PVVs that are not assigned to the species of the individual (via *tab_species_parameter_value_versions*).
+3. Group all remaining PVVs according to their category. 
+   * For each group with $\geq$ 2 PVVs: these PVVs are **alternatives** and the user has to choose exactly one of them to be used in the building block/simulation.
+4. Identify all CMs with the category type corresponding to the type of the block/simulation.
+5. If the building block type is "Individual": remove all CMs that are not assigned to the species of the individual (via *tab_species_calculation_methods*).
+6. Group all remaining CMs according to their category. 
+   * For each group with $\geq$ 2 CMs: these CMs are **alternatives** and the user has to choose exactly one of them to be used in the building block/simulation.
 
 ## Applications and formulations <a id="section-applications-formulations"></a>
 
+*Applications* are containers with container_type="APPLICATION"`.
+
+*Formulations* are containers with container_type="FORMULATION"`.
+
 ![](images/overview_applications_formulations.png)
 
+In the container hierarchy (defined in **tab_containers**):
 
+* Formulations are always top-level containers with no parent.
+* Applications always have a formulation as parent container.
+  * For applications that do not require a formulation (e.g. IV), `Formulation_Empty` is defined as the parent container.
 
-## Entities defined by formulas <a id="section-formula-entities"></a>
+| Id   | Type        | Name                   | ParentId | ParentType  | ParentName                 |
+| ---- | ----------- | ---------------------- | -------- | ----------- | -------------------------- |
+| 1725 | APPLICATION | Intravenous            | 1718     | FORMULATION | Formulation_Empty          |
+| 1724 | APPLICATION | IntravenousBolus       | 1718     | FORMULATION | Formulation_Empty          |
+| 1722 | APPLICATION | Oral_Dissolved         | 1717     | FORMULATION | Formulation_Dissolved      |
+| 5101 | APPLICATION | Oral_Particles         | 5100     | FORMULATION | Formulation_Particles      |
+| 5268 | APPLICATION | Oral_Table             | 5262     | FORMULATION | Formulation_Table          |
+| 5045 | APPLICATION | Oral_Tablet_Lint80     | 5044     | FORMULATION | Formulation_Tablet_Lint80  |
+| 1728 | APPLICATION | Oral_Tablet_Weibull    | 1720     | FORMULATION | Formulation_Tablet_Weibull |
+| 5344 | APPLICATION | UserDefined_Dissolved  | 1717     | FORMULATION | Formulation_Dissolved      |
+| 5239 | APPLICATION | UserDefined_FirstOrder | 1719     | FORMULATION | Formulation_FirstOrder     |
+| 5284 | APPLICATION | UserDefined_Table      | 5262     | FORMULATION | Formulation_Table          |
+| ...  | ...         | ...                    | ...      | ...         | ...                        |
 
-![](images/overview_formula_objects.png)
+Each application has a `ProtocolSchemaItem` subcontainer which stores some parameters common to all applications (e.g. `Start time`, `Dose`, etc.) and some application specific parameters (e.g. `Amount of water` for oral applications).
 
+Each application also has an `Application_StartEvent` subcontainer that defines the application start event.
+
+Most applications have an `Application_StopEvent` subcontainer that defines the application stop event.
+
+Other application subcontainers are application specific (e.g. transport(s) *Application* ▶️ *Organism*, other subcontainers, etc.). For example, for the *Intravenous* (infusion) application has the following subcontainers:
+
+| container_id | container_type | container_name         | parent_container_id | parent_container_type | parent_container_name |
+| ------------ | -------------- | ---------------------- | ------------------- | --------------------- | --------------------- |
+| 1731         | GENERAL        | ProtocolSchemaItem     | 1725                | APPLICATION           | Intravenous           |
+| 1739         | EVENT          | Application_StartEvent | 1725                | APPLICATION           | Intravenous           |
+| 1745         | EVENT          | Application_StopEvent  | 1725                | APPLICATION           | Intravenous           |
+| 1748         | PROCESS        | Intravenous_Transport  | 1725                | APPLICATION           | Intravenous           |
+
+**tab_formulation_routes** defines the formulations.
+
+* **formulation** is the name of the formulation.
+* **container_type** is always "FORMULATION".
+* **route** is the route of administration (IV, oral, dermal, ...) for which the formulation is intended.
+
+**tab_applications** defines the top container of an application.
+
+* **application_name** is the name of the application.
+* **container_type** is always "APPLICATION".
+* **application_type** is the route of administration (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
+
+**tab_application_types** defines all available administration routes (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
+
+* **application_type** is the route of administration (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
+* **is_formulation_required** indicates whether a formulation definition is required for the given route.
 
 ## Events <a id="section-events"></a>
 
@@ -726,6 +810,11 @@ PK-Sim then expects, that **exactly 2 referenced quantities are defined for the 
 ## Observers <a id="section-observers"></a>
 
 ![](images/overview_observers.png)
+
+
+## Entities defined by formulas <a id="section-formula-entities"></a>
+
+![](images/overview_formula_objects.png)
 
 
 ## Proteins <a id="section-proteins"></a>
