@@ -99,7 +99,7 @@ There are some "special" containers defined in *tab_container_names* that are no
   * otherwise: container is NOT added to the model
 * if `usage_in_individual = EXTENDED`
   * container is added to the model in any case
-  * containers of this type usually should not be defined in *tab_population_containers* (TODO https://github.com/Yuri05/DB_Questions/discussions/1)
+  * containers of this type usually should not be defined in *tab_population_containers* (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/1))
 
 ## Processes  <a id="section-processes"></a>
 
@@ -245,7 +245,7 @@ There are some "special" containers defined in *tab_container_names* that are no
 **tab_transports** defines which active transports can be created in the model. 
 (TODO better description)
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
-(TODO https://github.com/Yuri05/DB_Questions/discussions/5)
+(TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/5))
 
 **tab_transport_directions** defines all available transport directions
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
@@ -267,9 +267,9 @@ See [Localizations, directions, and initial concentrations of transport proteins
 
 **tab_species** defines a species.
 
-* **user_defined** (TODO https://github.com/Yuri05/DB_Questions/discussions/6)
+* **user_defined** (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/6))
 
-* **is_human** (TODO https://github.com/Yuri05/DB_Questions/discussions/7)
+* **is_human** (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/7))
 
 **tab_populations** defines which populations are available for a given species.
 
@@ -365,6 +365,11 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 * **dimension** must be one of the dimensions defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
 * **default_unit** [OPTIONAL] The default unit to use in the UI (unless the user specifies otherwise). Must be one of the units defined for the parameter dimension in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml). If empty: the default unit from the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml) for the parameter dimension is used.
 
+**tab_dimensions** lists the available dimensions.
+
+* **dimension** must be one of the dimensions defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
+* **kernel_unit** is not used. Is only helpful when creating some database reports etc. Must be identical with the base unit of the corresponding dimension defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
+
 **tab_container_parameters** Specifies a `{Container, Parameter}` combination.
 
 * {**container_id**, **container_type**, **container_name**} specifies the container.
@@ -422,21 +427,35 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 
 The value of a container parameter can be defined in one of three possible ways:
 
-1. By a *formula* specified in **tab_container_parameter_rates** (s. the sections [Formulas (Calculation method - rates)](#section-formulas) and [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+1. By a *formula* specified in **tab_container_parameter_rates**.
 
    A formula is neither species nor population dependent.
 
-2. By *constant value* specified in **tab_container_parameter_values** (s. the section [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+2. By *constant value* specified in **tab_container_parameter_values**.
 
    A constant value is species dependent but not population dependent.
 
-3. By *age-dependent probability distribution* specified in **tab_container_parameter_curves** (described in detail below).
+3. By *age-dependent probability distribution* specified in **tab_container_parameter_curves**.
 
 It is possible, that for a combination {`container_id, container_type, container_name, parameter_name`} we have *several entries* in different tables (e.g. several formulas or formula and value etc.).
 
 When creating a building block or simulation, some entries are filtered out because the calculation method or parameter value version of the entry does not belong to the species/population/model of the created building block/simulation. 
 
 If we still have more than one entry - the corresponding calculation methods or parameter value versions must be of the **same category** (i.e. they represent possible **alternatives** for the parameter definition). See the sections [Species and Populations](#section-species-and-populations) and [Calculation Methods and Parameter Value Versions](#section-cm-and-pvv) for more details.
+
+**tab_container_parameter_rates** defines a formula for the given parameter in the given container.
+
+* **container_id**, **container_type**, **container_name** defines the container.
+* **parameter_name** defines the parameter in the given container.
+* **calculation_method**, **formula_rate** defines the formula (s. the section [Formulas (Calculation method - rates)](#section-formulas) for more details on formulas).
+
+**tab_container_parameter_values** defines a constant value for the combination {*Container*, *Parameter*, *Species*, *Parameter Value Version*}.
+
+* **container_id**, **container_type**, **container_name** defines the container.
+* **parameter_name** defines the parameter in the given container.
+* **species** defines the species.
+* **parameter_value_version** defines which parameter value version the given value belongs to (s. the section [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
+* **default_value** parameter value for the combination of the properties above.
 
 **tab_container_parameter_curves** describes age-dependent and/or distributed parameters.
 
@@ -841,11 +860,31 @@ S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/
 
 ![](images/overview_observers.png)
 
+**tab_observers** specifies an observer.
+
+* **observer** name of the observer.
+* **observer_type** TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/9).
+* **category** always set to `"Observer"`. (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/10)).
+* **builder_type** "`AMOUNT`" or "`CONTAINER`", which corresponds to "Molecule Observer" and "Container Observer in MoBi" (s. the [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/building-block-concepts#observers) for details).
+* **is_for_all_molecules** (TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/11))
+* **dimension** dimension of the observer.
+
+**tab_observer_rates** defines the monitor formula of the observer.
+
+**tab_observer_descriptor_conditions** defines criteria for containers where the observer will be created. Single container criteria are combined by "`AND`".
+
+* **observer** name of the observer.
+* **tag** is a tag of a container in which the observer should (or should not) be created.
+* **tag_type** Is always set to "`PARENT`" (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/12))
+* **should_have** specifies whether the target container should or should not have the given tag.. 
 
 ## Entities defined by formulas <a id="section-formula-entities"></a>
 
 ![](images/overview_formula_objects.png)
 
+The picture above shows an overview of all quantities which are described by a formula. Most tables are explained in other sections.
+
+**tab_container_rates** is currently not used. This table was introduced to define some conditions which cannot be described by the boundary criteria (min/max) of a quantity. E.g. for the condition "Sum of compartment fractions of an organ = 1".
 
 ## Proteins <a id="section-proteins"></a>
 
