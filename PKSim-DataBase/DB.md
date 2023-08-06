@@ -46,6 +46,12 @@ In the context of PK-Sim, everything except parameters and observers is a contai
 
 There are some "special" containers defined in *tab_container_names* that are not used in the container hierarchy defined in *tab_containers*. These containers are only used for **referential integrity when defining some relative object paths** (see the [Formulas](#section-formulas) section for more details).
 
+**tab_organ_types** classifies containers of type `ORGAN`. This classification is used in PK-Sim to group organs in different views (e.g. *Tissue Organs* vs. *Vascular System* vs. *GI Tract* etc.).
+
+* **container_type** is always set to "ORGAN".
+* **organ_name** is the name of the organ.
+* **organ_type** can be one of the values defined in [enum OrganType](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/OrganType.cs).
+
 **tab_containers** defines the container hierarchy and includes **all possible containers** which can appear in a model. When a model is created, some containers are filtered out based on the information in **tab_model_containers** and **tab_population_containers** (s. below)
 
 * Each container within a hierarchy is identified by the combination 
@@ -446,6 +452,8 @@ How does it work (all bullet points below apply for a combination
 * If we have only age dependency but no distribution, we set `distribution_type=”discrete”` (constant) and `sd = 0` for all supporting points.
 * If both *mean* and *sd* are constant for all ages: we define only 1 supporting point (usually with `Age = 0`).
 
+**tab_distribution_types** lists all available probability distributions.
+
 **tab_compound_process_parameter_mapping** When creating a process in a compound building block, the values of the *Calculation parameters* of this process are taken from the mapped parameters of the **default individual** for the **default population** (the latter is specified in the PK-Sim options) of the species defined by the user during the process creation (see the [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#adme-properties) for details).
 
 **tab_container_parameter_rhs** If a parameter is defined by a differential equation, the right-hand side (RHS) of that equation is given in this table.
@@ -742,6 +750,7 @@ Now, when it comes to creating a building block or simulation, the algorithm for
 6. Group all remaining CMs according to their category. 
    * For each group with $\geq$ 2 CMs: these CMs are **alternatives** and the user has to choose exactly one of them to be used in the building block/simulation.
 
+
 ## Applications and formulations <a id="section-applications-formulations"></a>
 
 *Applications* are containers with container_type="APPLICATION"`.
@@ -802,10 +811,31 @@ Other application subcontainers are application specific (e.g. transport(s) *App
 * **application_type** is the route of administration (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
 * **is_formulation_required** indicates whether a formulation definition is required for the given route.
 
+
 ## Events <a id="section-events"></a>
 
 ![](images/overview_events.png)
 
+*Events* are containers with `container_type="EVENT"`.
+
+In the container hierarchy (defined in **tab_containers**) event are usually children of containers of type "`APPLICATION`" or "`EVENTGROUP`".
+
+Each event is described by the event condition and the quantities that are changed by this event.
+
+**tab_event_conditions** defines the event condition of an event.
+
+* {**event_id**, **event_container_type**, **event_name**} are the id, type and name of the event container.
+* {**calculation_method**, **formula_rate**} define the formula of the event condition (typically a boolean formula which can return only 0 or 1).
+* **is_one_time** specifies whether the event is triggered *whenever the event condition is met* (`is_one_time=0`) or only at the *first simulation time point* when the event condition is met.
+
+**tab_event_changed_container_molecules**, **tab_event_changed_container_parameters**, **tab_event_changed_generic_molecules**, **tab_event_changed_generic_parameters** define which parameters or molecule amounts are modified by an event. The referencing of the modified quantities of an event is done in the same way as the referencing of the quantities used in a formula and defined in the tables *tab_rate_container_molecules*, *tab_rate_container_parameters*, *tab_rate_generic_molecules*, *tab_rate_generic_parameters* (s. the section [Formulas (Calculation method - rates)](#section-formulas)) for details.
+
+* {**event_id**, **event_container_type**, **event_name**} are the id, type and name of the event container.
+* {**calculation_method**, **formula_rate**} defines the formula that will be applied to the changed quantity when the event is triggered.
+* **use_as_value** defines if the formula is assigned as a formula or as a value of the formula, calculated at the time point of the assignment.
+* **use_amount** (TODO delete - s. [the issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2696))
+
+S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#event-groups-and-events) for more details.
 
 ## Observers <a id="section-observers"></a>
 
@@ -840,21 +870,6 @@ Other application subcontainers are application specific (e.g. transport(s) *App
 ## Representation Info <a id="section-representation-info"></a>
 
 ![](images/overview_representation_info.png)
-
-
-## Enumerations <a id="section-enumerations"></a>
-
-![](images/overview_enums_1.png)
-
-![](images/overview_enums_2.png)
-
-![](images/overview_enums_3.png)
-
-![](images/overview_enums_4.png)
-
-![](images/overview_enums_5.png)
-
-![](images/overview_enums_6.png)
 
 
 # Full schema <a id="section-full-schema"></a>
