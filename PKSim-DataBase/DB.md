@@ -183,7 +183,7 @@ There are some "special" containers defined in *tab_container_names* that are no
     | ActiveInfluxSpecificPlasmaToInterstitial_MM          | SIMULATION_ACTIVE_PROCESS | MM           |
     | ...                                                  | ...                       | ...          |
 
-* **process_type** is used for more detailed process specification within a group. (TODO better description)
+* **process_type** is used for more detailed process specification within a group and is used for various purposes in PK-Sim (s. e.g. [FlatProcessToCompoundProcessMapper](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/Mappers/FlatProcessToCompoundProcessMapper.cs), [FlatProcessToActiveProcessMapper](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/Mappers/FlatProcessToActiveProcessMapper.cs),etc.)
 
   | group_name                    | process_type             |
   | ----------------------------- | ------------------------ |
@@ -216,7 +216,7 @@ There are some "special" containers defined in *tab_container_names* that are no
   | SYSTEMIC_PROCESSES            | Secretion                |
   | UNDEFINED                     | Passive                  |
 
-* **action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`} (TODO better description)
+* **action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`}  (s. [enum ProcessActionType](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/ProcessActionType.cs)).
 
 * **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
 
@@ -243,7 +243,6 @@ There are some "special" containers defined in *tab_container_names* that are no
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 
 **tab_transports** <a id="tab_transports"></a> defines which active transports can be created in the model. 
-(TODO better description)
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/5))
 
@@ -944,12 +943,12 @@ The picture above shows an overview of all quantities which are described by a f
 
 **tab_container_molecules** <a id="tab_container_molecules"></a> used for referential integrity only; not exposed to PK-Sim. (TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/13))
 
-**tab_model_container_molecules** <a id="**tab_container_molecules**"></a> overwrites some default (global) molecule properties on the model container level.
+**tab_model_container_molecules** <a id="tab_container_molecules"></a> overwrites some default (global) molecule properties on the model container level.
 
 * **negative_values_allowed** overrides the default setting (**FALSE**; defined programmatically and not in the database).
 * **is_present** overrides the global molecule setting defined in *[tab_molecules](#tab_molecules)*.
 
-**tab_container_molecule_start_formulas** <a id="**tab_container_molecule_start_formulas**"></a> overwrites some default (global) molecule properties on the model container level.
+**tab_container_molecule_start_formulas** <a id="tab_container_molecule_start_formulas"></a> overwrites some default (global) molecule properties on the model container level.
 
 * **calculation_method**, **formula_rate** overrides the global molecule start amount formula in *[tab_molecules](#tab_molecules)*.
 
@@ -957,18 +956,36 @@ The picture above shows an overview of all quantities which are described by a f
 
 ## Tags <a id="section-tags"></a>
 
+The picture below describes for which objects *descriptor criteria* (*descriptor conditions*) are defined in the database.
+
 ![](images/overview_tags.png)
 
+**tab_tags** <a id="tab_tags"></a> defines all possible tags. The *name* of each container is added as tag programmatically in **OSPSuite.Core**. So there is no need to insert all container names into *tab_tags* or *tab_container_tags*.
+
+**tab_criteria_conditions** <a id="tab_criteria_conditions"></a>  describes all available conditions. Each condition must be available in the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
+
+All other tables are explained in the previous sections.
 
 ## Value origins <a id="section-value-origins"></a>
 
 ![](images/overview_value_origins.png)
 
+Value origin describes the data source of a value or formula.
+
+**tab_references** <a id="tab_references"></a> describes a data source (e.g. publication).
+
+**tab_value_origins** <a id="tab_value_origins"></a> describes available value origins.
+
+* **id** is the unique id of a value origin. This id is used in all referencing tables.
+* **description** is either empty or refers an entry in *tab_references*.
+* **source** must be one of the values define in [enum ValueOriginSourceId](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Domain/ValueOriginSource.cs) (database default: "`Undefined`").
+* **method** must be one of the values define in [enum ValueOriginDeterminationMethodId](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Domain/ValueOriginDeterminationMethod.cs) (database default: "`Undefined`").
 
 ## Representation Info <a id="section-representation-info"></a>
 
 ![](images/overview_representation_info.png)
 
+**tab_representation_info** <a id="tab_representation_info"></a> defines the display properties (display name, description, icon) for some entities, which are not covered by other database tables.
 
 # Full schema <a id="section-full-schema"></a>
 
