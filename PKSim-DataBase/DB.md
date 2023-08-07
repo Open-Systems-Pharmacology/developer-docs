@@ -46,6 +46,8 @@ In the context of PK-Sim, everything except parameters and observers is a contai
 
 There are some "special" containers defined in *tab_container_names* that are not used in the container hierarchy defined in *[tab_containers](#tab_containers)*. These containers are only used for **referential integrity when defining some relative object paths** (see the [Formulas](#section-formulas) section for more details).
 
+**tab_container_types** <a id="tab_container_types"></a> defines available container types.
+
 **tab_organ_types** <a id="tab_organ_types"></a> classifies containers of type `ORGAN`. This classification is used in PK-Sim to group organs in different views (e.g. *Tissue Organs* vs. *Vascular System* vs. *GI Tract* etc.).
 
 * **container_type** is always set to "ORGAN".
@@ -220,6 +222,10 @@ There are some "special" containers defined in *tab_container_names* that are no
 
 * **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
 
+**tab_process_types** <a id="tab_process_types"></a> defines available process types.
+
+**tab_kinetic_types** <a id="tab_kinetic_types"></a> defines available process kinetic types.
+
 **tab_process_descriptor_conditions** <a id="tab_process_descriptor_conditions"></a> describes source and target container criteria for transports and source container criteria for reactions
 
 * **tag_type** can be one of `{SOURCE, TARGET}`
@@ -255,6 +261,8 @@ See [Localizations, directions, and initial concentrations of transport proteins
 
 **tab_known_transporters_containers** <a id="tab_known_transporters_containers"></a> The *global* transporter direction defines the default transporter direction and polarity in each organ. However, some organs may have different transporter properties. To account for this, the *local* transporter direction and/or polarity can be overridden in some organs by entries in this table.
 See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
+
+**tab_active_transport_types** <a id="tab_active_transport_types"></a> defines available **active** transport types (which is a subset of all transport types defined in [enum TransportType](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Domain/TransportType.cs)).
 
 ## Species and populations <a id="section-species-and-populations"></a>
 
@@ -682,7 +690,7 @@ Example:
 
 These entries represent the path `Neighborhoods|Brain_pls_Brain_int|MOLECULE`.
 
-In *[tab_rates_generic_parameters](#tab_rates_generic_parameters)* the path is referenced like this:
+In *[tab_rate_generic_parameters](#tab_rate_generic_parameters)* the path is referenced like this:
 
 | calculation_method                                   | formula_rate                  | path_id | parameter_name                              | alias     |
 | ---------------------------------------------------- | ----------------------------- | ------- | ------------------------------------------- | --------- |
@@ -943,7 +951,7 @@ The picture above shows an overview of all quantities which are described by a f
 
 **tab_container_molecules** <a id="tab_container_molecules"></a> used for referential integrity only; not exposed to PK-Sim. (TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/13))
 
-**tab_model_container_molecules** <a id="tab_container_molecules"></a> overwrites some default (global) molecule properties on the model container level.
+**tab_model_container_molecules** <a id="tab_model_container_molecules"></a> overwrites some default (global) molecule properties on the model container level.
 
 * **negative_values_allowed** overrides the default setting (**FALSE**; defined programmatically and not in the database).
 * **is_present** overrides the global molecule setting defined in *[tab_molecules](#tab_molecules)*.
