@@ -539,9 +539,9 @@ There is another way to describe the value of a container parameter: by an age-d
 
 The difference to the *[tab_container_parameter_curves](#tab_container_parameter_curves)* is: the age-dependent parameter value and distribution are not defined by the table of support points, but by 2 analytical functions:
 
-$Mean\_value = f_1(Age,\ ...)$
+$Mean\ value = f_1(Age,\ ...)$
 
-$Standard\_deviation = f_2(Age,\ ...)$
+$Standard\ deviation = f_2(Age,\ ...)$
 
 ![](images/overview_container_parameters_fcurves.png)
 
