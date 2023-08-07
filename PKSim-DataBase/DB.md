@@ -46,13 +46,16 @@ In the context of PK-Sim, everything except parameters and observers is a contai
 
 There are some "special" containers defined in *tab_container_names* that are not used in the container hierarchy defined in *[tab_containers](#tab_containers)*. These containers are only used for **referential integrity when defining some relative object paths** (see the [Formulas](#section-formulas) section for more details).
 
+
 **tab_container_types** <a id="tab_container_types"></a> defines available container types.
+
 
 **tab_organ_types** <a id="tab_organ_types"></a> classifies containers of type `ORGAN`. This classification is used in PK-Sim to group organs in different views (e.g. *Tissue Organs* vs. *Vascular System* vs. *GI Tract* etc.).
 
 * **container_type** is always set to "ORGAN".
 * **organ_name** is the name of the organ.
 * **organ_type** can be one of the values defined in [enum OrganType](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/OrganType.cs).
+
 
 **tab_containers** <a id="tab_containers"></a> defines the container hierarchy and includes **all possible containers** which can appear in a model. When a model is created, some containers are filtered out based on the information in *[tab_model_containers](#tab_model_containers)* and *[tab_population_containers](#tab_population_containers)* (s. below)
 
@@ -75,13 +78,17 @@ There are some "special" containers defined in *tab_container_names* that are no
 
   * Top containers of other building blocks (Passive Transports, Reactions, Events, Formulations, ...) are all defined as containers without a parent. 
 
+
 * **tab_containers.visible** defines if a container is shown in PK-Sim in hierarchy view (TODO rename column to **is_visible**).
 
+
 * **tab_containers.is_logical** defines if a container is *physical* or *logical* (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#spatial-structures) for details).
+
 
 **tab_container_tags** <a id="tab_container_tags"></a> describes which additional tags are added to a container.
 
 * the **name** of a container is always added as a tag programmatically and does not need to be added here.
+
 
 **tab_neighborhoods** <a id="tab_neighborhoods"></a> defines 2 neighbor containers for each neighborhood of a spatial structure
 
@@ -89,7 +96,9 @@ There are some "special" containers defined in *tab_container_names* that are no
   * Even in the latter case, swapping neighbors may not be critical. E.g. if both neighbor containers have **the same parent container** and the formula uses the path `FIRST_NEIGHBOR|..|Parameter1`, then swapping the formula path with `SECOND_NEIGHBOR|..|Parameter1`would result in the same formula, because F`IRST_NEIGHBOR|..` and `SECOND_NEIGHBOR|..` both point to the same container, making the formula invariant with respect to neighbor switching. 
   * But if the formula refers e.g. to `FIRST_NEIGHBOR|Parameter1` - then the neighbor order is relevant.
 
+
 **tab_population_containers** <a id="tab_population_containers"></a> defines which containers are created in individual/population building blocks in PK-Sim. For each population, this is a subset of the containers defined in *[tab_containers](#tab_containers)*. 
+
 
 **tab_model_containers** <a id="tab_model_containers"></a> defines which containers **can** be included into the final model. Whether a container is included into the model is estimated based on the value of the column **usage_in_individual** as following:
 
@@ -222,18 +231,23 @@ There are some "special" containers defined in *tab_container_names* that are no
 
 * **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
 
+
 **tab_process_types** <a id="tab_process_types"></a> defines available process types.
 
+
 **tab_kinetic_types** <a id="tab_kinetic_types"></a> defines available process kinetic types.
+
 
 **tab_process_descriptor_conditions** <a id="tab_process_descriptor_conditions"></a> describes source and target container criteria for transports and source container criteria for reactions
 
 * **tag_type** can be one of `{SOURCE, TARGET}`
 
+
 **tab_process_molecules** <a id="tab_process_molecules"></a> describes the reactions which are **always** part of a model (like e.g. *FcRn binding* in the large molecules model)
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 
 * **direction** can be of `IN` (educt), `OUT` (product) or `MODIFIER`
+
 
 **tab_process_rates** <a id="tab_process_rates"></a> describes the rate (kinetic) of a process
 
@@ -245,22 +259,28 @@ There are some "special" containers defined in *tab_container_names* that are no
   | ActiveEffluxSpecificIntracellularToInterstitial    | LinksCommon        | Zero_Rate                                      |
   | ActiveEffluxSpecificIntracellularToInterstitial_MM | LinksCommon        | ActiveEffluxSpecificWithTransporterInTarget_MM |
 
+
 **tab_model_transport_molecule_names** <a id="tab_model_transport_molecule_names"></a> restricts which molecules are transported by a passive transport for particular model. As per default, passive transport will transfer all floating molecules from its source container to the target container. In this table, some molecules can be excluded (`should_transport=0`) or transport can be restricted only to the specific molecules (`should_transport=1`). S. the [Passive Transports documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#passive-transports) 
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
+
 
 **tab_transports** <a id="tab_transports"></a> defines which active transports can be created in the model. 
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/5))
 
+
 **tab_transport_directions** <a id="tab_transport_directions"></a> defines all available transport directions
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
+
 
 **tab_known_transporters** <a id="tab_known_transporters"></a> Defines a *global* transporter direction for a `{Species, Gene}` combination. 
 When adding a transporter in PK-Sim that is not available in this data table: the transporter direction is set to default and the user is informed that the transporter was not found in the database.
 See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
 
+
 **tab_known_transporters_containers** <a id="tab_known_transporters_containers"></a> The *global* transporter direction defines the default transporter direction and polarity in each organ. However, some organs may have different transporter properties. To account for this, the *local* transporter direction and/or polarity can be overridden in some organs by entries in this table.
 See [Localizations, directions, and initial concentrations of transport proteins](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-expression-profile#localizations-directions-and-initial-concentrations-of-transport-proteins) in the OSP Suite documentation.
+
 
 **tab_active_transport_types** <a id="tab_active_transport_types"></a> defines available **active** transport types (which is a subset of all transport types defined in [enum TransportType](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.Core/Domain/TransportType.cs)).
 
@@ -278,6 +298,7 @@ See [Localizations, directions, and initial concentrations of transport proteins
 
 * **is_human** (TODO [s. the discussion](https://github.com/Yuri05/DB_Questions/discussions/7))
 
+
 **tab_populations** <a id="tab_populations"></a> defines which populations are available for a given species.
 
 * **is_age_dependent** Specifies whether some population parameters have age-dependent information (such parameters are then defined in *[tab_container_parameter_curves](#tab_container_parameter_curves)*). If a population is age dependent:
@@ -291,19 +312,25 @@ See [Localizations, directions, and initial concentrations of transport proteins
   * Organ volumes and some other anatomical parameters are scaled with the height when creating an individual, in simulations with aging etc.
   * Body surface area can be calculated
 
+
 **tab_genders** <a id="tab_genders"></a> provides definition of all available genders. 
 
+
 **tab_population_genders** <a id="tab_population_genders"></a> define genders available for a population. If no gender-specific data is available: gender is set to `UNKNOWN`.
+
 
 **tab_population_age** <a id="tab_population_age"></a> defines the age range and the default age for the newly created individuals for all age-dependent populations. 
 
 * **default_age_unit** is the default *user interface* unit used when creating individuals/populations for the given population.
 
+
 **tab_population_containers** <a id="tab_population_containers"></a> specifies which containers are available for the given population (s. the [Containers](#section-containers) section for the explanation how this information is used when creating a simulation).
+
 
 **tab_species_calculation_methods** <a id="tab_species_calculation_methods"></a> If a parameter is defined by **formula** - this formula must be described by a *calculation method* (s. the [Calculation methods and parameter value versions](#section-cm-and-pvv) section for details). In such a case, this calculation method must be assigned to the species, which happens in *tab_species_calculation_methods*. 
 
 * E.g. the calculation method `Lumen_Geometry` describes the calculation of some GI-related parameters based on the age and body height, which is currently applicable only to the species `Human`. Thus this calculation method is defined only for `Human` in the table
+
 
 **tab_species_parameter_value_versions** <a id="tab_species_parameter_value_versions"></a> is the counterpart of *tab_species_calculation_methods* for parameters defined by a **constant value**. All constant values must be described by a *parameter value version* (s. the [Calculation methods and parameter value versions](#section-cm-and-pvv) section for details).
 
@@ -321,8 +348,8 @@ One of the reasons for introducing calculation methods and parameter value versi
   ![](images/Screen01_SelectCalculationMethod.png)
 
 
-
 **tab_model_species** <a id="tab_model_species"></a> defines which species can be used in combination with the given model.
+
 
 **tab_population_disease_states** <a id="tab_population_disease_states"></a> The PK-Sim database stores information for **healthy** individuals. For some populations, additional information is available for some disease states. This table indicates which disease states are available for a population. If any:
 
@@ -342,6 +369,7 @@ One of the reasons for introducing calculation methods and parameter value versi
     ![](images/Screen02_DiseaseState.png)
 
 **tab_disease_states** <a id="tab_disease_states"></a> Describes all currently available disease states.
+
 
 **tab_ontogenies** <a id="tab_ontogenies"></a> Defines ontogeny factors for some known proteins for a combination of `{Protein, Species}`
 (s. the [Documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#basic-physico-chemistry) for details)
@@ -372,10 +400,12 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 * **dimension** must be one of the dimensions defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
 * **default_unit** [OPTIONAL] The default unit to use in the UI (unless the user specifies otherwise). Must be one of the units defined for the parameter dimension in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml). If empty: the default unit from the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml) for the parameter dimension is used.
 
+
 **tab_dimensions** <a id="tab_dimensions"></a> lists the available dimensions.
 
 * **dimension** must be one of the dimensions defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
 * **kernel_unit** is not used. Is only helpful when creating some database reports etc. Must be identical with the base unit of the corresponding dimension defined in the [OSP Dimensions Repository](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions/blob/master/OSPSuite.Dimensions.xml).
+
 
 **tab_container_parameters** <a id="tab_container_parameters"></a> Specifies a `{Container, Parameter}` combination.
 
@@ -420,6 +450,7 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 
 * **is_changed_by_create_individual** indicates whether a parameter is changed by the *Create Individual algorithm*. This includes both *directly* modified parameters (= age-dependent parameters specified in *[tab_container_parameter_curves](#tab_container_parameter_curves)*, see below) and *indirectly* modified parameters (such as the blood flows). Parameters with `is_changed_by_create_individual = 1` always appear in the *Distribution* tab of PK-Sim and are not available for user-defined variability.
 
+
 **tab_groups** <a id="tab_groups"></a> defines the group hierarchy. In the parameter view of individuals/populations/simulations in PK-Sim, each visible parameter is displayed within its group. (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-creating-individuals#anatomy-and-physiology) for details)
 
 * **parent_group** specifies the parent group (if any). Groups without a parent are displayed at the top level.
@@ -429,6 +460,7 @@ Another (dynamic) way to define parameters is described in the section [Calculat
 * **full_name** is not used by PK-Sim. Shown in MoBi when a simulation is sent from PK-Sim (MoBi does not provide hierarchical parameter view by group like PK-Sim).
 * **unique_id** Unique group id used to identify a group in MoBi or when importing a simulation from pkml in PK-Sim. Should never be changed in the DB!
   With each new OSP release a **GroupRepository.xml** file is generated by PK-Sim and placed under **C:\ProgramData\Open Systems Pharmacology\MoBi\X.Y**. Here the complete group information (display name, description, icon, ..) is stored. In pkml files, only the unique group ID is stored. 
+
 
 **tab_molecule_parameters** <a id="tab_molecule_parameters"></a> describes some global protein parameters (like "Reference concentration" etc.)
 
@@ -450,11 +482,13 @@ When creating a building block or simulation, some entries are filtered out beca
 
 If we still have more than one entry - the corresponding calculation methods or parameter value versions must be of the **same category** (i.e. they represent possible **alternatives** for the parameter definition). See the sections [Species and Populations](#section-species-and-populations) and [Calculation Methods and Parameter Value Versions](#section-cm-and-pvv) for more details.
 
+
 **tab_container_parameter_rates** <a id="tab_container_parameter_rates"></a> defines a formula for the given parameter in the given container.
 
 * **container_id**, **container_type**, **container_name** defines the container.
 * **parameter_name** defines the parameter in the given container.
 * **calculation_method**, **formula_rate** defines the formula (s. the section [Formulas (Calculation method - rates)](#section-formulas) for more details on formulas).
+
 
 **tab_container_parameter_values** <a id="tab_container_parameter_values"></a> defines a constant value for the combination {*Container*, *Parameter*, *Species*, *Parameter Value Version*}.
 
@@ -463,6 +497,7 @@ If we still have more than one entry - the corresponding calculation methods or 
 * **species** defines the species.
 * **parameter_value_version** defines which parameter value version the given value belongs to (s. the section [Calculation methods and parameter value versions](Calculation methods and parameter value versions) for more details).
 * **default_value** parameter value for the combination of the properties above.
+
 
 **tab_container_parameter_curves** <a id="tab_container_parameter_curves"></a> describes age-dependent and/or distributed parameters.
 
@@ -478,17 +513,22 @@ How does it work (all bullet points below apply for a combination
 * If we have only age dependency but no distribution, we set `distribution_type=”discrete”` (constant) and `sd = 0` for all supporting points.
 * If both *mean* and *sd* are constant for all ages: we define only 1 supporting point (usually with `Age = 0`).
 
+
 **tab_distribution_types** <a id="tab_distribution_types"></a> lists all available probability distributions.
+
 
 **tab_compound_process_parameter_mapping** <a id="tab_compound_process_parameter_mapping"></a> When creating a process in a compound building block, the values of the *Calculation parameters* of this process are taken from the mapped parameters of the **default individual** for the **default population** (the latter is specified in the PK-Sim options) of the species defined by the user during the process creation (see the [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-compounds-definition-and-work-flow#adme-properties) for details).
 
+
 **tab_container_parameter_rhs** <a id="tab_container_parameter_rhs"></a> If a parameter is defined by a differential equation, the right-hand side (RHS) of that equation is given in this table.
+
 
 **tab_container_parameter_descriptor_conditions** <a id="tab_container_parameter_descriptor_conditions"></a> is used to restrict the creation of local protein parameters to specific containers.
 
 * **tag** Tag of a container in which the parameter should (or should not) be created.
 * **condition** Criteria condition for the tag. 
 * **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
+
 
 **tab_conditions** <a id="tab_conditions"></a> specifies available (container) criteria conditions. 
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
@@ -532,6 +572,7 @@ Another task of this table is to dynamically assign formulas to the "main" param
 * **parameter_name** name of the supporting parameter to add.
 * **group_name**, **can_be_varied**, **can_be_varied_in_population**, **read_only**, **visible** have the same meaning as for the container parameters.
 * {**calculation_method**, **rate**} define for which calculation method and with which formula the parameter will be added.
+
 
 **tab_calculation_method_parameter_descr_conditions** <a id="tab_calculation_method_parameter_descr_conditions"></a> defines the containers in which a supporting parameter should be created. Containers are described by their tags; single criteria conditions for a parameter id are combined by `AND`.
 
@@ -577,15 +618,19 @@ S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-sys
 
 ![](images/overview_calculation_method_rates.png)
 
+
 **tab_rates** <a id="tab_rates"></a> describes an abstract formula.
+
 
 **tab_calculation_methods** <a id="tab_calculation_methods"></a> describes a calculation method. A calculation method describes how a **group of quantities** (parameters, molecule initial values, etc.) are defined by their formulas. A decision about which quantities should be described by the same calculation method is usually based on information about which formulas would change when the user switches from one (sub)model to another. For example, if the user chooses a different method for calculating the *Body Surface Area* (BSA) - only the BSA parameter itself is affected, and thus only this parameter is described by the corresponding calculation methods. If the user chooses another method for calculating the surface area between the plasma and the interstitial space - the *Surface Area (Plasma/Interstitial)* parameters in all tissues organs are affected: thus all these parameters are grouped in the same calculation method.
 
 * **category** calculation methods belonging to the same category are alternatives, which can be selected by user (s. also the section [Container Parameters](#section-container-parameters))
 
+
 **tab_categories** <a id="tab_categories"></a> specifies the categories of calculation methods.
 
 * **category_type** describes for which building block or simulation all calculation methods of the given category are valid. For example, if the category type of a calculation method is "Individual" - the calculation method will be used when creating an individual. Valid values of the category type are defined by the [`enum CategoryType`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/Category.cs).
+
 
 **tab_calculation_method_rates** <a id="tab_calculation_method_rates"></a> defines the formula equation for the combination {`calculation_method, formula_rate`}.
 
@@ -616,6 +661,7 @@ S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-sys
   
 * **dimension** the dimension of the formula. Used e.g. by the dimension check in MoBi to make sure that the quantities using the given formula have the same dimension.
 
+
 **tab_rate_container_parameters** <a id="tab_rate_container_parameters"></a> parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`container_id, container_type, container_name, parameter_name`}.
 
 * **alias** is the alias of the referenced parameter used in the calculation. The rules for defining aliases are
@@ -628,15 +674,18 @@ S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-sys
   * Alias cannot be one of the predefined *standard functions* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
   * Alias cannot be one of the predefined *logical operators* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
 
+
 **tab_rate_container_molecules** <a id="tab_rate_container_molecules"></a> molecules referenced by the formula of the combination {`calculation_method, formula_rate`}. Molecules are given by the combination of {`container_id, container_type, container_name, molecule`}.
 
 * **alias** is the alias of the referenced parameter used in the calculation. Alias rules apply (s. above).
 * **use_amount** specifies whether the *amount* or *concentration* of the given molecule is used.
 
+
 **tab_rate_generic_parameters** <a id="tab_rate_generic_parameters"></a> parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`path_id,  parameter_name`}.
 
 * **path_id** refers to the (relative) object path stored in the table *[tab_object_paths](#tab_object_paths)* (s. below).
 * **alias** is the alias of the referenced parameter used in the calculation. Alias rules apply (s. above).
+
 
 **tab_rate_generic_molecules** <a id="tab_rate_generic_molecules"></a> parameters referenced by the formula of the combination {`calculation_method, formula_rate`}. Parameters are given by the combination of {`path_id,  molecule`}.
 
@@ -671,6 +720,7 @@ There are some "special" containers defined in *[tab_container_names](#tab_conta
 | TRANSPORT              | Path entry for the transport                                |
 
 </details>
+
 
 **tab_object_paths** <a id="tab_object_paths"></a> describes (relative) paths of quantities used in a formula (see the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas) for details). Each entry of an object path is stored separately, with its own id and the id of its parent path entry. Tables *tab_rate_generic_XXX* have the reference to the **bottom element of the object path** (see the example below).
 
@@ -717,6 +767,7 @@ Compared to the full flexibility of the sum formulas provided in MoBi, there are
 
 * **condition** criteria condition for the target container.
 * **tag** the tag of the single condition.
+
 
 **tab_conditions** <a id="tab_conditions"></a> specifies available (container) criteria conditions. 
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
@@ -765,23 +816,30 @@ PK-Sim then expects, that **exactly 2 referenced quantities are defined for the 
 
 ![](images/overview_CM_and_PVV.png)
 
+
 **tab_models** <a id="tab_models"></a> defines available PBPK models, which can be selected during the simulation creation (e.g. "Small molecules model", "Large molecules model" etc.).
 
 * **short_display_name** is used in some places in the UI, where the fully qualified model display name is too long.
+
 
 **tab_calculation_methods** <a id="tab_calculation_methods"></a> defines a *calculation method* (**CM**). A calculation method describes how a **group of quantities** (parameters, molecule initial values, etc.) are defined by their formulas. A decision about which quantities should be described by the same CM is usually based on information about which formulas would change when the user switches from one (sub)model to another. For example, if the user chooses a different method for calculating the *Body Surface Area* (BSA) - only the BSA parameter itself is affected, and thus only this parameter is described by the corresponding calculation method. If the user chooses another method for calculating the surface area between the plasma and the interstitial space - the *Surface Area (Plasma/Interstitial)* parameters in all tissues organs are affected: thus all these parameters are grouped in the same calculation method. More details on calculation methods are provided in the section [Formulas (Calculation method - rates)](#section-formulas).
 
 * **category** calculation methods belonging to the same category are alternatives, which can be selected by user.
 
+
 **tab_parameter_value_versions** <a id="tab_parameter_value_versions"></a> defines a *parameter value version* (**PVV**). A parameter value version describes how a **group of parameters** are defined by their constant values or their distributions. A decision about which parameters should be described by the same PVV is usually based on information about which parameters would change when the user switches from one PVV to another. More details on parameter value versions are provided in the sections [Species and populations](#section-species-and-populations) and [Container parameters](#section-container-parameters).
+
 
 **tab_categories** <a id="tab_categories"></a> specifies the categories of calculation methods and parameter value versions.
 
 * **category_type** describes for which building block or simulation all calculation methods or parameter value versions of the given category are valid. For example, if the category type of a calculation method is "Individual" - the calculation method will be used when creating an individual. Valid values of the category type are defined by the [`enum CategoryType`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Core/Model/Category.cs).
 
+
 **tab_species_calculation_methods** <a id="tab_species_calculation_methods"></a> defines which calculation methods are available for the given species.
 
+
 **tab_species_parameter_value_versions** <a id="tab_species_parameter_value_versions"></a> is the counterpart of *tab_species_calculation_methods* and defines which parameter value versions are available for the given species.
+
 
 **tab_model_calculation_methods** <a id="tab_model_calculation_methods"></a> defines which calculation methods are available for a model.
 
@@ -840,17 +898,20 @@ Other application subcontainers are application specific (e.g. transport(s) *App
 | 1745         | EVENT          | Application_StopEvent  | 1725                | APPLICATION           | Intravenous           |
 | 1748         | PROCESS        | Intravenous_Transport  | 1725                | APPLICATION           | Intravenous           |
 
+
 **tab_formulation_routes** <a id="tab_formulation_routes"></a> defines the formulations.
 
 * **formulation** is the name of the formulation.
 * **container_type** is always "FORMULATION".
 * **route** is the route of administration (IV, oral, dermal, ...) for which the formulation is intended.
 
+
 **tab_applications** <a id="tab_applications"></a> defines the top container of an application.
 
 * **application_name** is the name of the application.
 * **container_type** is always "APPLICATION".
 * **application_type** is the route of administration (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
+
 
 **tab_application_types** <a id="tab_application_types"></a> defines all available administration routes (TODO rename, s. [the Issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309))
 
@@ -868,11 +929,13 @@ In the container hierarchy (defined in *[tab_containers](#tab_containers)*) even
 
 Each event is described by the event condition and the quantities that are changed by this event.
 
+
 **tab_event_conditions** <a id="tab_event_conditions"></a> defines the event condition of an event.
 
 * {**event_id**, **event_container_type**, **event_name**} are the id, type and name of the event container.
 * {**calculation_method**, **formula_rate**} define the formula of the event condition (typically a boolean formula which can return only 0 or 1).
 * **is_one_time** specifies whether the event is triggered *whenever the event condition is met* (`is_one_time=0`) or only at the *first simulation time point* when the event condition is met.
+
 
 **tab_event_changed_container_molecules**, **tab_event_changed_container_parameters**, **tab_event_changed_generic_molecules**, **tab_event_changed_generic_parameters** <a id="tab_event_changed_container_molecules"></a> <a id="tab_event_changed_container_parameters"></a> <a id="tab_event_changed_generic_molecules"></a> <a id="tab_event_changed_generic_parameters"></a> define which parameters or molecule amounts are modified by an event. The referencing of the modified quantities of an event is done in the same way as the referencing of the quantities used in a formula and defined in the tables *[tab_rate_container_molecules](#tab_rate_container_molecules)*, *[tab_rate_container_parameters](#tab_rate_container_parameters)*, *[tab_rate_generic_molecules](#tab_rate_generic_molecules)*, *[tab_rate_generic_parameters](#tab_rate_generic_parameters)* (s. the section [Formulas (Calculation method - rates)](#section-formulas)) for details.
 
@@ -896,7 +959,9 @@ S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/
 * **is_for_all_molecules** (TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/11))
 * **dimension** dimension of the observer.
 
+
 **tab_observer_rates** <a id="tab_observer_rates"></a> defines the monitor formula of the observer.
+
 
 **tab_observer_descriptor_conditions** <a id="tab_observer_descriptor_conditions"></a> defines criteria for containers where the observer will be created. Single container criteria are combined by "`AND`".
 
@@ -911,6 +976,7 @@ S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/
 
 The picture above shows an overview of all quantities which are described by a formula. Most tables are explained in other sections.
 
+
 **tab_container_rates** <a id="tab_container_rates"></a> is currently not used. This table was introduced to define some conditions which cannot be described by the boundary criteria (min/max) of a quantity. E.g. for the condition "Sum of compartment fractions of an organ = 1".
 
 ## Proteins <a id="section-proteins"></a>
@@ -919,9 +985,12 @@ The picture above shows an overview of all quantities which are described by a f
 
 **tab_protein_names** <a id="tab_protein_names"></a> stores the names of known proteins.
 
+
 **tab_protein_synonyms** <a id="tab_protein_synonyms"></a> stores synonyms of the protein names.
 
+
 **tab_ontogenies** is described in detail [above](#tab_ontogenies).
+
 
 **tab_molecule_parameters** is described in detail [above](#tab_molecule_parameters).
 
@@ -931,13 +1000,18 @@ The picture above shows an overview of all quantities which are described by a f
 
 **tab_models** defines available PBPK models and is described [above](#tab_models).
 
+
 **tab_model_calculation_methods** is described [above](#tab_model_calculation_methods).
+
 
 **tab_model_observers** <a id="tab_model_observers"></a> defines which observers are available for the given model.
 
+
 **tab_model_species** defines which species can be used in combination with the given model and is described [above](#tab_model_species).
 
+
 **tab_model_containers** defines which containers **can** be included into the final model and is described [above](#tab_model_containers).
+
 
 **tab_molecules** <a id="tab_molecules"></a> defines the **default** properties (start amount, *IsPresent*, etc.) for administered compounds and endogenous molecules. For each model container, these default settings can be **overwritten** by entries in *[tab_container_molecule_start_formulas](#tab_container_molecule_start_formulas)* and *[tab_model_container_molecules](#tab_model_container_molecules)* (s. below) 
 
@@ -947,14 +1021,18 @@ The picture above shows an overview of all quantities which are described by a f
 * **is_floating** defines whether the molecule is floating or stationary.
 * **molecule_type** type of the molecule (administered compound, Enzyme, Transporter, etc.)
 
+
 **tab_model_transport_molecule_names** restricts which molecules are transported by a passive transport for particular model and is described [above](#tab_model_transport_molecule_names).
 
+
 **tab_container_molecules** <a id="tab_container_molecules"></a> used for referential integrity only; not exposed to PK-Sim. (TODO s. [the discussion](https://github.com/Yuri05/DB_Questions/discussions/13))
+
 
 **tab_model_container_molecules** <a id="tab_model_container_molecules"></a> overwrites some default (global) molecule properties on the model container level.
 
 * **negative_values_allowed** overrides the default setting (**FALSE**; defined programmatically and not in the database).
 * **is_present** overrides the global molecule setting defined in *[tab_molecules](#tab_molecules)*.
+
 
 **tab_container_molecule_start_formulas** <a id="tab_container_molecule_start_formulas"></a> overwrites some default (global) molecule properties on the model container level.
 
@@ -970,6 +1048,7 @@ The picture below describes for which objects *descriptor criteria* (*descriptor
 
 **tab_tags** <a id="tab_tags"></a> defines all possible tags. The *name* of each container is added as tag programmatically in **OSPSuite.Core**. So there is no need to insert all container names into *tab_tags* or *tab_container_tags*.
 
+
 **tab_criteria_conditions** <a id="tab_criteria_conditions"></a>  describes all available conditions. Each condition must be available in the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
 All other tables are explained in the previous sections.
@@ -980,7 +1059,9 @@ All other tables are explained in the previous sections.
 
 Value origin describes the data source of a value or formula.
 
+
 **tab_references** <a id="tab_references"></a> describes a data source (e.g. publication).
+
 
 **tab_value_origins** <a id="tab_value_origins"></a> describes available value origins.
 
