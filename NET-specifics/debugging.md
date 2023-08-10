@@ -14,13 +14,33 @@ As you can see in the window that appears you can test various Core functionalit
 
 ![The starter view.](../assets/images/starter%20view.png)
 
+## Developing between solutions
+
+For some tasks, it's necessary to implement partially in OSPSuite.Core and partially in MoBi or PK-Sim. In those cases, it can be tedious to create pull requests in OSPSuite.Core and get them merged, so you can use them to implement the feature in MoBi or PK-Sim. Then, if you find bugs or additional requirements as you code, you need to create more pull requests and wait for them to be merged.
+
+To accommodate an all local workflow of creating local OSPSuite.Core and using it directly in your local PK-Sim or MoBi Visual Studio solutions, the following steps are needed once to set up your local environment:
+
+1) Create a `nuget_repo` folder in the same directory as the `OSPSuite.Core.sln` file.
+2) Add the nuget_repo folder as a nuget source in Visual Studio. To do that go to Tools -> Options -> NuGet Package Manager -> Package Sources and add the nuget_repo folder as a new source.
+3) Arrange your working directories for `MoBi`, `PK-Sim` and `OSPSuite.Core` so they are all contained in the same parent directory.
+4) Make sure the directories for `MoBi`, `PK-Sim` and `OSPSuite.Core` are named `MoBi`, `PK-Sim` and `OSPSuite.Core` respectively.
+
+Then you can always update one or both applications with local versions of OSPSuite.Core using scripts:
+
+1) mobi_nuget.bat to update only MoBi
+2) mobi_pksim.bat to update only PK-Sim
+3) nuget_to_both.bat to update both MoBi and PK-Sim
+4) Rebuild the application solution with the new dependencies.
+
+This workflow will change the .csproj files in the application solutions to use the local version of OSPSuite.Core. Those OSPSuite.Core builds will not be available for other users or AppVeyor of course, so you need a new OSPSuite.Core build from AppVeyor to finalize development. First create a pull request in OSPSuite.Core and get it merged. Then you need to update the dependencies in the application .csproj to use the new version of OSPSuite.Core as built by AppVeyor.
+
 ## Debugging between solutions
+Beyond directly using the newly implemented code in OSPSuite.Core, you can also use the debugger to debug the code in Core from the other solutions. To do that you need to:
 
-Apart from normally debugging through visual studio, sometimes there is the need to debug code that exists in OSPSuite.Core when running PKSim or MoBi. In order to do that you need to build OSPSuite.Core in the debug configuration. Then go to the solution folder and run "copy_to_pksim" or "copy_to_mobi" batch according to which solution you want to debug from core. 
-You need to have the corresponding solution folder under the same parent directory, let's call it ROOT. So your OSPSuite.Core path would look lie this "..\ROOT\OSPSuite.Core". 
-Then go to "ROOT\PK-Sim\src\PKSim\bin\Debug\net472" and start the PKSim.exe. When the application has started attach the debugger from Core to the process.
-
-For MoBi you have to go to "ROOT\MoBi\src\MoBi\bin\Debug\net472", start "MoBi.exe" and accordingly attach the debugger from Core to the MoBi process.
+1) Set up your environment as above once
+2) Update dependencies as above as needed
+3) Start the application from Visual Studio without debugging
+4) Attach the Visual Studio debugger from the OSPSuite.Core solution to the application process. You can now set breakpoints and debug the code in Core from the other solutions.
 
 # Debugging from R script
 
@@ -28,10 +48,10 @@ You can also debug the OSPSuite.Core code from an R script. To do that you need 
 
 1)  Build Core in the "Debug" configuration.
 
-2) Copy the created dlls and associated .pdb files from "OSPSuite.Core\src\OSPSuite.R\bin\Debug\netstandard2.0\" to the your OSPSuite.R installation directory and specifically in the "OSPSuite-R\inst\lib\" folder.
+2) Copy the created dlls and associated .pdb files from "OSPSuite.Core\src\OSPSuite.R\bin\Debug\netstandard2.0\" to your OSPSuite.R installation directory and specifically in the "OSPSuite-R\inst\lib\" folder.
 
 3) Start the OSPSuite.R project in R 
-![Ospsuite.R RStudio project file.](../assets/images/![The starter view.](../assets/images/starter%20view.png)
+![Ospsuite.R RStudio project file.](../assets/images/![The starter view.](../assets/images/ospsuite-r-project.png)
 
 4) Attach the Visual Studio debugger from the OSPSuite.Core solution to the RSession. Make sure to attach to rsession NOT to rstudio.exe.
 ![Attach to rsession.](../assets/images/![The starter view.](../assets/images/rsession.png)
