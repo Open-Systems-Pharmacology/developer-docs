@@ -1,0 +1,273 @@
+# OSPSuite Architecture
+
+## Introduction
+
+In this part we will describe the Open Systems Pharmacology Suite, a set of powerful and easy-to-use modeling & simulation tools for pharmaceutical and other life-sciences applications. Qualified and accepted by the scientific community including academia, regulatory agencies and industry. This includes the main parts of the Suite and their architecture. Namely we have the [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) where the main functionalities of the Suite reside that are common in all other applications, [PK-SIm](https://github.com/Open-Systems-Pharmacology/PK-Sim),  a comprehensive software tool for whole-body physiologically based pharmacokinetic modeling and [MoBi](https://github.com/Open-Systems-Pharmacology/MoBi), a software tool for multiscale physiological modeling and simulation that offers  more freedom for the user to import and set up models from scratch. Additionally, [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) is a package that package provides the functionality of loading, manipulating, and simulating the simulations created in the Open Systems Pharmacology Software tools PK-Sim and MoBi in the R programming language. There are additional parts to the OSPSuite universe, f.e. [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) that reads the model description in its XML format, creates a differential equations system from it and solves it. 
+
+The structure of the OSPSuite Architecture can be visualised as follows:
+
+![The OSPSuite Suite structure](../assets/images/ospsuite_architecture_diagram.png)
+
+
+
+## Technology used
+
+The Core of the OSPSuite as well as PKSim and MoBi are written using the .NET Framework currently in version 4.8. The language used is C# 7.3.
+The architecture is based on the “onion architecture” and the view pattern used is the MVP pattern (MVC, MVVM etc.)
+The underlying view engine is using Winforms. 
+
+Severals third party components are being used in the application:
+•	DevExpress .Net WinForm Suite ( currently version 21.2.3). The DevExpress components are used in all views, even for the simplest UI elements such as button or label in order to support skins.
+•	NHibernate (currently version 5.2.5). The ORM is used to serialize the pksim project into a SQLite database.
+•	Castle (currently version 5.0.1). Excellent inversion of control container implementation.
+•	NUnit (currently version 3.13.3). Simple yet powerful unit test framework.
+•   Npoi (currently version 2.5.5). Used to read from and write to xml files. 
+•	FakeItEasy (currently version 7.3.1). Used in conjunction with NUnit to mock objects used in tests.
+•	Microsoft Extensions Logging (currently version 3.1.0). Used to log any warnings or error to a log file or to the console when debugging.
+
+
+## Architecture
+
+The architecture used in PKSim IS NOT based on the traditional layered infrastructure. The traditional layer creates per construction a tight coupling between layers, as each layers depends on the layer beneath it and in general all layers depends on some cross-layer concerns such as security, logging etc usually defined in some kind of “infrastructure” layer. 
+ 
+![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](../assets/images/Traditional_Layered_Architecture.png)
+
+Instead, we used a fairly new infrastructure patterns called “Onion architecture”
+
+![Onion Architecture (image from https://medium.com/expedia-group-tech/onion-architecture-deed8a554423)](../assets/images/onion_architecture.png)
+ 
+The idea behind this pattern is fairly simple: In a nutshell, ALL CODE CAN DEPEND ON LAYERS MORE CENTRAL, BUT CODE CANNOT DEPEND ON LAYER FURTHER OUT. The coupling is directed to the center of the architecture.
+The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have nothing to do in the core.
+ 
+![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](../assets/images/onion_architecture_details.png)
+
+
+In this example, the IConferenceRepository interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resided in Infrastructure.
+This architecture relies HEAVILY on the use of the [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) 
+The application core needs implementation of core interfaces, and if those implementing classes reside at the edges of the application, we need some mechanism for injecting that code at runtime so the application can do something useful.
+In PKSim, we did not have the need so separate Application Services from Domain Services. We just use services. But the concept remains the same
+You can refer to the description of the onion architecture from the time of the original design of OSPSuite [part1](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/) , [part2](http://jeffreypalermo.com/blog/the-onion-architecture-part-2/) , [part3](http://jeffreypalermo.com/blog/the-onion-architecture-part-3/) and [part4](https://jeffreypalermo.com/2013/08/onion-architecture-part-4-after-four-years/) for more information on this design patterns. Since the adoption of the onion architecture from OSPSuite, it has become ever more popular. You can also refer to the 2022 article about the onion architecture [here](https://medium.com/expedia-group-tech/onion-architecture-deed8a554423).
+
+
+## OSPSuite.Core Project Structure
+
+As discussed above the OSPSuite is mainly divided betwwen three solutions. We will begin with  [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) that contains all the common functionalities. The OSPSuite.Core solution has been separated in several projects reflecting the different concerns of the application:
+
+![The OSPSuite.Core solution structure](../assets/images/ospsuite_core_solution.png)
+
+### OSPSuite.Assets
+
+All strings displayed in the UI (captions, menus, tooltips, errors, warning, messages) and are common to both PK-Sim and MoBi. They are stored in one file call UIConstants. Although not implemented yet, this structure would enable the application to be used in different languages. It is required however to always define new strings in this file, and NEVER in the designer.
+
+### OSPSuite.Assets.Images
+
+In this project we define all the icons and imagees that are common to both PK-Sim and MoBi.This component has no other dependencies. It provides two static classes, ApplicationIcons and ApplicationImages that can be accessed throughout the presenter or UI layer to display icons and images.
+
+### OSPSuite.Core
+
+![The OSPSuite.Core project structure](../assets/images/ospsuite_core_project.png)
+
+This is the central component of the infrastructure. 
+The namepace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
+The namespace Events contains the application wide events that will be thrown using the EventPublisher.
+The namespce Extensions contains extension method that are not defined for specific ospsuite objects(methods on strings or object etc..)
+The namespace Mappers contains mapping object converting one core object into another core one.
+The namespace Import contains functionalities necessary for the importing of Excel and .csv files.
+The namespace Model contains the business objects of the application such as Simulation,Compound , Individual etc.
+The namespace Reporting contains the report items objects used to generate on the fly reports and tool tips for mode objects
+The namespace Services contains the services and taks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
+Objects defined in OSPSuite.Core are registered in the IoC container using a special PKSimRegistrationConvention  convention: The code is well commented and should be studied for more information.
+
+### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
+
+This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the [Serialization](../NET-specifics/serialization.md) and its uses here and also for the Commands [here](NET-specifics/commands.md).
+
+### OSPSuite.Presentation
+
+This is our presentation layer. It contains of course our presenters, but also the UICommands, DTOs and DTOMappers Charts Diagrams, View interfaces and more.
+
+### OSPSuite.R
+
+Here we have all our functionalities for the interfacing with R programming language, through OSPSuite.R.
+
+### OSPSuite.Starter
+
+This is a test project that you can set as a startup project and run as a desktop application. It should be used to user test functionalities that exist in OSPSuite.Core, without needing to open one of the solutions.
+
+### OSPSuite.UI
+
+All Views and controls used in OSPSuite and common to both PK-Sim and MoBi are defined in this layer. No business logic whatsoever should be defined in this component. Any advance UI Logic should be moved to the presenter. Each view should be associated with a presenter, even the most basic view, as again, NO LOGIC SHOULD BE DEFINED IN THE VIEW. 
+
+### Unit tests in OSPSuite
+
+Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. All the solutions contain multiple tests, that are mainly divided into unti tests and integration tests. Apart from the brief description of the OSPSuite.Core unit test projects in the following paragraphs, you can find a comprehensive documentation of our unit testing methods and best practices [here](../NET-specifics/unit-and-integration-testing.md).
+
+### OSPSuite.InfrastructureTests
+
+This project contains unit tests for the functionalities in all the Infrastructure projects. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`.
+
+### OSPSuite.PresentationTests
+
+This project contains unit tests for the functionalities in the infrastructure layer. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`.
+
+### OSPSuite.UITests
+
+This project contains unit tests for the functionalities in the UI layer. The tests in this project also implement the `OSPSuite.BDDHelper.ContextSpecification<T>`
+
+### OSPSuite.IntegrationTests
+
+This project contains all the integration tests ever written for OSPSuite. The folder Data contains some external files (mainly excel and pkml files) that are used in the Integration tests.
+
+In the tests of this project we are extending `OSPSuite.Core.ContextForIntegration<T>`. It registers almost all dependencies as the real OSPSuite applications would do, with the exception of a few objects like license or dialog creator. It is the perfect base class to use when testing real uses cases using the database etc… Execution time is much longer than a standard unit test.
+
+### Additional elements of the OSPSuite.Core solution
+
+The OSPSuite.Core repository contains the [appveyor.yml](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/appveyor.yml) file that helps configure [appveyor](https://www.appveyor.com/) that we are using as a CI/CD service. There you can define f.e. things like which branches get built, if the artifacts are published on a PR and more:
+
+```
+configuration: Debug
+image: Visual Studio 2022
+
+.
+.
+.
+
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '$(ospsuite_version).$(build_number)'
+  assembly_version: '$(ospsuite_version).$(build_number)'
+  file_version: '$(ospsuite_version).$(build_number)'
+  informational_version: '$(ospsuite_version).$(build_number)'
+
+.
+.
+.
+
+build:
+  publish_nuget: true
+  verbosity: minimal
+  publish_nuget_symbols: true
+  project: OSPSuite.Core.sln
+
+pull_requests: 
+  do_not_increment_build_number: true
+
+branches:
+  only:
+    - develop
+.
+.
+.
+
+```
+
+There we also define the OSPSuite version. The product version contains 4 different sections:
+
+X.Y.Z.R
+
+X.Y is the product version. Z is the build version. The current version of the product is 11.2.1
+R is set automatically during build from the NAnt script according to the svn revision number.
+
+
+
+
+## PKSim Project Structure
+
+![The PKSim solution structure](../assets/images/pksim_solution.png)
+
+In this solution we have the code that is exclusive for the PK-Sim application.
+
+### PKSim.Assets and PKSim.Assets.Images
+
+Just like the equivalent projects in OSPSuite.Core, these two projects contain the UI strings, images and icons that are used exclusively for the PK-Sim application. Any new string used in the UI should be defined here.
+
+### PKSim.Core
+
+Contains the main functionalities of the PK-Sim application.
+
+### PKSim.Presentation
+
+It is the Presentation Layer specific for the PK-SIm application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOS and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to PK-Sim - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
+
+### PKSim.UI
+
+Contains all Views and Controls specific only to the PK-SIm application. UI elements shared with MoBi exist in OSPSuite.Core.UI.
+
+### PKSim.Tests
+
+This projects contains unit tests for various aspects of the PKSim sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement `PKSim.IntegrationTests.ContextForIntegration<T>` which is written specifically for setting up an envirnoment and registering all the dependencies necessary to run integration tests in PK-Sim. 
+
+### PKSim.UI.Tests
+
+Contains tests for the UI elements of PK-Sim. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`.
+
+
+### PKSim.Matlab
+
+This dll should be used directly from Matlab to automate some PKSim tasks such as individual or population creation etc.
+
+
+## MoBi Project Structure
+
+![The MoBi solution structure](../assets/images/mobi_solution_structure.png)
+
+### MoBi project
+
+Here we have the entry point of the MoBi application and some other tihngs, like pkml Templates and Chart Layouts.
+
+### MoBi.Assets
+
+This project contains UI strings, images and icons that are used exclusively for the Mobi application. Any new string used in the UI should be defined here.
+
+### MoBi.Core
+
+Contains the main functionalities of the MoBi application, that are distinct from what is defined in OSPSuite.Core.
+
+### MoBi.Engine
+
+Contains the [SBML](https://sbml.org/) importer and engine for MoBi.
+
+
+### MoBi.Presentation
+
+It is the Presentation Layer specific for the MoBi application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOS and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to MoBi - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
+
+### MoBi.UI
+
+Contains all Views and Controls specific only to the MoBi application. UI elements shared with MoBi exist in OSPSuite.Core.UI.
+
+### MoBi.Tests
+
+This projects contains unit tests for various aspects of the MoBi sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement PKSim.MoBi.IntegrationTests.ContextForIntegration<T> which is written specifically for setting up an envirnoment and registering all the dependencies necessary to run integration tests in MoBi. Also contains helper functions for those tests, mainly for creating objects to be used in the tets, like f.e. a `DimensionFactory`.
+
+### MoBi.UI.Tests
+
+Contains tests for the UI elements of MoBi The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`.
+
+
+## PK-Sim Database
+
+PK-Sim uses an SQLite database to store species, population etc. You can find a thorough documentation of the database and its tables [here](PKSim-DataBase/DB.md).
+
+## Additional components and further reading
+
+Additionally to these three main solutions, more comonents are being used in the OSPSuiteas mentioned above.
+
+You can read more about the [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) ( that as mentioned above reads the model description in its XML format, creates a differential equations system from it and solves it), and specifically about how to find memory leaks in it here:
+
+[Finding Memory Leaks](../sim-model/finding-memory-leaks.md)
+
+You can read about the algorithm used for the creation of an individual in this part of the documentation:
+
+[Algorithm for Individual Creation](../algorithms/algorithm-for-individual-creation.md)
+
+The functionalities of OSPSuite can be used in the R programming language through the [OSPSuite-R package](https://www.open-systems-pharmacology.org/OSPSuite-R/). You can go through a comprehensive documentation of how to install and use the package [here](https://www.open-systems-pharmacology.org/OSPSuite-R/). For installing under various systems you can also refer to the current [documentation]:
+
+[Setup OSPSuite-R on Windows](../ospsuite-r-setup/setup-ospsuite-r-on-windows.md)
+[Setup OSPSuite-R on CentOS7](../ospsuite-r-setup/Setup-ospsuite-R-on-CentOS7.md)
+[Setup OSPSuite-R on Ubuntu](../ospsuite-r-setup/Setup-ospsuite-R-on-Ubuntu.md)
+
+Concerning the data binding, there are two separate OSPSuite solutions that contain functionality that enables us to bind data to UI elements. You can read all about that [here]((NET-specifics/data-binding.md)). 
+
+
