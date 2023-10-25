@@ -6,7 +6,7 @@ In this part we will describe the Open Systems Pharmacology Suite, a set of powe
 
 The structure of the OSPSuite Architecture can be visualised as follows:
 
-![The OSPSuite Suite structure](../assets/images/ospsuite_architecture_diagram.png)
+![The OSPSuite Suite structure](assets/images/ospsuite_architecture_diagram.png)
 
 
 

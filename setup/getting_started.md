@@ -5,8 +5,6 @@
 
 1. Install Ruby and Rake. [Ruby Install](https://rubyinstaller.org/downloads/)
 
-1. Install MikTeX. [MikTeX Install](https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi).
-
 1. Obtain Devexpress License and Install
 
    * DevExpress WinForms Controls and Libraries is used in the graphical user interface of the suite. You will need to obtain a license in order to work with the user interface.
@@ -15,8 +13,6 @@
  
    * Obtain your license from DevExpress [DevExpress Order](https://www.devexpress.com/Support/Order/). Then get the installer for the version mentioned above that's required [DevExpress Install](https://www.devexpress.com/ClientCenter/DownloadManager/)
   
-1. Install MSXML 4 [MSXML4 Installer](https://www.microsoft.com/en-ca/download/details.aspx?id=15697)
-
 1. Install nuget.exe and ensure that it is in your `PATH` variable [NuGet Install](https://dist.nuget.org/index.html)
 
 1. Add `OSPSuite.Core` as a nuget source using the following command
