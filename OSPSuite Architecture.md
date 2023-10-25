@@ -30,16 +30,16 @@ Severals third party components are being used in the application:
 
 The architecture used in PKSim IS NOT based on the traditional layered infrastructure. The traditional layer creates per construction a tight coupling between layers, as each layers depends on the layer beneath it and in general all layers depends on some cross-layer concerns such as security, logging etc usually defined in some kind of “infrastructure” layer. 
  
-![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](../assets/images/Traditional_Layered_Architecture.png)
+![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](assets/images/Traditional_Layered_Architecture.png)
 
 Instead, we used a fairly new infrastructure patterns called “Onion architecture”
 
-![Onion Architecture (image from https://medium.com/expedia-group-tech/onion-architecture-deed8a554423)](../assets/images/onion_architecture.png)
+![Onion Architecture (image from https://medium.com/expedia-group-tech/onion-architecture-deed8a554423)](assets/images/onion_architecture.png)
  
 The idea behind this pattern is fairly simple: In a nutshell, ALL CODE CAN DEPEND ON LAYERS MORE CENTRAL, BUT CODE CANNOT DEPEND ON LAYER FURTHER OUT. The coupling is directed to the center of the architecture.
 The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have nothing to do in the core.
  
-![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](../assets/images/onion_architecture_details.png)
+![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](assets/images/onion_architecture_details.png)
 
 
 In this example, the IConferenceRepository interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resided in Infrastructure.
@@ -53,7 +53,7 @@ You can refer to the description of the onion architecture from the time of the 
 
 As discussed above the OSPSuite is mainly divided between three solutions. We will begin with  [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) that contains all the common functionalities. The OSPSuite.Core solution has been separated in several projects reflecting the different concerns of the application:
 
-![The OSPSuite.Core solution structure](../assets/images/ospsuite_core_solution.png)
+![The OSPSuite.Core solution structure](assets/images/ospsuite_core_solution.png)
 
 ### OSPSuite.Assets
 
@@ -65,7 +65,7 @@ In this project we define all the icons and images that are common to both PK-Si
 
 ### OSPSuite.Core
 
-![The OSPSuite.Core project structure](../assets/images/ospsuite_core_project.png)
+![The OSPSuite.Core project structure](assets/images/ospsuite_core_project.png)
 
 This is the central component of the infrastructure. 
 The namespace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
@@ -80,7 +80,7 @@ Objects defined in OSPSuite.Core are registered in the IoC container using a spe
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
 
-This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the [Serialization](../NET-specifics/serialization.md) and its uses here and also for the Commands [here](NET-specifics/commands.md).
+This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the [Serialization](NET-specifics/serialization.md) and its uses here and also for the Commands [here](NET-specifics/commands.md).
 
 ### OSPSuite.Presentation
 
@@ -100,7 +100,7 @@ All Views and controls used in OSPSuite and common to both PK-Sim and MoBi are d
 
 ### Unit tests in OSPSuite
 
-Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. All the solutions contain multiple tests, that are mainly divided into unit tests and integration tests. Apart from the brief description of the OSPSuite.Core unit test projects in the following paragraphs, you can find a comprehensive documentation of our unit testing methods and best practices [here](../NET-specifics/unit-and-integration-testing.md).
+Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. All the solutions contain multiple tests, that are mainly divided into unit tests and integration tests. Apart from the brief description of the OSPSuite.Core unit test projects in the following paragraphs, you can find a comprehensive documentation of our unit testing methods and best practices [here](NET-specifics/unit-and-integration-testing.md).
 
 ### OSPSuite.InfrastructureTests
 
@@ -174,7 +174,7 @@ R is set automatically during build from the NAnt script according to the svn re
 
 ## PKSim Project Structure
 
-![The PKSim solution structure](../assets/images/pksim_solution.png)
+![The PKSim solution structure](assets/images/pksim_solution.png)
 
 In this solution we have the code that is exclusive for the PK-Sim application.
 
@@ -210,7 +210,7 @@ This dll should be used directly from Matlab to automate some PKSim tasks such a
 
 ## MoBi Project Structure
 
-![The MoBi solution structure](../assets/images/mobi_solution_structure.png)
+![The MoBi solution structure](assets/images/mobi_solution_structure.png)
 
 ### MoBi project
 
@@ -256,17 +256,17 @@ Additionally to these three main solutions, more components are being used in th
 
 You can read more about the [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) ( that as mentioned above reads the model description in its XML format, creates a differential equations system from it and solves it), and specifically about how to find memory leaks in it here:
 
-[Finding Memory Leaks](../sim-model/finding-memory-leaks.md)
+[Finding Memory Leaks](sim-model/finding-memory-leaks.md)
 
 You can read about the algorithm used for the creation of an individual in this part of the documentation:
 
-[Algorithm for Individual Creation](../algorithms/algorithm-for-individual-creation.md)
+[Algorithm for Individual Creation](algorithms/algorithm-for-individual-creation.md)
 
 The functionalities of OSPSuite can be used in the R programming language through the [OSPSuite-R package](https://www.open-systems-pharmacology.org/OSPSuite-R/). You can go through a comprehensive documentation of how to install and use the package [here](https://www.open-systems-pharmacology.org/OSPSuite-R/). For installing under various systems you can also refer to the current [documentation]:
 
-[Setup OSPSuite-R on Windows](../ospsuite-r-setup/setup-ospsuite-r-on-windows.md)
-[Setup OSPSuite-R on CentOS7](../ospsuite-r-setup/Setup-ospsuite-R-on-CentOS7.md)
-[Setup OSPSuite-R on Ubuntu](../ospsuite-r-setup/Setup-ospsuite-R-on-Ubuntu.md)
+[Setup OSPSuite-R on Windows](ospsuite-r-setup/setup-ospsuite-r-on-windows.md)
+[Setup OSPSuite-R on CentOS7](ospsuite-r-setup/Setup-ospsuite-R-on-CentOS7.md)
+[Setup OSPSuite-R on Ubuntu](ospsuite-r-setup/Setup-ospsuite-R-on-Ubuntu.md)
 
 Concerning the data binding, there are two separate OSPSuite solutions that contain functionality that enables us to bind data to UI elements. You can read all about that [here]((NET-specifics/data-binding.md)). 
 
