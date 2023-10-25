@@ -32,20 +32,20 @@ The architecture used in PKSim IS NOT based on the traditional layered infrastru
  
 ![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](assets/images/Traditional_Layered_Architecture.png)
 
-Instead, we used a fairly new infrastructure patterns called “Onion architecture”
+Instead, an infrastructure pattern was used called “Onion architecture”, that at the time of design of the OSPSuite was quite new and has been gaining popularity ever since.
 
 ![Onion Architecture (image from https://medium.com/expedia-group-tech/onion-architecture-deed8a554423)](assets/images/onion_architecture.png)
  
 The idea behind this pattern is fairly simple: In a nutshell, ALL CODE CAN DEPEND ON LAYERS MORE CENTRAL, BUT CODE CANNOT DEPEND ON LAYER FURTHER OUT. The coupling is directed to the center of the architecture.
-The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have nothing to do in the core.
+The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have no place in the core.
  
 ![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](assets/images/onion_architecture_details.png)
 
 
-In this example, the IConferenceRepository interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resided in Infrastructure.
+In this example, the `IConferenceRepository` interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resides in Infrastructure.
 This architecture relies HEAVILY on the use of the [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) 
 The application core needs implementation of core interfaces, and if those implementing classes reside at the edges of the application, we need some mechanism for injecting that code at runtime so the application can do something useful.
-In PKSim, we did not have the need so separate Application Services from Domain Services. We just use services. But the concept remains the same
+In OSPSuite, we did not have the need so separate Application Services from Domain Services. We just use services. But the concept remains the same.
 You can refer to the description of the onion architecture from the time of the original design of OSPSuite [part1](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/) , [part2](http://jeffreypalermo.com/blog/the-onion-architecture-part-2/) , [part3](http://jeffreypalermo.com/blog/the-onion-architecture-part-3/) and [part4](https://jeffreypalermo.com/2013/08/onion-architecture-part-4-after-four-years/) for more information on this design patterns. Since the adoption of the onion architecture from OSPSuite, it has become ever more popular. You can also refer to the 2022 article about the onion architecture [here](https://medium.com/expedia-group-tech/onion-architecture-deed8a554423).
 
 
@@ -67,6 +67,7 @@ In this project we define all the icons and images that are common to both PK-Si
 
 ![The OSPSuite.Core project structure](assets/images/ospsuite_core_project.png)
 
+
 This is the central component of the infrastructure. 
 The namespace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
 The namespace Events contains the application wide events that will be thrown using the EventPublisher.
@@ -80,9 +81,12 @@ Objects defined in OSPSuite.Core are registered in the IoC container using a spe
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
 
-This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the [Serialization](NET-specifics/serialization.md) and its uses here and also for the Commands [here](NET-specifics/commands.md).
+This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the Serialization and its uses [here](NET-specifics/serialization.md) and also for the Commands [here](NET-specifics/commands.md).
 
 ### OSPSuite.Presentation
+
+![The OSPSuite.Presentation project structure](assets/images/ospsuite-presentation.png)
+
 
 This is our presentation layer. It contains of course our presenters, but also the UICommands, DTOs and DTOMappers Charts Diagrams, View interfaces and more.
 
@@ -95,6 +99,9 @@ Here we have all our functionalities for the interfacing with R programming lang
 This is a test project that you can set as a startup project and run as a desktop application. It should be used to user test functionalities that exist in OSPSuite.Core, without needing to open one of the solutions.
 
 ### OSPSuite.UI
+
+![The OSPSuite.UI project structure](assets/images/ospsuite_ui.png)
+
 
 All Views and controls used in OSPSuite and common to both PK-Sim and MoBi are defined in this layer. No business logic whatsoever should be defined in this component. Any advance UI Logic should be moved to the presenter. Each view should be associated with a presenter, even the most basic view, as again, NO LOGIC SHOULD BE DEFINED IN THE VIEW. 
 
@@ -122,7 +129,7 @@ In the tests of this project we are extending `OSPSuite.Core.ContextForIntegrati
 
 ### Additional elements of the OSPSuite.Core solution
 
-The OSPSuite.Core repository contains the [appveyor.yml](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/appveyor.yml) file that helps configure [appveyor](https://www.appveyor.com/) that we are using as a CI/CD service. There you can define f.e. things like which branches get built, if the artifacts are published on a PR and more:
+The OSPSuite.Core repository contains the [appveyor.yml](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/appveyor.yml) file that helps configure [appveyor](https://www.appveyor.com/) that we are using as a CI/CD service. There you can define f.e. things like which branches that get built, if the artifacts are published on a PR and more:
 
 ```
 configuration: Debug
