@@ -308,3 +308,9 @@ svn
 sourcecode
 ContextForIntegration
 IntegrationTests
+namespace
+NAnt
+EventPublisher
+ILazyLoadTask
+LazyLoadTask
+PKSimRegistrationConvention
