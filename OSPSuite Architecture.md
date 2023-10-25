@@ -17,13 +17,13 @@ The architecture is based on the “onion architecture” and the view pattern u
 The underlying view engine is using Winforms. 
 
 Severals third party components are being used in the application:
-•	DevExpress .Net WinForm Suite ( currently version 21.2.3). The DevExpress components are used in all views, even for the simplest UI elements such as button or label in order to support skins.
-•	NHibernate (currently version 5.2.5). The ORM is used to serialize the pksim project into a SQLite database.
-•	Castle (currently version 5.0.1). Excellent inversion of control container implementation.
-•	NUnit (currently version 3.13.3). Simple yet powerful unit test framework.
-•   Npoi (currently version 2.5.5). Used to read from and write to xml files. 
-•	FakeItEasy (currently version 7.3.1). Used in conjunction with NUnit to mock objects used in tests.
-•	Microsoft Extensions Logging (currently version 3.1.0). Used to log any warnings or error to a log file or to the console when debugging.
+-	DevExpress .Net WinForm Suite ( currently version 21.2.3). The DevExpress components are used in all views, even for the simplest UI elements such as button or label in order to support skins.
+-	NHibernate (currently version 5.2.5). The ORM is used to serialize the pksim project into a SQLite database.
+-	Castle (currently version 5.0.1). Excellent inversion of control container implementation.
+-	NUnit (currently version 3.13.3). Simple yet powerful unit test framework.
+-   Npoi (currently version 2.5.5). Used to read from and write to xml files. 
+-	FakeItEasy (currently version 7.3.1). Used in conjunction with NUnit to mock objects used in tests.
+-	Microsoft Extensions Logging (currently version 3.1.0). Used to log any warnings or error to a log file or to the console when debugging.
 
 
 ## Architecture
