@@ -51,7 +51,7 @@ You can refer to the description of the onion architecture from the time of the 
 
 ## OSPSuite.Core Project Structure
 
-As discussed above the OSPSuite is mainly divided betwwen three solutions. We will begin with  [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) that contains all the common functionalities. The OSPSuite.Core solution has been separated in several projects reflecting the different concerns of the application:
+As discussed above the OSPSuite is mainly divided between three solutions. We will begin with  [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) that contains all the common functionalities. The OSPSuite.Core solution has been separated in several projects reflecting the different concerns of the application:
 
 ![The OSPSuite.Core solution structure](../assets/images/ospsuite_core_solution.png)
 
@@ -61,21 +61,21 @@ All strings displayed in the UI (captions, menus, tooltips, errors, warning, mes
 
 ### OSPSuite.Assets.Images
 
-In this project we define all the icons and imagees that are common to both PK-Sim and MoBi.This component has no other dependencies. It provides two static classes, ApplicationIcons and ApplicationImages that can be accessed throughout the presenter or UI layer to display icons and images.
+In this project we define all the icons and images that are common to both PK-Sim and MoBi.This component has no other dependencies. It provides two static classes, ApplicationIcons and ApplicationImages that can be accessed throughout the presenter or UI layer to display icons and images.
 
 ### OSPSuite.Core
 
 ![The OSPSuite.Core project structure](../assets/images/ospsuite_core_project.png)
 
 This is the central component of the infrastructure. 
-The namepace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
+The namespace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
 The namespace Events contains the application wide events that will be thrown using the EventPublisher.
-The namespce Extensions contains extension method that are not defined for specific ospsuite objects(methods on strings or object etc..)
+The namespace Extensions contains extension method that are not defined for specific ospsuite objects(methods on strings or object etc..)
 The namespace Mappers contains mapping object converting one core object into another core one.
 The namespace Import contains functionalities necessary for the importing of Excel and .csv files.
 The namespace Model contains the business objects of the application such as Simulation,Compound , Individual etc.
 The namespace Reporting contains the report items objects used to generate on the fly reports and tool tips for mode objects
-The namespace Services contains the services and taks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
+The namespace Services contains the services and tasks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
 Objects defined in OSPSuite.Core are registered in the IoC container using a special PKSimRegistrationConvention  convention: The code is well commented and should be studied for more information.
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
@@ -100,7 +100,7 @@ All Views and controls used in OSPSuite and common to both PK-Sim and MoBi are d
 
 ### Unit tests in OSPSuite
 
-Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. All the solutions contain multiple tests, that are mainly divided into unti tests and integration tests. Apart from the brief description of the OSPSuite.Core unit test projects in the following paragraphs, you can find a comprehensive documentation of our unit testing methods and best practices [here](../NET-specifics/unit-and-integration-testing.md).
+Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. All the solutions contain multiple tests, that are mainly divided into unit tests and integration tests. Apart from the brief description of the OSPSuite.Core unit test projects in the following paragraphs, you can find a comprehensive documentation of our unit testing methods and best practices [here](../NET-specifics/unit-and-integration-testing.md).
 
 ### OSPSuite.InfrastructureTests
 
@@ -188,15 +188,15 @@ Contains the main functionalities of the PK-Sim application.
 
 ### PKSim.Presentation
 
-It is the Presentation Layer specific for the PK-SIm application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOS and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to PK-Sim - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
+It is the Presentation Layer specific for the PK-Sim application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOs and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to PK-Sim - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
 
 ### PKSim.UI
 
-Contains all Views and Controls specific only to the PK-SIm application. UI elements shared with MoBi exist in OSPSuite.Core.UI.
+Contains all Views and Controls specific only to the PK-Sim application. UI elements shared with MoBi exist in OSPSuite.Core.UI.
 
 ### PKSim.Tests
 
-This projects contains unit tests for various aspects of the PKSim sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement `PKSim.IntegrationTests.ContextForIntegration<T>` which is written specifically for setting up an envirnoment and registering all the dependencies necessary to run integration tests in PK-Sim. 
+This projects contains unit tests for various aspects of the PKSim sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement `PKSim.IntegrationTests.ContextForIntegration<T>` which is written specifically for setting up an environment and registering all the dependencies necessary to run integration tests in PK-Sim. 
 
 ### PKSim.UI.Tests
 
@@ -214,7 +214,7 @@ This dll should be used directly from Matlab to automate some PKSim tasks such a
 
 ### MoBi project
 
-Here we have the entry point of the MoBi application and some other tihngs, like pkml Templates and Chart Layouts.
+Here we have the entry point of the MoBi application and some other things, like pkml Templates and Chart Layouts.
 
 ### MoBi.Assets
 
@@ -231,7 +231,7 @@ Contains the [SBML](https://sbml.org/) importer and engine for MoBi.
 
 ### MoBi.Presentation
 
-It is the Presentation Layer specific for the MoBi application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOS and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to MoBi - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
+It is the Presentation Layer specific for the MoBi application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOs and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to MoBi - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
 
 ### MoBi.UI
 
@@ -239,7 +239,7 @@ Contains all Views and Controls specific only to the MoBi application. UI elemen
 
 ### MoBi.Tests
 
-This projects contains unit tests for various aspects of the MoBi sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement PKSim.MoBi.IntegrationTests.ContextForIntegration<T> which is written specifically for setting up an envirnoment and registering all the dependencies necessary to run integration tests in MoBi. Also contains helper functions for those tests, mainly for creating objects to be used in the tets, like f.e. a `DimensionFactory`.
+This projects contains unit tests for various aspects of the MoBi sourcecode, such as Infrastructure, Presentation, PKSim.Core etc. The tests in this project implement the `OSPSuite.BDDHelper.ContextSpecification<T>`, except for the Integration Tests that implement PKSim.MoBi.IntegrationTests.ContextForIntegration<T> which is written specifically for setting up an environment and registering all the dependencies necessary to run integration tests in MoBi. Also contains helper functions for those tests, mainly for creating objects to be used in the tests, like f.e. a `DimensionFactory`.
 
 ### MoBi.UI.Tests
 
@@ -252,7 +252,7 @@ PK-Sim uses an SQLite database to store species, population etc. You can find a 
 
 ## Additional components and further reading
 
-Additionally to these three main solutions, more comonents are being used in the OSPSuiteas mentioned above.
+Additionally to these three main solutions, more components are being used in the OSPSuite as mentioned above.
 
 You can read more about the [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) ( that as mentioned above reads the model description in its XML format, creates a differential equations system from it and solves it), and specifically about how to find memory leaks in it here:
 
