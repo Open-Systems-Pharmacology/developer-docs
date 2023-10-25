@@ -34,7 +34,7 @@ Check version with `mono -V`. It should read `5.18.xxx`
 
 # .NET CORE SDK (For ubuntu 18.04..). 
 
-Install vary based on system. see https://aka.ms/dotnet-download
+Install vary based on system. see https://learn.microsoft.com/en-us/dotnet/core/install/linux
 (e.g. https://docs.microsoft.com/en-us/dotnet/core/install/linux-package-manager-ubuntu-1910)
 
 
