@@ -4,11 +4,11 @@
 
 When changing the values of domain objects in OSPSuite, instead of writing the values directly we are using Commands that change these objects. We do this for a few reasons. Firstly because we want to use the Commands to keep a history of changes that has happened to our data. This history also serves a regulatory purpose. 
 
-![The user can see the history of changes in the history view.](../assets/images/history.jpg)
+![The user can see the history of changes in the history view.](../assets/images/history.png)
 
 Additionally those commands give us the possibility to reverse the actions that have happened. The user can do this by selecting the command from the history and clicking undo.
 
-![Undoing commands.](../assets/images/undoing_commands.jpg)
+![Undoing commands.](../assets/images/undoing_commands.png)
 
 ## Structure of the class and writing a new command
 

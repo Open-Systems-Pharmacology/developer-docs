@@ -30,7 +30,7 @@ Severals third party components are being used in the application:
 
 The architecture used in PKSim IS NOT based on the traditional layered infrastructure. The traditional layer creates per construction a tight coupling between layers, as each layers depends on the layer beneath it and in general all layers depends on some cross-layer concerns such as security, logging etc usually defined in some kind of “infrastructure” layer. 
  
-![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](assets/images/Traditional_Layered_Architecture.png)
+![Traditional Layered Architecture (image from https://lorifpeterson.com/?p=64)](../assets/images/Traditional_Layered_Architecture.png)
 
 Instead, we used a fairly new infrastructure patterns called “Onion architecture”
 
@@ -39,7 +39,7 @@ Instead, we used a fairly new infrastructure patterns called “Onion architectu
 The idea behind this pattern is fairly simple: In a nutshell, ALL CODE CAN DEPEND ON LAYERS MORE CENTRAL, BUT CODE CANNOT DEPEND ON LAYER FURTHER OUT. The coupling is directed to the center of the architecture.
 The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have nothing to do in the core.
  
-![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](assets/images/onion_architecture_details.png)
+![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](../assets/images/onion_architecture_details.png)
 
 
 In this example, the IConferenceRepository interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resided in Infrastructure.
