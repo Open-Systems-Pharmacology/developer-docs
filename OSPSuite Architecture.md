@@ -51,9 +51,13 @@ The domain modal is always the center of the architecture and thus has no depend
 
 
 In this example, the `IConferenceRepository` interface is defined as a DomainServices that can thus be accessed from all presenters of the application. The implementation however resides in Infrastructure.
-This architecture relies HEAVILY on the use of the [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle) 
+
+This architecture relies HEAVILY on the use of the [Dependency Inversion Principle](http://en.wikipedia.org/wiki/Dependency_inversion_principle).
+
 The application core needs implementation of core interfaces, and if those implementing classes reside at the edges of the application, we need some mechanism for injecting that code at runtime so the application can do something useful.
-In OSPSuite, we did not have the need so separate Application Services from Domain Services. We just use services. But the concept remains the same.
+
+In OSPSuite, we did not have the need to separate Application Services from Domain Services. We just use services. But the concept remains the same.
+
 You can refer to the description of the onion architecture from the time of the original design of OSPSuite [part1](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/) , [part2](http://jeffreypalermo.com/blog/the-onion-architecture-part-2/) , [part3](http://jeffreypalermo.com/blog/the-onion-architecture-part-3/) and [part4](https://jeffreypalermo.com/2013/08/onion-architecture-part-4-after-four-years/) for more information on this design patterns. Since the adoption of the onion architecture from OSPSuite, it has become ever more popular. You can also refer to the 2022 article about the onion architecture [here](https://medium.com/expedia-group-tech/onion-architecture-deed8a554423).
 
 
@@ -100,7 +104,9 @@ This is our presentation layer. It contains of course our presenters, but also t
 
 ### OSPSuite.R
 
-Here we have all our functionalities for the interfacing with R programming language, through OSPSuite.R.
+![The OSPSuite.R project structure](assets/images/ospsuite_R.png)
+
+Here we have all our functionalities for the interfacing with R programming language, through OSPSuite.R. As part of the necessary preparation of this communication, it contains some side-effect-free classes and also minimal implementations of interfcaces necessary for the software to run, that are never going to be called in the R context, as well as their registrations. The minimal implementations are all contained in the MinimalImplementations folder. An obvious example for this is the  `OSPSuite.R.MinimalImplementations.DialogCreator` minimal implementation of `IDialogCreator`.
 
 ### OSPSuite.Starter
 
@@ -201,6 +207,10 @@ Just like the equivalent projects in OSPSuite.Core, these two projects contain t
 
 Contains the main functionalities of the PK-Sim application.
 
+### PKSim.Infrastructure
+
+This layers contains all code on serialization, project conversion, ORM Mapping with NHibernate and reporting that is specific to PKSim and is not included in OSPSuite.Core.Infrastructure and the OSPSuite.Core.Infrastructure.* projects.
+
 ### PKSim.Presentation
 
 It is the Presentation Layer specific for the PK-Sim application. Just like its equivalent in OSPSuite.Core, contains presenters, but also View Interfaces, DTOs and DTO mappers, UICommands and more. It has to be stressed that here should only be present the aforementioned elements that are unique to PK-Sim - elements of that type that are also common for MoBi should be added in OSPSuite.Core.Presentation.
@@ -208,6 +218,23 @@ It is the Presentation Layer specific for the PK-Sim application. Just like its 
 ### PKSim.UI
 
 Contains all Views and Controls specific only to the PK-Sim application. UI elements shared with MoBi exist in OSPSuite.Core.UI.
+
+### PKSim.CLI
+
+In this project we have code that enables the PKSim to be used from the command line. This can be used f.e. for task automatizations using projects and snapshots as input. It is also being used by the [InstallationValidator](https://github.com/Open-Systems-Pharmacology/InstallationValidator).
+
+### PKSim.CLI.Core
+
+Contains code of the main functionalities of the CLI. Here we also have the minimal implementetations of interfaces that are necessary for the OSPSuite code to run, but that we know that we are not going to be using in the command line scenario and thus they are not fully implemented. An obvious example for that would be the `CLIDialogCreator` minimal implementation of `IDialogCreator`.
+
+
+### PKSim.BatchTool
+
+Contains all the code related to the Batch Tool, that provides a graphic interface for the user to run PK-Sim tasks on json based PK-Sim simulations in batches. It can also be used to create a new project from snapshots and vice versa. It contains the necessary presenters, views and DTOs for this.  
+
+### PKSim.R
+
+This project contains the code necessary for the communcation between PK-Sim and R through the [ospsuite-R package](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
 
 ### PKSim.Tests
 
