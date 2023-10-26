@@ -234,7 +234,7 @@ Contains all the code related to the Batch Tool, that provides a graphic interfa
 
 ### PKSim.R
 
-This project contains the code necessary for the communιcation between PK-Sim and R through the [ospsuite-R package](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
+This project contains the code necessary for the communication between PK-Sim and R through the [ospsuite-R package](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
 
 ### PKSim.Tests
 
