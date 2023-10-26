@@ -2,7 +2,15 @@
 
 ## Introduction
 
-In this part we will describe the Open Systems Pharmacology Suite, a set of powerful and easy-to-use modeling & simulation tools for pharmaceutical and other life-sciences applications. Qualified and accepted by the scientific community including academia, regulatory agencies and industry. This includes the main parts of the Suite and their architecture. Namely we have the [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) where the main functionalities of the Suite reside that are common in all other applications, [PK-Sim](https://github.com/Open-Systems-Pharmacology/PK-Sim),  a comprehensive software tool for whole-body physiologically based pharmacokinetic modeling and [MoBi](https://github.com/Open-Systems-Pharmacology/MoBi), a software tool for multiscale physiological modeling and simulation that offers  more freedom for the user to import and set up models from scratch. Additionally, [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) is a package that package provides the functionality of loading, manipulating, and simulating the simulations created in the Open Systems Pharmacology Software tools PK-Sim and MoBi in the R programming language. There are additional parts to the OSPSuite universe, f.e. [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) that reads the model description in its XML format, creates a differential equations system from it and solves it. 
+In this part we will describe the Open Systems Pharmacology Suite, a set of powerful and easy-to-use modeling & simulation tools for pharmaceutical and other life-sciences applications. Qualified and accepted by the scientific community including academia, regulatory agencies and industry. This includes the main parts of the Suite and their architecture. Namely we have the following main components:
+
+ * [OSPSuite Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) where the main functionalities of the Suite reside that are common in all other applications. 
+ 
+ * [PK-Sim](https://github.com/Open-Systems-Pharmacology/PK-Sim),  a comprehensive software tool for whole-body physiologically based pharmacokinetic modeling  
+ 
+ * [MoBi](https://github.com/Open-Systems-Pharmacology/MoBi), a software tool for multiscale physiological modeling and simulation that offers  more freedom for the user to import and set up models from scratch. 
+ 
+ Additionally, [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) is a package that  provides the functionality of loading, manipulating, and simulating the simulations created in the Open Systems Pharmacology Software tools PK-Sim and MoBi in the R programming language. There are additional parts to the OSPSuite universe, f.e. [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) that reads the model description in its XML format, creates a differential equations system from it and solves it. 
 
 The structure of the OSPSuite Architecture can be visualised as follows:
 
@@ -13,17 +21,17 @@ The structure of the OSPSuite Architecture can be visualised as follows:
 ## Technology used
 
 The Core of the OSPSuite as well as PKSim and MoBi are written using the .NET Framework currently in version 4.8. The language used is C# 7.3.
-The architecture is based on the “onion architecture” and the view pattern used is the MVP pattern (MVC, MVVM etc.)
+The architecture is based on the “onion architecture” and the view pattern used is the MVP pattern (Model-View-Presenter, Model-View-ViewModel etc.)
 The underlying view engine is using Winforms. 
 
 Severals third party components are being used in the application:
--	DevExpress .Net WinForm Suite ( currently version 21.2.3). The DevExpress components are used in all views, even for the simplest UI elements such as button or label in order to support skins.
--	NHibernate (currently version 5.2.5). The ORM is used to serialize the pksim project into a SQLite database.
--	Castle (currently version 5.0.1). Excellent inversion of control container implementation.
--	NUnit (currently version 3.13.3). Simple yet powerful unit test framework.
--   Npoi (currently version 2.5.5). Used to read from and write to xml files. 
--	FakeItEasy (currently version 7.3.1). Used in conjunction with NUnit to mock objects used in tests.
--	Microsoft Extensions Logging (currently version 3.1.0). Used to log any warnings or error to a log file or to the console when debugging.
+-	DevExpress .Net WinForm Suite. The DevExpress components are used in all views, even for the simplest UI elements such as button or label in order to support skins.
+-	NHibernate. The ORM is used to serialize the pksim project into a SQLite database.
+-	Castle. Excellent inversion of control container implementation.
+-	NUnit. Simple yet powerful unit test framework.
+-   Npoi. Used to read from and write to xml files. 
+-	FakeItEasy. Used in conjunction with NUnit to mock objects used in tests.
+-	Microsoft Extensions Logging. Used to log any warnings or error to a log file or to the console when debugging.
 
 
 ## Architecture
