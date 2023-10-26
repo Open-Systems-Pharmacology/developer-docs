@@ -365,3 +365,5 @@ MyView
 ViewModel
 automatizations
 BatchTool
+InstallationValidator
+MinimalImplementations
