@@ -80,15 +80,17 @@ In this project we define all the icons and images that are common to both PK-Si
 ![The OSPSuite.Core project structure](assets/images/ospsuite_core_project.png)
 
 
-This is the central component of the infrastructure. 
-The namespace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
-The namespace Events contains the application wide events that will be thrown using the EventPublisher.
-The namespace Extensions contains extension method that are not defined for specific ospsuite objects(methods on strings or object etc..)
-The namespace Mappers contains mapping object converting one core object into another core one.
-The namespace Import contains functionalities necessary for the importing of Excel and .csv files.
-The namespace Model contains the business objects of the application such as Simulation,Compound , Individual etc.
-The namespace Reporting contains the report items objects used to generate on the fly reports and tool tips for mode objects
-The namespace Services contains the services and tasks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
+This is the central component of the infrastructure. It contains various namespaces:
+
+* The namespace Commands contains all the commands that can be executed in OSPSuite and are common to both PK-Sim and MoBi. The command can be added in the history 
+* The namespace Events contains the application wide events that will be thrown using the EventPublisher. 
+* The namespace Extensions contains extension method that are not defined for specific ospsuite objects(methods on strings or object etc..)
+* The namespace Mappers contains mapping object converting one core object into another core one.
+* The namespace Import contains functionalities necessary for the importing of Excel and .csv files.
+* The namespace Model contains the business objects of the application such as Simulation,Compound , Individual etc.
+* The namespace Reporting contains the report items objects used to generate on the fly reports and tool tips for mode objects
+* The namespace Services contains the services and tasks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
+
 Objects defined in OSPSuite.Core are registered in the IoC container using a special PKSimRegistrationConvention  convention: The code is well commented and should be studied for more information.
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
