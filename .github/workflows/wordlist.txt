@@ -362,3 +362,6 @@ JournalPageToJournalPageDTOMapper
 WithFormat
 screenBinder
 MyView
+ViewModel
+automatizations
+BatchTool

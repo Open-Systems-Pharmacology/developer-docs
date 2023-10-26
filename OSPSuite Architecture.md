@@ -106,7 +106,7 @@ This is our presentation layer. It contains of course our presenters, but also t
 
 ![The OSPSuite.R project structure](assets/images/ospsuite_R.png)
 
-Here we have all our functionalities for the interfacing with R programming language, through OSPSuite.R. As part of the necessary preparation of this communication, it contains some side-effect-free classes and also minimal implementations of interfcaces necessary for the software to run, that are never going to be called in the R context, as well as their registrations. The minimal implementations are all contained in the MinimalImplementations folder. An obvious example for this is the  `OSPSuite.R.MinimalImplementations.DialogCreator` minimal implementation of `IDialogCreator`.
+Here we have all our functionalities for the interfacing with R programming language, through OSPSuite.R. As part of the necessary preparation of this communication, it contains some side-effect-free classes and also minimal implementations of interfaces necessary for the software to run, that are never going to be called in the R context, as well as their registrations. The minimal implementations are all contained in the MinimalImplementations folder. An obvious example for this is the  `OSPSuite.R.MinimalImplementations.DialogCreator` minimal implementation of `IDialogCreator`.
 
 ### OSPSuite.Starter
 
@@ -225,7 +225,7 @@ In this project we have code that enables the PKSim to be used from the command 
 
 ### PKSim.CLI.Core
 
-Contains code of the main functionalities of the CLI. Here we also have the minimal implementetations of interfaces that are necessary for the OSPSuite code to run, but that we know that we are not going to be using in the command line scenario and thus they are not fully implemented. An obvious example for that would be the `CLIDialogCreator` minimal implementation of `IDialogCreator`.
+Contains code of the main functionalities of the CLI. Here we also have the minimal implementations of interfaces that are necessary for the OSPSuite code to run, but that we know that we are not going to be using in the command line scenario and thus they are not fully implemented. An obvious example for that would be the `CLIDialogCreator` minimal implementation of `IDialogCreator`.
 
 
 ### PKSim.BatchTool
@@ -234,7 +234,7 @@ Contains all the code related to the Batch Tool, that provides a graphic interfa
 
 ### PKSim.R
 
-This project contains the code necessary for the communcation between PK-Sim and R through the [ospsuite-R package](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
+This project contains the code necessary for the communιcation between PK-Sim and R through the [ospsuite-R package](https://github.com/Open-Systems-Pharmacology/OSPSuite-R).
 
 ### PKSim.Tests
 
