@@ -367,3 +367,4 @@ automatizations
 BatchTool
 InstallationValidator
 MinimalImplementations
+namespaces
