@@ -29,7 +29,7 @@ Severals third party components are being used in the application:
 -	NHibernate. The ORM is used to serialize the pksim project into a SQLite database.
 -	Castle. Excellent inversion of control container implementation.
 -	NUnit. Simple yet powerful unit test framework.
--   Npoi. Used to read from and write to xml files. 
+- Npoi. Used to read from and write to xml files. 
 -	FakeItEasy. Used in conjunction with NUnit to mock objects used in tests.
 -	Microsoft Extensions Logging. Used to log any warnings or error to a log file or to the console when debugging.
 
@@ -45,7 +45,7 @@ Instead, an infrastructure pattern was used called “Onion architecture”, tha
 ![Onion Architecture (image from https://medium.com/expedia-group-tech/onion-architecture-deed8a554423)](assets/images/onion_architecture.png)
  
 The idea behind this pattern is fairly simple: In a nutshell, ALL CODE CAN DEPEND ON LAYERS MORE CENTRAL, BUT CODE CANNOT DEPEND ON LAYER FURTHER OUT. The coupling is directed to the center of the architecture.
-The domain modal is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have no place in the core.
+The domain model is always the center of the architecture and thus has no dependencies whatsoever on other layers. In the layer Domain Services, we would typically find interfaces providing serialization behavior. The implementation however would be on the outside of the architecture (Infrastructure) as the serialization involved databases or xml manipulations that have no place in the core.
  
 ![Onion Architecture (image from https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/)](assets/images/onion_architecture_details.png)
 
@@ -91,7 +91,7 @@ This is the central component of the infrastructure. It contains various namespa
 * The namespace Reporting contains the report items objects used to generate on the fly reports and tool tips for mode objects
 * The namespace Services contains the services and tasks defined in the application and acting on the domain objects. All services interfaces are defined in this namespace. Implementation however can be found in another project. (see onion architecture). For instance, the ILazyLoadTask is defined in Services. The implementation LazyLoadTask is found in the infrastructure.
 
-Objects defined in OSPSuite.Core are registered in the IoC container using a special PKSimRegistrationConvention  convention: The code is well commented and should be studied for more information.
+Objects defined in OSPSuite.Core are registered in the IoC container using a special PKSimRegistrationConvention convention: The code is well commented and should be studied for more information.
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
 
