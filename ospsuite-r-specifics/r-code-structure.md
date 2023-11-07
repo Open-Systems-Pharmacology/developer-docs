@@ -123,6 +123,12 @@ So also note and we need an example: in the init we establish the communication 
 
 ## Updating Core dlls
 
+The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of teh .NET codebase is available, those dlls need to be updated manually. Those dlls reside under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). Let's take f.e. the case for updating the dlls for a change in OSPSuite.Core. [Appveyor](https://ci.appveyor.com/) (which is OSPSuite continuous integration tool) builds the nightly of the updated develop branch. The build of the nightly creates some artifacts, under which als exist the dlls that need to be copied to `OSPSuite-R/inst/lib/`:
+
+
+
+
+
 inst/lib are the dlls. Most of them come from Core, 
 
 ...but there are a few PKSim ones ()
@@ -138,4 +144,12 @@ we actually need the dlls in the package/repository, so we can make it work also
 
 # Repository Submodules
 
-Exactly the same as with PKSim and MoBi repositories, the OSPSuite.R repository has two submodules (and also scripts that are common to all solutions but not necessarily relevant for R): the pkparameters and the dimensions. Those comprise (mainly) of xml files that then get directly read by the application (or the R package in our case). When for example a new dimension has to be added, it is added to the subrepository and is automatically available in all other projects. 
+Exactly the same as with PKSim and MoBi repositories, the OSPSuite.R repository shares some common submodules 
+
+* [scripts](https://github.com/Open-Systems-Pharmacology/build-scripts) that contains scripts for bulding, updating and so on.
+
+* [PK Parameters](https://github.com/Open-Systems-Pharmacology/OSPSuite.PKParameters) that contains a list of PK Parameters supported by the OSPSuite
+
+* [Dimensions](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions) that contains a list of dimensions supported by the OSPSuite
+
+Supported PK Parameters and Dimensions are read on loading of the R package from the xml file that comes from the submodules. This means that when for example a new supported dimension is to be added for the OSPSuite, it need to be added only to the subrepository and is automatically available in all other projects. 
