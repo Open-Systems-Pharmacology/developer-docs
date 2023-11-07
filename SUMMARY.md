@@ -5,6 +5,7 @@
 ## Getting started
 
 * [Initial Resources](getting-started/initial-resources.md)
+* [OSPSuite Architecture](getting-started/OSPSuite-architecture.md)
 
 ## Setup
 
@@ -12,11 +13,18 @@
 * [C# Coding Standards](setup/coding\_standards.md)
 * [Setting up the developer environment for C#](setup/getting\_started.md)
 
-## OSPSuite-R Setup
+##  OSPSuite-R Package Specifics
+ 
+### OSPSuite-R Setup
 
-* [Setup OSPSuite-R on Windows](ospsuite-r-setup/setup-ospsuite-r-on-windows.md)
-* [Setup OSPSuite-R on CentOS7](ospsuite-r-setup/Setup-ospsuite-R-on-CentOS7.md)
-* [Setup OSPSuite-R on Ubuntu](ospsuite-r-setup/Setup-ospsuite-R-on-Ubuntu.md)
+* [Setup OSPSuite-R on Windows](ospsuite-r-specifics/setup-ospsuite-r-on-windows.md)
+* [Setup OSPSuite-R on CentOS7](ospsuite-r-specifics/Setup-ospsuite-R-on-CentOS7.md)
+* [Setup OSPSuite-R on Ubuntu](ospsuite-r-specifics/Setup-ospsuite-R-on-Ubuntu.md)
+
+### R Code structure
+
+* [R Code structure](ospsuite-r-specifics/r-code-structure.md)
+
 
 ## .NET Code Specifics
 
