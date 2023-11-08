@@ -23,7 +23,7 @@
 
 ### R Code structure
 
-* [R Code structure](ospsuite-r-specifics/R-code-structure.md)
+* [R Code structure](ospsuite-r-specifics/r-code-structure.md)
 
 
 ## .NET Code Specifics
