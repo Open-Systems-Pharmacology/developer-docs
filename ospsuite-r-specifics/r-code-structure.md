@@ -132,28 +132,41 @@ outputSchema = function(value) {
     private$readOnlyProperty("outputSchema", value, private$.settings$outputSchema)
 }
 ```
+PLease not that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
+
+[simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R)
+```
+#' @description
+#' Print the object to the console
+#' @param ... Rest arguments.
+print = function(...) {
+    private$printClass()
+    private$printLine("Number of individuals", self$count)
+    invisible(self)
+}
+```
+
 
 Many times the basic access to the object methods and properties is not sufficient, and we need further functionalities on the objects. For this we create a functions that work on that objects and pack them in separate utilities files. For our example with simulation, we have [utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/utilities-simulation.R). These utilities files contain R code that works on the created objects of the class, but also if necessary rClr calls to .NET functions that work on the objects. Note that rClr functions that just expose properties or methods of the objects do NOT belong here, but in the R wrapper class. 
 
+Please also note that per convention all functions that are only used internally by the package are named starting with a dot. For example `.runSingleSimulation` and not just `runSingleSimulation`:
+
+[utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/utilities-simulation.R)
+```
+.runSingleSimulation <- function(simulation, simulationRunOptions, population = NULL, agingData = NULL) {
+```
 
 
 
-
-
-
-
-
---- in tests we have sample code
-
-
-
-
---- to also check: every class in R corresponding to a .NET class should implement a meaningful print method.(26')
+The communication between R and .NET does not come without some overhead. This means that when we can avoid it we should. 
 
 (29') we do not always have a separate class in R for .NET objects. Sometimes there are "intermediate" objects that just get created and used in .NET and we let them just exist there. A good example for this is the dimension (also has_dimension in utilities units and the dimension_task)
 
 
-### Tasks and taks cache
+### Tasks and task caching
+
+Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the IoC container. In order to avoid having to get them from .NET all the time, we cache them on the R side. Let's take a look at the dimension task as an example:
+
 --- then we also have to check the dimensionTask in the OSPSuite Core end.
 
 the communication between R and .NET is relatively slow, so we should also try to avoid passing objects from one to another of there is no explicit reason for this.
@@ -162,10 +175,11 @@ that's why we are caching tasks for example and not creating or getting them ane
 
 also all internal functions to the package (meaning that they are not exposed to the user) are named beggining with a dot.
 
-here example:
 
-So also note and we need an example: in the init we establish the communication with the .NET dlls through rClr. also add a link to the ospsuite.R repository in Core.
 
+### Tests
+
+The OSPSuite-R package is well tested and you can find all the code for the tests as usual under [testthat](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/tests/testthat). Apart from guaranteeing the correct and consistent functioning of the package, the tests are also a good entry point to finding out about how the rest of the code works, f.e. how objects get created and used and so on.
 
 ## Updating Core dlls
 
