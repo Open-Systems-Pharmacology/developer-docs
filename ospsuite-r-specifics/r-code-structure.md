@@ -2,11 +2,11 @@
 
 ## Introduction
 
-In this part of the documentation we will talk about the specifics of the [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) package. This is a package that offers the functionalities of OSPSuite to the R language. We will anaylize its elements and code structure, as well as the components that enable us to interface between the OSPSuite codebase in the .NET universe and the R programming language. 
+In this part of the documentation we will talk about the specifics of the [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) package. This is a package that offers the functionalities of OSPSuite to the R language. We will analyze its elements and code structure, as well as the components that enable us to interface between the OSPSuite codebase in the .NET universe and the R programming language. 
 
 ## OSPSuite-R communication with .NET
 
-As mentioned, through the OSPSuite-R package we get OSPSuite functionalities available in the R programming language. Those OSPSuite functionalities though have been developed and exist in the .NET universe. In order to provide them in R we have to enable communication bewtween R and .NET. To do this we are currently using the [rClr package](https://github.com/Open-Systems-Pharmacology/rClr). This package allows the communication between R and .NET using C++ as an intermediate layer. .NET can communicate with C++ using a custom native host and C++ can then communicate with R through the R .C interface. This is why we need to have the rClr package installed in R for OSPSuite-R to work. Using rClr we can load the dlls produced from the .NET code and use them.
+As mentioned, through the OSPSuite-R package we get OSPSuite functionalities available in the R programming language. Those OSPSuite functionalities though have been developed and exist in the .NET universe. In order to provide them in R we have to enable communication between R and .NET. To do this we are currently using the [rClr package](https://github.com/Open-Systems-Pharmacology/rClr). This package allows the communication between R and .NET using C++ as an intermediate layer. .NET can communicate with C++ using a custom native host and C++ can then communicate with R through the R .C interface. This is why we need to have the rClr package installed in R for OSPSuite-R to work. Using rClr we can load the dlls produced from the .NET code and use them.
 
 ![Schema of OSPSuite-R and OSPSuite .NET codebase communication.](../assets/images/r_dotnet_schema.png)
 
@@ -83,7 +83,7 @@ wrapReadOnlyProperty = function(propertyName, value) {
 
 As you can see the wrapper class encapsulates the rClr calls that work on the objects. This is very important. In the OSPSuite-R package the user should never directly have to use or see rClr calls: they are all encapsulated in the wrapper classes or their utilities (that function as extensions to those classes, we will get to that a bit later on).
 
-Specific .NET classes are being wrapped by their corresponding wrapper classes. Those wrapper classes HAVE to be defined in a separate file named ofter the R class. For example we have the R Simulation class that wraps an OSPSuite simulation and is defined in [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R). 
+Specific .NET classes are being wrapped by their corresponding wrapper classes. Those wrapper classes HAVE to be defined in a separate file named after the R class. For example we have the R Simulation class that wraps an OSPSuite simulation and is defined in [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R). 
 
 Note that this class derives from `ObjectBase`, that is basically a `DotNetWrapper` with a Name and Id added to it:
 
@@ -132,7 +132,7 @@ outputSchema = function(value) {
     private$readOnlyProperty("outputSchema", value, private$.settings$outputSchema)
 }
 ```
-PLease not that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
+Please not that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
 
 [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R)
 ```
@@ -213,13 +213,13 @@ The OSPSuite-R package is well tested and you can find all the code for the test
 
 ## Updating Core dlls
 
-The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of teh .NET codebase is available, those dlls need to be updated manually. Those dlls reside under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). Let's take f.e. the case for updating the dlls for a change in OSPSuite.Core. [Appveyor](https://ci.appveyor.com/) (which is OSPSuite continuous integration tool) builds the nightly of the updated develop branch. The build of the nightly creates some artifacts, under which als exist the dlls that need to be copied to `OSPSuite-R/inst/lib/`:
+The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of the .NET codebase is available, those dlls need to be updated manually. Those dlls reside under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). Let's take f.e. the case for updating the dlls for a change in OSPSuite.Core. [Appveyor](https://ci.appveyor.com/) (which is OSPSuite continuous integration tool) builds the nightly of the updated develop branch. The build of the nightly creates some artifacts, under which als exist the dlls that need to be copied to `OSPSuite-R/inst/lib/`:
 
 # Repository Submodules
 
 Exactly the same as with PKSim and MoBi repositories, the OSPSuite.R repository shares some common submodules 
 
-* [scripts](https://github.com/Open-Systems-Pharmacology/build-scripts) that contains scripts for bulding, updating and so on.
+* [scripts](https://github.com/Open-Systems-Pharmacology/build-scripts) that contains scripts for building, updating and so on.
 
 * [PK Parameters](https://github.com/Open-Systems-Pharmacology/OSPSuite.PKParameters) that contains a list of PK Parameters supported by the OSPSuite
 
