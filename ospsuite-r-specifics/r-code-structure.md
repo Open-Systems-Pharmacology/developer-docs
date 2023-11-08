@@ -165,17 +165,47 @@ The communication between R and .NET does not come without some overhead. This m
 
 ### Tasks and task caching
 
-Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the IoC container. In order to avoid having to get them from .NET all the time, we cache them on the R side. Let's take a look at the dimension task as an example:
+Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the IoC container. Let's see for example how we can use the HasDimension utility function of the unit wrapper class to check if a dimension (provided as a string) is supported.
 
---- then we also have to check the dimensionTask in the OSPSuite Core end.
+[utilities-units.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/utilities-units.R)
+```
+#' @param dimension String name of the dimension.
+#' @details Returns `TRUE` if the provided dimension is supported otherwise `FALSE`
+#' @export
+hasDimension <- function(dimension) {
+  validateIsString(dimension)
+  dimensionTask <- .getNetTaskFromCache("DimensionTask")
+  rClr::clrCall(dimensionTask, "HasDimension", enc2utf8(dimension))
+}
+```
 
-the communication between R and .NET is relatively slow, so we should also try to avoid passing objects from one to another of there is no explicit reason for this.
---especially for tasks.
-that's why we are caching tasks for example and not creating or getting them anew every time we need them. we actually have a function that automatically checks if we have a task with that name in the cache, and if not we create it and add it to the cache.
 
-also all internal functions to the package (meaning that they are not exposed to the user) are named beggining with a dot.
+As you can see in order to retrieve the Dimension Task, we call the internal function `.getNetTaskFromCache`. In order to avoid having to get them from .NET all the time, we cache them on the R side. As you can see in [get-net-task.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/get-net-task.R)
 
+```
+.
+.
+.
 
+#' @title .getNetTaskFromCache
+#' @description Get an instance of the specified `.NET` Task that is retrieved
+#' from cache if already initiated. Otherwise a new task will be initiated and
+#' cached in the `tasksEnv`.
+#'
+#' @param taskName The name of the task to retrieve (**without** `Get` prefix).
+#'
+#' @return returns an instance of of the specified `.NET` task.
+#'
+#' @keywords internal
+.getNetTaskFromCache <- function(taskName) {
+  if (is.null(tasksEnv[[taskName]])) {
+    tasksEnv[[taskName]] <- .getNetTask(taskName)
+  }
+  return(tasksEnv[[taskName]])
+}
+```
+
+we cache the tasks in the `tasksEnv[]` list. If we do not find a task in the cache we retrieve it from .NET through an rClr call and we also add it to the cache for future use.
 
 ### Tests
 
@@ -184,23 +214,6 @@ The OSPSuite-R package is well tested and you can find all the code for the test
 ## Updating Core dlls
 
 The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of teh .NET codebase is available, those dlls need to be updated manually. Those dlls reside under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). Let's take f.e. the case for updating the dlls for a change in OSPSuite.Core. [Appveyor](https://ci.appveyor.com/) (which is OSPSuite continuous integration tool) builds the nightly of the updated develop branch. The build of the nightly creates some artifacts, under which als exist the dlls that need to be copied to `OSPSuite-R/inst/lib/`:
-
-
-
-
-
-inst/lib are the dlls. Most of them come from Core, 
-
-...but there are a few PKSim ones ()
-????.config nuget : not sure how this works, probably just for appveyor??? 
-
-after updating you have to push
-
-
-(55') also let's do screenshots for the nightly f.e.
-
-and we have to check a bit what we do with the nuget versioning. 
-we actually need the dlls in the package/repository, so we can make it work also without OSPSuite code. 
 
 # Repository Submodules
 
