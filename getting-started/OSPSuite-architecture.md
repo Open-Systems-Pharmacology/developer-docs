@@ -95,7 +95,7 @@ Objects defined in OSPSuite.Core are registered in the IoC container using a spe
 
 ### OSPSuite.Infrastructure and OSPSuite.Infrastructure.* projects
 
-This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the Serialization and its uses [here](NET-specifics/serialization.md) and also for the Commands [here](NET-specifics/commands.md).
+This layers contains all serialization code, from database initialization, Export and Import of Excel files, to ORM Mapping with NHibernate. It is divided in multiple projects named accordingly. The serializers for commands and model objects are also defined in this assembly as well as the project converter specifics. You can find more detailed documentation of the Serialization and its uses [here](NET-specifics/serialization.md) and also for the Commands [here](../NET-specifics/commands.md).
 
 ### OSPSuite.Presentation
 
