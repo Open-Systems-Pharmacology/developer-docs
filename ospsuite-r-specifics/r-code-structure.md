@@ -1,4 +1,4 @@
-# OSPSuite Architecture
+# OSPSuite-R Package Structure
 
 ## Introduction
 
@@ -20,7 +20,7 @@ The general file and code structure of the package follows the best practices of
 As per convention with R packages, [zzz.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/zzz.R) is the first file that gets executed when loading the package. This is the normal way that R packages work. In our case it does not do much more than check that we are running under the necessary x64 version of R and then call .initPackage(). [init-package.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/init-package.R) then uses rClr to call the entry point of the OSPSuite-R package in the .NET code of OSPSuite.Core.
 
 
-### Package entry point on the .NET side.
+### Package entry point to .NET
 
 The entry point as well as the necessary preparations and interfacing in the .NET side of the OSPSuite exists in the [OSPSuite.R project](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/tree/develop/src/OSPSuite.R) of OSPSuite.Core. This also means in terms of compiled code that the entry point resides in the OSPSuite.R.dll. Specifically in the initialize function from the R side we load the OSPSuite.R.dll and call InitializeOnce() on the .NET side through rClr.
 
@@ -55,51 +55,97 @@ On the .NET side, the [OSPSuite.R project](https://github.com/Open-Systems-Pharm
 
 ### Object oriented design and rClr encapsulation
 
-Then the package creates in the R universe objects that corresponds to the OSPSuite objects of the .NET universe. In order to facilitate this on the R side we are creating wrapper classes for all those objects. In R there are various object-oriented frameworks, but in the case of OSPSuite-R we are using [R6](https://r6.r-lib.org/) to create objects and work with them. 
+As already mentioned the OSPSuite-R package is strongly object oriented. In R there are various object-oriented frameworks, but in the case of OSPSuite-R we are using [R6](https://r6.r-lib.org/) to create objects and work with them. Since the .NET codebase of OSPSuite is object oriented, the calls that we do it through rClr have as a result the creation of objects in the .NET universe. Then we proceed to work on those objects through getters, setter, methods etc. Those objects that get passed to the R universe through rClr we encapsulate in wrappers. Our main base wrapper class for .NET is [DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/dot-net-wrapper.R). All other wrapper classes for specific types of objects ( f.e. fro a simulation) ultimately inherit from `DotNetWrapper`.
 
-This wrapper is defined in the dot-net-wrapper class
+As you can see in the code of the class, it takes care of the basic initialization of the object (`initialize` is the R6 equivalent of a C# constructor) by internally saving a reference to the .NET object:
 
-code snippet
+[DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/dot-net-wrapper.R)
+```
+#' Initialize a new instance of the class
+#' @param ref Instance of the `.NET` object to wrap.
+#' @return A new `DotNetWrapper` object.
+initialize = function(ref) {
+    private$.ref <- ref
+}
+```
+Then this base wrapper class also defines basic access operations to the encapsulated class. A good such example is how readonly access to a property of the object is provided.
 
-So when a .NET object is created and then with the help of rClr passed over to R, we are wrapping it with an object of this class. All the classes for OSPSuite objects used in the package inherit from this parent class.
+[DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/dot-net-wrapper.R)
+```
+# Simple way to wrap a get; .NET Read-Only property
+wrapReadOnlyProperty = function(propertyName, value) {
+    .
+    .
+    .
+    rClr::clrGet(self$ref, propertyName)
+}
+```
 
-then we have entity, base object aso that are main categories of objects in the package and they inheri then directly aso.
+As you can see the wrapper class encapsulates the rClr calls that work on the objects. This is very important. In the OSPSuite-R package the user should never directly have to use or see rClr calls: they are all encapsulated in the wrapper classes or their utilities (that function as extensions to those classes, we will get to that a bit later on).
 
-In order to keep things well organized, classes are defined in separate files that are named after the class ( f.e. class simulation is defined in file simulation.R).
+Specific .NET classes are being wrapped by their corresponding wrapper classes. Those wrapper classes HAVE to be defined in a separate file named ofter the R class. For example we have the R Simulation class that wraps an OSPSuite simulation and is defined in [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R). 
 
--- check what we have in the definition and what in then "extensions"
-For something more complicated we can showcase a simulation:
+Note that this class derives from `ObjectBase`, that is basically a `DotNetWrapper` with a Name and Id added to it:
+
+[simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R)
+```
+Simulation <- R6::R6Class(
+  "Simulation",
+  cloneable = FALSE,
+  inherit = ObjectBase,
+  .
+  .
+
+```
+
+[object-base.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/object-base.R)
+```
+#' @title ObjectBase
+#' @docType class
+#' @description  Abstract wrapper for an OSPSuite.Core ObjectBase.
+#'
+#' @format NULL
+#' @keywords internal
+ObjectBase <- R6::R6Class(
+  "ObjectBase",
+  cloneable = FALSE,
+  inherit = DotNetWrapper,
+  active = list(
+    #' @field name The name of the object. (read-only)
+    name = function(value) {
+      private$wrapReadOnlyProperty("Name", value)
+    },
+    #' @field id The id of the .NET wrapped object. (read-only)
+    id = function(value) {
+      private$wrapReadOnlyProperty("Id", value)
+    }
+  )
+)
+```
+
+As you can see in the R simulation class, we provide access to simulation properties (like f.e. the simulation Output Schema) using the functionalities of the `DotNetWrapper`:
+
+[simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R)
+```
+#' @field outputSchema outputSchema object for the simulation (read-only)
+outputSchema = function(value) {
+    private$readOnlyProperty("outputSchema", value, private$.settings$outputSchema)
+}
+```
+
+Many times the basic access to the object methods and properties is not sufficient, and we need further functionalities on the objects. For this we create a functions that work on that objects and pack them in separate utilities files. For our example with simulation, we have [utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/utilities-simulation.R). These utilities files contain R code that works on the created objects of the class, but also if necessary rClr calls to .NET functions that work on the objects. Note that rClr functions that just expose properties or methods of the objects do NOT belong here, but in the R wrapper class. 
 
 
--- what happens when we create a new object:(10')
-
-In R6 the initialize function works as the class constructor.
-
-(do we have in this file the methods necessary to create the object -and set things)
-
-then in a separate (one could say extension-like) file we have methods that "work" on those objects that exist in the utilities files (example here)
 
 
-creating a new object always goes through an rClr call to the .NET code, that creates the object and returns ot to R. Then we create a new wrapper object in R and encapsulate the reference of the .NET object. So the wrapper constructor always receives a reference to an rClr object. 
-
-The user does not need to directly call rClr functions, or interface with rClr in any other way. All those functionalities that require rClr calls are encapsulated in the code of these wrapper objects and their utilities.
-
-the wrapper has getters and setters for the object. Of course those as well go through the clr:Get (check how this is written) and clr:Set functions of rClr - which are not reveiled to the user of thre package. (15') - so usually let's say the rClr calls are done within the wrapper class.
-
-exposing of the object properties to user and the reast of the package (fe readonly properties like path of the simulaiton) also happens through the wrapper.
-
-most object come from object base (so all objects that need to have Name and Id)
 
 
-show some code examples fe (21') we can go through the whole chain of calls for a readonly property. 
 
-I am guessing we only get readonly properties. it makes little sense to get something editable / just check if we ever call clr:get in any other point.
+
 
 --- in tests we have sample code
 
 
-new .NET classes should also be in a separate class/file and so on , and then expose the public properties of the class with R6 through the wrapper. rClr calls should not be visible to the user of the package.
-- ideally also not in the utilities, but this is actually not true in the package. (check a bit the uitilities code actually)
 
 
 --- to also check: every class in R corresponding to a .NET class should implement a meaningful print method.(26')
