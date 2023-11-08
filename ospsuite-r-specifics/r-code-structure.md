@@ -213,7 +213,32 @@ The OSPSuite-R package is well tested and you can find all the code for the test
 
 ## Updating Core dlls
 
-The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of the .NET codebase is available, those dlls need to be updated manually. Those dlls reside under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). Let's take f.e. the case for updating the dlls for a change in OSPSuite.Core. [Appveyor](https://ci.appveyor.com/) (which is OSPSuite continuous integration tool) builds the nightly of the updated develop branch. The build of the nightly creates some artifacts, under which also exist the dlls that need to be copied to `OSPSuite-R/inst/lib/`:
+The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of the .NET codebase is available, those dlls need to be updated semi-manually. Those dlls have to exist under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). 
+
+The first step to updating to a newer version of Core is updating the nuget package versions to the correct version. For this you have to manually edit the version numbers in [packages.config](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/packages.config), like the version number in OSPSuite.Core seen here underneath:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  .
+  .
+  .
+
+  <package id="OSPSuite.Core" version="12.0.242"/>
+  .
+  .
+
+</packages>
+```
+
+Then you have to go to the command line in the OSPSuite-R repository main folder and run:
+```
+nuget restore packages.config -PackagesDirectory packages
+```
+Note that nuget has to have been added to the Path, otherwise you will need to provide the full path to nuget.exe.
+
+This will fill the `OSPSuite-R/packages/`packages folder with the correct updated packages. Then you need to manually copy them and paste them to `OSPSuite-R/inst/lib/`.
+
 
 # Repository Submodules
 
