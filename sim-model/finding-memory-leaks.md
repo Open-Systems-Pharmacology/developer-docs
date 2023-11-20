@@ -1,3 +1,8 @@
+# Introduction
+
+The [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel) is a the component of the OSPSuite, written mainly in C++, that reads the model description in its XML format, creates a differential equations system from it and solves it. In this part of the documentation we will describe how to use the Visual Leak Detector to detect memory leaks in the C++ code.
+
+# Using the Visual Leak Detector
 Looking for memory leaks in SimModel when used in PK-Sim (MoBi, etc. - same procedure)
 1. Install **Visual Leak Detector for Visual C++** (VLD) from ~https://github.com/KindDragon/vld/releases~
 <br>EDIT 2022: VLD development continues now here: https://github.com/Azure/vld (latest release: https://github.com/Azure/vld/releases)

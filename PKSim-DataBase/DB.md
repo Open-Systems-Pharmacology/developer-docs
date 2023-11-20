@@ -1,3 +1,6 @@
+# Introduction
+PK-Sim uses an [SQLite](https://www.sqlite.org/index.html) database to store species, population etc. In this part of the documentation, you can find a thorough documentation of the database and its tables.
+
 # General remarks  <a id="section-general-remarks"></a>
 
 When a database value describes a numeric property of a quantity (e.g., parameter value, allowed value range, etc.), the value is always stored in the **base unit of the dimension of the quantity**. 
