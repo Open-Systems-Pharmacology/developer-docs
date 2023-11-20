@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this part of the documentation we will talk about the OSPSuite Ui and the binding of data to graphic elements. We will present the elements that we are using to achieve this binding - either external like devexpress or internal to OSPSuite, like the OSPSuite.DataBinding repository.
+In this part of the documentation we will talk about the OSPSuite UI and the binding of data to graphic elements. We will present the elements that we are using to achieve this binding - either external like Devexpress or internal to OSPSuite, like the OSPSuite.DataBinding repository.
 
 # Data Binding Overview
 

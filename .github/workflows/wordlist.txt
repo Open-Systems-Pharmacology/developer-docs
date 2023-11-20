@@ -408,5 +408,24 @@ Submodules
 submodules
 subrepository
 tasksEnv
-
+deserialization
+pkmls
+knitr
+yihui
+tinytex
+DataCombined
+camelCase
+parameterToDelete
+performSimulation
+roxygen
+dplyr
+nz
+pkgs
+docstring
+add-in
+Booleans
+Rmarkdown
+Cyclomatic
+cyclocomp
+cyclomatic
 
