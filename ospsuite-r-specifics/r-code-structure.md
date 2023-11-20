@@ -132,7 +132,7 @@ outputSchema = function(value) {
     private$readOnlyProperty("outputSchema", value, private$.settings$outputSchema)
 }
 ```
-Please not that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
+Please note that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
 
 [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/simulation.R)
 ```
