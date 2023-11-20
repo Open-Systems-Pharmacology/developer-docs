@@ -1,3 +1,11 @@
+# Git Workflow
+
+## Introduction
+
+In this part of the documentation we will present the internal structure of the git repositories of OSPSuite, as well as the strategy for naming the branches and creating releases.
+
+# General
+
 The proposed workflow will use `git merge` and `git rebase` for different tasks. Our goal is to establish a workflow that will ensure a clean and useful public history graph. The public history should be concise yet clear and reflect the work of the team in a cohesive way.
 
 We will use `git merge` to incorporate the entire set of commit of one branch (typically the `develop` branch) into another one (typically `master`). 

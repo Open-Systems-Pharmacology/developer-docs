@@ -1,8 +1,4 @@
-# Best Practices R
-
-## Introduction
-
-In this part of the documentation we will present a compilation of useful information for R-developers.
+## Compilation of useful information for R-developers.
 
 ### theme
 

@@ -21,8 +21,9 @@
 * [Setup OSPSuite-R on CentOS7](ospsuite-r-specifics/Setup-ospsuite-R-on-CentOS7.md)
 * [Setup OSPSuite-R on Ubuntu](ospsuite-r-specifics/Setup-ospsuite-R-on-Ubuntu.md)
 
-### R Code structure
+### R Code Resources
 
+* [Best Practices R](ospsuite-r-specifics/best-practices-r.md)
 * [R Code structure](ospsuite-r-specifics/r-code-structure.md)
 
 
