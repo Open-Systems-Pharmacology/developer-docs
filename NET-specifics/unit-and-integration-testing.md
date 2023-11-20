@@ -1,7 +1,10 @@
 # Unit and Integration Testing
 
+## Introduction
 
-# Introduction
+In this part of the documentation we will present the structure of existing unit tests, as well as the abstract classes, helpers, contexts and other resources that have already been created to facilitate the creation and running of unit tests.
+
+# General
 
 Unit testing is an integral part of our software practices and we keep the code that we write well covered by tests. Currently Pull Requests are only being accepted if they contain at least one unit test ( with the logical exceptions e.g. a PR containing only package updates ) and the code can be considered well covered by unit tests. We try when possible to implement a Test-Driven-Development (TDD) approach, and specifically for fixing bugs it is strongly suggested to first write a failing test according to the error description and then fix the issue, to ensure the correct and permanent elimination of the bug.
 

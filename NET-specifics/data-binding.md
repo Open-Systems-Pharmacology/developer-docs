@@ -1,5 +1,9 @@
 # Data Binding
 
+## Introduction
+
+In this part of the documentation we will talk about the OSPSuite Ui and the binding of data to graphic elements. We will present the elements that we are using to achieve this binding - either external like devexpress or internal to OSPSuite, like the OSPSuite.DataBinding repository.
+
 # Data Binding Overview
 
 The graphical user interface of OSPSuite uses [Winforms](https://en.wikipedia.org/wiki/Windows_Forms) as its UI framework and the [Devexpress Winforms Component](https://docs.devexpress.com/WindowsForms/7874/winforms-controls) to provide additional controls and functionalities. In order to display the data on the controls, a data binding framework has been developed. The data binding is part of two separate repositories, [OSPSuite.DataBinding](https://github.com/Open-Systems-Pharmacology/OSPSuite.DataBinding) and the DevExpress specific [OSPSuite.DataBinding.DevExpress](https://github.com/Open-Systems-Pharmacology/OSPSuite.DataBinding.DevExpress). In almost all cases, simple bindings can be created to implement two way updating of view and objects.

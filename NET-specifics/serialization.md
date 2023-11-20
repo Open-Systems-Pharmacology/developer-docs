@@ -1,5 +1,9 @@
 # Serialization
 
+## Introduction
+
+In this part of the documentation we will talk about the serialization deserialization of classes and other data to xml. This serialization is used to save and load projects and pkmls.
+
 ## General
 
 The XML serialization engine used in the Open Systems Pharmacology Project can be found in the [OSPSuite.Serializer solution](https://github.com/Open-Systems-Pharmacology/OSPSuite.Serializer). The way the xml mapping works is pretty straightforward, mapping objects to xml elements and keeping the treelike structure where it exists, storing object names and serializing and deserializing according to Ids. This actually makes the xml for a project (a .pkml file for PKSim e.g.) intelligible, and one can even go through the contents of a project. 

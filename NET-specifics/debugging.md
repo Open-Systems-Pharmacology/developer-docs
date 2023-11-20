@@ -1,5 +1,9 @@
 # Debugging
 
+## Introduction
+
+In this part of the documentation we will talk about debugging in both the C# and R language worlds of OSPSuite. We will present some strategies, but also existing resources that facilitate debugging.
+
 # Debugging in OSPSuite.Core
 
 In order to be able to test some of the functionalities of the OSPSuite that reside in [OSPSuite.Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) there has been created in Core the OSPSuite.Starter project. You simply have to set it up as a startup project:

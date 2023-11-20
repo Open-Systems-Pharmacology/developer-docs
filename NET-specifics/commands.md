@@ -1,5 +1,9 @@
 # Commands
 
+## Introduction
+
+In this part of the documentation we will present the `Command` classes that are used to changed the values of the domain objects and its usages.
+
 ## General
 
 When changing the values of domain objects in OSPSuite, instead of writing the values directly we are using Commands that change these objects. We do this for a few reasons. Firstly because we want to use the Commands to keep a history of changes that has happened to our data. This history also serves a regulatory purpose. 
