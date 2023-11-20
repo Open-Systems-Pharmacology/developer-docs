@@ -6,7 +6,7 @@ In this part of the documentation we will talk about the specifics of the [OSPSu
 
 ## OSPSuite-R communication with .NET
 
-As mentioned, through the OSPSuite-R package we get OSPSuite functionalities available in the R programming language. Those OSPSuite functionalities though have been developed and exist in the .NET universe. In order to provide them in R we have to enable communication between R and .NET. To do this we are currently using the [rClr package](https://github.com/Open-Systems-Pharmacology/rClr). This package allows the communication between R and .NET using C++ as an intermediate layer. .NET can communicate with C++ using a custom native host and C++ can then communicate with R through the R .C interface. This is why we need to have the rClr package installed in R for OSPSuite-R to work. Using rClr we can load the dlls produced from the .NET code and use them.
+THe `OSPSuite-R` package offers acces to functionalities of OSPSuite that are implemented in .NET. The communication between R and .NET using C++ as an intermediate layer is provided by the [rClr package](https://github.com/Open-Systems-Pharmacology/rClr). .NET can communicate with C++ using a custom native host and C++ can then communicate with R through the R .C interface. Using `rClr` we can load the libraries compiled from the .NET code and use them.
 
 ![Schema of OSPSuite-R and OSPSuite .NET codebase communication.](../assets/images/r_dotnet_schema.png)
 
