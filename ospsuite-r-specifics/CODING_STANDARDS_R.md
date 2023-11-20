@@ -22,19 +22,19 @@ This coding standards will outline the more important aspects of the aforementio
 - Use UTF-8 text encoding (Ref: <https://yihui.org/en/2018/11/biggest-regret-knitr/>)
 
 
-<img src="figures/utf8.jfif" alt="drawing" width="300"/>
+<img src="../assets/images/utf8.jfif" alt="drawing" width="300"/>
 
 - Use `{tinytex}` for `LaTeX` compilation (Ref: <https://yihui.org/tinytex/pain/>)
 
-<img src="figures/tinytex.jfif" alt="drawing" width="300"/>
+<img src="../assets/images/tinytex.jfif" alt="drawing" width="300"/>
 
 - Use AGG graphics device (Ref: <https://www.tidyverse.org/blog/2021/02/modern-text-features/>)
 
-<img src="figures/agg.jfif" alt="drawing" width="300"/>
+<img src="../assets/images/agg.jfif" alt="drawing" width="300"/>
 
 - Use a blank slate (there should not be any residue from previous session when you start a new session to ensure long-term reproducibility of the software)
 
-<img src="figures/blank.PNG" alt="drawing" width="300"/>
+<img src="../assets/images/blank.PNG" alt="drawing" width="300"/>
 
 # Naming Convention
 
@@ -179,7 +179,7 @@ If a class has a private method, its name should start with `.` to highlight thi
 
 ## Spacing
 
-Use the `styler` addin for RStudio. It will style the files for you. For more, see [here](https://style.tidyverse.org/syntax.html#spacing)
+Use the `styler` add-in for RStudio. It will style the files for you. For more, see [here](https://style.tidyverse.org/syntax.html#spacing)
 
 ## Global Variables and Constants
 
@@ -291,7 +291,7 @@ E.g. the R package cyclocomp allows the calculation of cyclomatic complexity of 
 * `cyclocomp::cyclocomp_q(<R_expression>)`
 Example:
 
-![](figures/Cyclocomp_Example.png)
+![](../assets/images/Cyclocomp_Example.png)
 
 General advice is: **cyclomatic complexity of a function should not exceed the value of 15**
 https://en.wikipedia.org/wiki/Cyclomatic_complexity#Limiting_complexity_during_development
