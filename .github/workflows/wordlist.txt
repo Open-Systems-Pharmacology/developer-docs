@@ -428,4 +428,6 @@ Rmarkdown
 Cyclomatic
 cyclocomp
 cyclomatic
-
+addin
+bookdown
+rmarkdown
