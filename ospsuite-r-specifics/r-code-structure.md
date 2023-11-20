@@ -10,8 +10,9 @@ THe `OSPSuite-R` package offers access to functionalities of OSPSuite that are i
 
 ![Schema of OSPSuite-R and OSPSuite .NET codebase communication.](../assets/images/r_dotnet_schema.png)
 
-## OSPSuite-R code structure
+On the .NET side of the OSPSuite, the main project that functions as an entry point for R is [OSPSuite.R in OSPSuite.Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/tree/develop/src/OSPSuite.R). Through it, the package gains access to the other Core libraries that are necessary, like OSPSuite.Core and OSPSuite.Infrastructure. Additionally, in order to access PK-Sim functionalities, a separate entry point exists in the PK-Sim codebase, in [PKSim.R](https://github.com/Open-Systems-Pharmacology/PK-Sim/tree/develop/src/PKSim.R).
 
+## OSPSuite-R code structure
 
 The general file and code structure of the package follows the best practices of R packages. What is special in this package is that OSPSuite-R is strongly object-oriented. Usually R packages tend to be more functional-programming-oriented. This object-oriented tendency comes as a result of using many of the functionalities of PK-Sim and OSPSuite.Core, that are already structured in an object oriented way in .NET. 
 
@@ -162,7 +163,7 @@ The communication between R and .NET does not come without some overhead. This m
 
 ### Tasks and task caching
 
-Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the IoC container. Let's see for example how we can use the HasDimension utility function of the unit wrapper class to check if a dimension (provided as a string) is supported.
+Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the [IoC container](https://en.wikipedia.org/wiki/Inversion_of_control). Let's see for example how we can use the HasDimension utility function of the unit wrapper class to check if a dimension (provided as a string) is supported.
 
 [utilities-units.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/utilities-units.R):
 ```
@@ -232,7 +233,7 @@ Then you have to go to the command line in the OSPSuite-R repository main folder
 ```
 nuget restore packages.config -PackagesDirectory packages
 ```
-Note that nuget has to have been added to the Path, otherwise you will need to provide the full path to nuget.exe.
+Note that [nuget](https://learn.microsoft.com/en-us/nuget/install-nuget-client-tools?tabs=windows#nugetexe-cli) has to have been added to the Path (quick guide on how to do this [here](https://www.c-sharpcorner.com/article/how-to-addedit-path-environment-variable-in-windows-11/)), otherwise you will need to provide the full path to nuget.exe.
 
 This will fill the `OSPSuite-R/packages/`packages folder with the correct updated packages. Then you need to manually copy them and paste them to `OSPSuite-R/inst/lib/`.
 
