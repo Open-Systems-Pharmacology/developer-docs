@@ -22,7 +22,7 @@ The database can be found in the [PK-Sim repository under **src/Db/PKSimDB.sqlit
 
 ## DB Schema Diagrams 
 
-For this documentation segment, database schema diagrams were created using the [SchemaCrawler](https://www.schemacrawler.com/). You can find a short description of how to install and use the _SchemaCrawler_ for creating schema diagrams [here]( https://github.com/Open-Systems-Pharmacology/developer-docs/wiki/Using-SchemaCrawler-for-creating-of-database-schema-diagrams )
+For this documentation segment, database schema diagrams were created using the [SchemaCrawler](https://www.schemacrawler.com/). You can find a short description of how to install and use the _SchemaCrawler_ for creating schema diagrams [here]( https://github.com/Open-Systems-Pharmacology/developer-docs/wiki/Using-SchemaCrawler-for-creating-of-database-schema-diagrams ).
 
 # General remarks  <a id="section-general-remarks"></a>
 
