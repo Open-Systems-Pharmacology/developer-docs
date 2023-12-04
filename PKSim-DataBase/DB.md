@@ -5,7 +5,7 @@ More specifically, in the PK-Sim DB, we store:
 
 * Structural models for PBPK modeling of small and large molecules:
 * Anatomical and physiological parameters in different animal species and human populations for **healthy** individuals
-  * For details regarding parameterization of **diseased** individuals please refer to [tab_population_disease_states] (https://github.com/Open-Systems-Pharmacology/developer-docs/issues/19#tab_population_disease_states).
+  * For details regarding parameterization of **diseased** individuals please refer to [tab_population_disease_states](https://github.com/Open-Systems-Pharmacology/developer-docs/issues/19#tab_population_disease_states).
 * Templates for small and large molecules.
 * Templates for optional processes like
   * Metabolizing pathways
