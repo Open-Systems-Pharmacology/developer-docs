@@ -1,5 +1,28 @@
 # Introduction
-PK-Sim uses an [SQLite](https://www.sqlite.org/index.html) database to store species, population etc. In this part of the documentation, you can find a thorough documentation of the database and its tables.
+PK-Sim uses an [SQLite](https://www.sqlite.org/index.html) database to store data models and templates. In this part of the developer documentation we will present this database with a thorough description of its structure and tables.
+
+More specifically, in the PK-Sim DB, we store:
+
+* Structural models for PBPK modeling of small and large molecules:
+* Anatomical and physiological parameters in different animal species and human populations for **healthy** individuals
+  * For details regarding parameterization of **diseased** individuals please refer to [tab_population_disease_states] (https://github.com/Open-Systems-Pharmacology/developer-docs/issues/19#tab_population_disease_states).
+* Templates for small and large molecules.
+* Templates for optional processes like
+  * Metabolizing pathways
+  * Different active transporter types (influx, efflux, bidirectional)
+  * Protein binding partners
+* Templates for various administration routes and formulations
+* Prediction models for 
+  * Tissue partition coefficients
+  * Cellular permeabilities
+  * Intestinal permeability
+* Templates for events (meals etc.)
+
+The database can be found in the [PK-Sim repository under **src/Db/PKSimDB.sqlite**](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/Db/PKSimDB.sqlite).
+
+## DB Schema Diagrams 
+
+For this documentation segment, database schema diagrams were created using the [SchemaCrawler](https://www.schemacrawler.com/). You can find a short description of how to install and use the _SchemaCrawler_ for creating schema diagrams [here]( https://github.com/Open-Systems-Pharmacology/developer-docs/wiki/Using-SchemaCrawler-for-creating-of-database-schema-diagrams )
 
 # General remarks  <a id="section-general-remarks"></a>
 
