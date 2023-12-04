@@ -431,3 +431,6 @@ cyclomatic
 addin
 bookdown
 rmarkdown
+PKSimDB
+sqlite
+SchemaCrawler
