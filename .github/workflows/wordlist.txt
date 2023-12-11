@@ -439,3 +439,4 @@ IReadOnlyCollection
 DON'Ts
 IList
 IDictionary
+ICache
