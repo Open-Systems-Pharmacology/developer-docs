@@ -434,3 +434,8 @@ rmarkdown
 PKSimDB
 sqlite
 SchemaCrawler
+DOs
+IReadOnlyCollection
+DON'Ts
+IList
+IDictionary
