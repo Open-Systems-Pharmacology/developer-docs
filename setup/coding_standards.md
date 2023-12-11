@@ -73,3 +73,16 @@ Use meaningful and understandable names. Code should read as a story and only so
 * Always use block `{}` for `for` and `forEach` statements.
 * Always have a default case for `switch` statement, potentially throwing an exception if the default is unreachable.
 
+
+# **Best Practices**
+
+## DOs
+
+* Use IReadOnlyList/IReadOnlyCollection as return type or parameter of your public APIs instead of IEnumerable.
+* Create methods such as _Add_, _Remove_ in your class if you need to modify an internal list instead of exposing the list to the outside world.
+
+
+## DON'Ts
+
+* Do not use IList/List as a return type or parameter of public APIs (methods or class member). By using those, you are breaking encapsulation and anyone can modify the list which makes debugging very hard.
+* Do not use ICache/IDictionary as return type or parameter of public APIs. By doing so, you are duplicating the knowledge of how the key is constructed. This is also a break in encapsulation. Create your own class derived from Cache if you need to use a Cache construct as part of API.
