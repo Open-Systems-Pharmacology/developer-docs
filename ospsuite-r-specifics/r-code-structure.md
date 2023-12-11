@@ -18,7 +18,7 @@ The general file and code structure of the package follows the best practices of
 
 ### Initializing the package
 
-As per convention with R packages, [zzz.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/zzz.R) is the first file that gets executed when loading the package. This is the normal way that R packages work. In our case it does not do much more than check that we are running under the necessary x64 version of R and then call .initPackage(). [init-package.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/init-package.R) then uses rClr to call the entry point of the OSPSuite-R package in the .NET code of OSPSuite.Core.
+As per convention with R packages, [zzz.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/zzz.R) is the last file to be evaluated when loading the pacakage, since R loads package files [alphabetically](https://roxygen2.r-lib.org/articles/collate.html#:~:text=R%20loads%20files%20in%20alphabetical,t%20matter%20for%20most%20packages.). For this reason it is the place where `.onLoad()` function is called, to ensure that all the necessary functions defined in other files have already been evaluated. In our case, the `zzz.R` does not contain much more than a check that we are running under the necessary x64 version of R and then call .initPackage(). [init-package.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/R/init-package.R) then uses rClr to call the entry point of the OSPSuite-R package in the .NET code of OSPSuite.Core.
 
 
 ### Package entry point to .NET
