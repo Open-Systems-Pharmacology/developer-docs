@@ -1,8 +1,0 @@
-name: Spellcheck
-
-on: 
-  [push, pull_request]
-
-jobs:
-  Spellcheck:
-    uses: Open-Systems-Pharmacology/Workflows/.github/workflows/SpellChecker.yml@main
