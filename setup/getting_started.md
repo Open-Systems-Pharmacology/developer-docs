@@ -47,3 +47,5 @@ or
 ```
 dotnet nuget add source https://ci.appveyor.com/nuget/open-systems-pharmacology-ci -u <EMAIL_ADDRESS> -p <PASSWORD> -n AppVeyor
 ```
+
+If you set up your AppVeyor account using GitHub authentication, you'll need to contact an AppVeyor administrator to set up a password on AppVeyor to use for authentication.
