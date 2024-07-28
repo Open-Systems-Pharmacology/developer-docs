@@ -39,5 +39,11 @@
 1. The suite is using appveyor as a CI server which also provides a nuget feed that should be registered on your system. This will prevent you from having to enter AppVeyor password with each new instance of Visual Studio. This option is only available for developers with access to the appveyor feed. If you wish to be granted access to the feed, please let us know by posting a request in the forum.
 
 ```
-nuget sources add -Name AppVeyor -source https://ci.appveyor.com/nuget/open-systems-pharmacology-ci -User <USER_NAME> -Password <MY_PASSWORD>
+nuget sources add -Name AppVeyor -source https://ci.appveyor.com/nuget/open-systems-pharmacology-ci -User <EMAIL_ADDRESS> -Password <MY_PASSWORD>
+```
+
+or
+
+```
+dotnet nuget add source https://ci.appveyor.com/nuget/open-systems-pharmacology-ci -u <EMAIL_ADDRESS> -p <PASSWORD> -n AppVeyor
 ```
