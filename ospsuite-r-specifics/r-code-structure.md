@@ -213,7 +213,7 @@ The OSPSuite-R package is well tested and you can find all the code for the test
 
 The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of the .NET codebase is available, those dlls need to be updated semi-manually. Those dlls have to exist under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). 
 
-The first step to updating to a newer version of Core is updating the nuget package versions to the correct version. For this you have to manually edit the version numbers in [packages.config](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/develop/packages.config), like the version number in OSPSuite.Core seen here underneath:
+The first step to updating to a newer version of Core is updating the nuget package versions to the correct version. For this you have to manually edit the version numbers in packages.config, like the version number in OSPSuite.Core seen here underneath:
 
 ```
 <?xml version="1.0" encoding="utf-8"?>

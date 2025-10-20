@@ -110,7 +110,7 @@ When a vulnerability is identified, Dependabot automatically notifies the develo
 
 ### Release security: VirusTotal scanning and badges
 
-To help you use the OSP Suite and its standalone tools (PK-Sim and MoBi) with confidence, every release is scanned for viruses and other threats before publication. All installer and archive formats (EXE, MSI and ZIP) are submitted to [VirusTotal](VirusTotal.com) for independent, multi-engine analysis. 
+To help you use the OSP Suite and its standalone tools (PK-Sim and MoBi) with confidence, every release is scanned for viruses and other threats before publication. All installer and archive formats (EXE, MSI and ZIP) are submitted to [VirusTotal](https://www.virustotal.com) for independent, multi-engine analysis. 
 A badge is then added to each GitHub release that links directly to the corresponding VirusTotal scan results. 
 
 Example:
