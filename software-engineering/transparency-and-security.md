@@ -68,7 +68,7 @@ Example: [https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/b
 * Build history entries cannot be modified
 
 ### Software validation and qualification
-An overview of validation steps and links to validation/test reports are published with every OSP Suite release on GitHub ([https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation and qualification](https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation%20and%20qualification)) E.g., the test reports of the OSP Suite version 8 contain more than 10,000 tests.
+An overview of validation steps and links to validation/test reports are published with every OSP Suite release on GitHub ([https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation%20and%20qualification](https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation%20and%20qualification)) E.g., the test reports of the OSP Suite version 8 contain more than 10,000 tests.
 
 Qualification reports of the OSP platform are published on GitHub. Examples:
 
