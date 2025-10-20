@@ -48,7 +48,8 @@ This process is fully automated. Particularly:
   * Name of the person who has integrated the changes (accepted the corresponding PR)
   * Links to associated validation reports
   
-Example: https://github.com/Open-Systems-Pharmacology/Suite/commits/master
+
+Example: [https://github.com/Open-Systems-Pharmacology/Suite/commits/master](https://github.com/Open-Systems-Pharmacology/Suite/commits/master)
 
 * Code changes history entries cannot be modified
 
@@ -61,15 +62,73 @@ Example: https://github.com/Open-Systems-Pharmacology/Suite/commits/master
   * Test protocols of all automated tests
   * All produced build artifacts
   
-Example: https://github.com/Open-Systems-Pharmacology/Suite/actions
+
+Example: [https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish.yml](https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish.yml)
 
 * Build history entries cannot be modified
 
 ### Software validation and qualification
-An overview of validation steps and links to validation/test reports are published with every OSP Suite release on GitHub (https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation%20and%20qualification) E.g., the test reports of the OSP Suite version 8 contain more than 10,000 tests.
+An overview of validation steps and links to validation/test reports are published with every OSP Suite release on GitHub ([https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation and qualification](https://github.com/Open-Systems-Pharmacology/Suite/tree/master/validation%20and%20qualification)) E.g., the test reports of the OSP Suite version 8 contain more than 10,000 tests.
 
 Qualification reports of the OSP platform are published on GitHub. Examples:
 
-* https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_GFR_Ontogeny/releases
-* https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP3A4_Ontogeny/releases
-* https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP2C8_Ontogeny/releases
+* [https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_GFR_Ontogeny/releases](https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_GFR_Ontogeny/releases)
+* [https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP3A4_Ontogeny/releases](https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP3A4_Ontogeny/releases)
+* [https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP2C8_Ontogeny/releases](https://github.com/Open-Systems-Pharmacology/Pediatric_Qualification_Package_CYP2C8_Ontogeny/releases)
+
+## Security 
+
+### Branch protection
+The **default** branch and the **main** branch (if different from the default) in the code repositories are protected using GitHub's [branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule).
+
+* This prevents any user (including repository maintainers and organization administrators) from directly pushing code into a protected branch without first creating a pull request.
+* Every pull request can only be merged after being approved by the repository maintainer(s).
+  ![Branch Protection](../assets/images/branch-protection.png) 
+
+### Static Application Security Testing (SAST)
+
+SAST is fully integrated into the OSP CI Pipeline via GitHub's [CodeQL](https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql), which is part of _GitHub Advanced Security_ (GHAS).
+* Source code is scanned for vulnerabilities with every modification and before a pull request is merged into the code base.
+  
+  ![CodeQL Pull Request](../assets/images/CodeQL_PR.png) 
+  
+* Additionally, the existing code base is scanned weekly.
+  
+  * All found security alerts appear directly in the **Security** tab of a repository and can be quickly addressed by the development team.
+  
+    ![CodeQL Code Analysis](../assets/images/CodeQL_CodeScanningResult.png) 
+
+
+
+### Software Composition Analysis (SCA)
+
+The OSP codebase is protected by continuous Software Composition Analysis (SCA) using [GitHub Dependabot](https://docs.github.com/code-security/dependabot). Dependabot monitors open-source dependencies against the _GitHub Advisory Database_ and _Common Vulnerabilities and Exposures (CVE)_ database.
+
+When a vulnerability is identified, Dependabot automatically notifies the developers and creates pull requests with safe, patched versions. The OSP developer team then reviews and merges these updates promptly.
+
+![Dependabot Alerts](../assets/images/DependabotAlerts.png) 
+
+### Release security: VirusTotal scanning and badges
+
+To help you use the OSP Suite and its standalone tools (PK-Sim and MoBi) with confidence, every release is scanned for viruses and other threats before publication. All installer and archive formats (EXE, MSI and ZIP) are submitted to [VirusTotal](VirusTotal.com) for independent, multi-engine analysis. 
+A badge is then added to each GitHub release that links directly to the corresponding VirusTotal scan results. 
+
+Example:
+<a href="https://www.virustotal.com/gui/file/33f877bc926c5c3fe2634183a51938039b91664a23c545d201b2a6b8f061a531"><img src="https://img.shields.io/badge/Scanned%20by%20VirusTotal-000000?style=for-the-badge&logo=virustotal&logoColor=white&labelColor=blue&color=green"></a>
+
+* What is VirusTotal?
+  * [VirusTotal](https://www.virustotal.com/) is a file and URL scanning service that aggregates results from 60+ antivirus engines and reputation services. It also uses static and dynamic (sandbox) analysis.
+  * Reports typically include:
+    * A detection summary (e.g. 'No security vendors flagged this file' or 'The number of engines that flagged it').
+    * Per-vendor verdicts and details.
+    * Behavioral and sandbox observations (where applicable).
+    * File metadata, such as hashes (SHA-256), size and first/last seen times.
+
+* How to interpret the results:
+  * A clean result across all engines indicates that the file is likely to be safe. 
+  * False positives can occur. Engine definitions evolve over time, so results may change as vendors update their signatures.
+  * If you see any detections that concern you, review the per-engine details in VirusTotal and contact the OSP team with a link to the report.
+
+* Notes and best practices:
+  * Always download installers from the official OSP release pages.
+  * The VirusTotal badge links to the scan performed at the time of release; you can also rescan on VirusTotal to see the latest vendor verdicts.

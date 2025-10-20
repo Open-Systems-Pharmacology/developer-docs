@@ -68,10 +68,11 @@ profvis({
 - [Export to SVG](https://stackoverflow.com/questions/12226822/how-to-save-a-plot-made-with-ggplot2-as-svg)
 
 ### Snapshot testing
-- `{ospsuite}` uses snapshots to test the behavior of plot functions. Read [Introduction to snapshot testing in R](https://esqlabs.github.io/intro-to-snapshot-testing/#/title-slide) for information on how to.
+- `{ospsuite}` uses snapshots to test the behavior of plot functions. 
+<!-- TODO_LINK_INVALID Read [Introduction to snapshot testing in R](https://esqlabs.github.io/intro-to-snapshot-testing/#/title-slide) for information on how to. -->
 - Short summary:
   - The first time a test with snapshot is executed, it creates a snapshot file that will be considered **the truth**. Therefore it is important to check 
-this file for its validity.
+  this file for its validity.
   - If the behavior of the tested function changes, the test will fail, as the new output will differ from the snapshot.
   - Run `snapshot_review()` to compare the new output with the snapshot.
   - If the new behavior is correct, accept the snapshot by calling `snapshot_accept()`.
