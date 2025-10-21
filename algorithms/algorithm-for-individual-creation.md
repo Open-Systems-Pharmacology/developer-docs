@@ -6,4 +6,4 @@ There is the more complicated algorithm for age dependant species that.
 
 Both algorithms can be found in more detail here:
 
-https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Create-Individual-Algorithm
+[https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Create-Individual-Algorithm](https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation/wiki/Create-Individual-Algorithm)

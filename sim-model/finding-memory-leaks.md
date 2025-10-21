@@ -5,7 +5,7 @@ The [OSPSuite.SimModel](https://github.com/Open-Systems-Pharmacology/OSPSuite.Si
 # Using the Visual Leak Detector
 Looking for memory leaks in SimModel when used in PK-Sim (MoBi, etc. - same procedure)
 1. Install **Visual Leak Detector for Visual C++** (VLD) from ~https://github.com/KindDragon/vld/releases~
-<br>EDIT 2022: VLD development continues now here: https://github.com/Azure/vld (latest release: https://github.com/Azure/vld/releases)
+<br>EDIT 2022: VLD development continues now here: [https://github.com/Azure/vld](https://github.com/Azure/vld) (latest release: [https://github.com/Azure/vld/releases](https://github.com/Azure/vld/releases))
 2. Open SimModel solution in Visual Studio and uncomment the line `#include <vld.h>` in **src/OSPSuite.SimModelNative/src/Simulation.cpp**
 3. If VLD was installed NOT into the default path: open project settings of **OSPSuite.SimModelNative** and adjust the paths in the Debug-configuration
 ![grafik](https://user-images.githubusercontent.com/25061876/74615676-4154c080-5123-11ea-9d2a-b8db8732d4cf.png)

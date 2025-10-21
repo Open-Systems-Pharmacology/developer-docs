@@ -2,7 +2,7 @@
 
 ### theme
 
-If you like vscode theme, use `https://github.com/anthonynorth/rscodeio`
+If you like vscode theme, use [`https://github.com/anthonynorth/rscodeio`](https://github.com/anthonynorth/rscodeio)
 
 ### dev_mode
 
@@ -77,8 +77,8 @@ this file for its validity.
 ### Setting up Linux environment for R development
 As an example, a Hyper-V Virtual Machine under Windows 10 is used. Currently tested with Ubuntu 19.10
 1. #### Install Ubuntu
-  * Download Ubuntu from https://ubuntu.com/download/desktop
-  * Tutorial: https://www.youtube.com/watch?v=oyNjjzg-UXo
+  * Download Ubuntu from [https://ubuntu.com/download/desktop](https://ubuntu.com/download/desktop)
+  * Tutorial: [https://www.youtube.com/watch?v=oyNjjzg-UXo](https://www.youtube.com/watch?v=oyNjjzg-UXo)
 = >This is a very good intro to get ubuntu installed from scratch
 
 2. #### Install git

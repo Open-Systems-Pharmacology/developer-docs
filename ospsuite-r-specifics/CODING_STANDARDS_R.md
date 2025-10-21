@@ -274,7 +274,7 @@ There is a line between text and chunk.
 
 # Code complexity
 R provides some quality checking tools, which can also investigate the complexity of code.
-E.g. the R package cyclocomp allows the calculation of cyclomatic complexity of a function or a package, s. https://en.wikipedia.org/wiki/Cyclomatic_complexity )
+E.g. the R package cyclocomp allows the calculation of cyclomatic complexity of a function or a package, s. [https://en.wikipedia.org/wiki/Cyclomatic_complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) )
 * `cyclocomp::cyclocomp(<function_name>)` OR 
 * `cyclocomp::cyclocomp_package(<package_name>)` OR
 * `cyclocomp::cyclocomp_q(<R_expression>)`
@@ -283,7 +283,7 @@ Example:
 ![](../assets/images/Cyclocomp_Example.png)
 
 General advice is: **cyclomatic complexity of a function should not exceed the value of 15**
-https://en.wikipedia.org/wiki/Cyclomatic_complexity#Limiting_complexity_during_development
+[https://en.wikipedia.org/wiki/Cyclomatic_complexity#Limiting_complexity_during_development](https://en.wikipedia.org/wiki/Cyclomatic_complexity#Limiting_complexity_during_development)
 
 # See also
 

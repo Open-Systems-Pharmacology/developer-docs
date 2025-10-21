@@ -6,7 +6,7 @@ In this part of the documentation we will present a compilation of useful inform
 
 ### theme
 
-If you like vscode theme, use `https://github.com/anthonynorth/rscodeio`
+If you like vscode theme, use [`https://github.com/anthonynorth/rscodeio`](https://github.com/anthonynorth/rscodeio)
 
 ### dev_mode
 
@@ -30,7 +30,7 @@ or `Ctrl + Shift + L`
 `.R` files defined in `tests\dev\` will be removed from the package and can be used to simulate interaction with the package. See [scripts.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/wiki/tests/dev/scripts.R)
 
 ### Coding standards
-https://github.com/Open-Systems-Pharmacology/Suite/blob/develop/CODING_STANDARDS_R.md
+See [https://github.com/Open-Systems-Pharmacology/developer-docs/blob/main/ospsuite-r-specifics/CODING_STANDARDS_R.md](https://github.com/Open-Systems-Pharmacology/developer-docs/blob/main/ospsuite-r-specifics/CODING_STANDARDS_R.md)
 
 ### Useful literature
 - [**Advanced R** by Hadley Wickham](https://adv-r.hadley.nz/)
@@ -81,8 +81,8 @@ profvis({
 ### Setting up Linux environment for R development
 As an example, a Hyper-V Virtual Machine under Windows 10 is used. Currently tested with Ubuntu 19.10
 1. #### Install Ubuntu
-  * Download Ubuntu from https://ubuntu.com/download/desktop
-  * Tutorial: https://www.youtube.com/watch?v=oyNjjzg-UXo
+  * Download Ubuntu from [https://ubuntu.com/download/desktop](https://ubuntu.com/download/desktop)
+  * Tutorial: [https://www.youtube.com/watch?v=oyNjjzg-UXo](https://www.youtube.com/watch?v=oyNjjzg-UXo)
 = >This is a very good intro to get ubuntu installed from scratch
 
 2. #### Install git
