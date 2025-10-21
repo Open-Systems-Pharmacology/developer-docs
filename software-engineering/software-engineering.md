@@ -22,7 +22,7 @@ In addition to source code, GitHub supports the following formats and features:
 * Commits history
 * Graphs: pulse, contributors, commits, code frequency, punch card, network, members
 * Email notifications and the option to subscribe someone to notifications by @ mentioning them
-* GitHub Pages: small websites can be hosted from public repositories on GitHub. This is what we have done for the OSP Suite where the site https://www.open-systems-pharmacology.org/ is a user-friendly gateway to the OSP Platform
+* GitHub Pages: small websites can be hosted from public repositories on GitHub. This is what we have done for the OSP Suite where the site [https://www.open-systems-pharmacology.org](https://www.open-systems-pharmacology.org) is a user-friendly gateway to the OSP Platform
 * PDF document viewer
 
 ## Issue Tracking
@@ -31,7 +31,7 @@ The OSP Suite uses GitHub as an issue tracker. Every user with a valid GitHub ac
 ![The OSPSuite GitHub Issue Tracker](../assets/images/issue-tracking.png)
 
 ## Forum
-The Forum is used e.g. for scientific discussions related to the OSP platform and is realized as a [Discussion tab](https://docs.github.com/en/discussions) in a dedicated Forum repository. https://github.com/Open-Systems-Pharmacology/Forum/discussions
+The Forum is used e.g. for scientific discussions related to the OSP platform and is realized as a [Discussion tab](https://docs.github.com/en/discussions) in a dedicated Forum repository. [https://github.com/Open-Systems-Pharmacology/Forum/discussions](https://github.com/Open-Systems-Pharmacology/Forum/discussions)
 
 ![The OSPSuite GitHub Forum](../assets/images/forum.png)
 
@@ -105,5 +105,7 @@ Several qualification repositories for drug–drug interactions and pediatric ap
 
 Details are given in:
 
-* https://docs.open-systems-pharmacology.org/shared-tools-and-example-workflows/qualification
-* http://onlinelibrary.wiley.com/doi/10.1002/psp4.12473
+* [Open Systems Pharmacology Community - An Open Access, Open Source, Open Science Approach to Modeling and Simulation in Pharmaceutical Sciences (https://doi.org/10.1002/psp4.12473)](https://doi.org/10.1002/psp4.12473)
+* [OSP Software Release Management and (Re-)Qualification Framework](https://www.open-systems-pharmacology.org/assets/conference_2024/Session%209-1_Solodenko%20-%20OSP%20Software%20Release%20Management%20and%20(Re-)Qualification%20Framework.pdf)
+* [OSP Suite online documentation: Qualification framework](https://docs.open-systems-pharmacology.org/shared-tools-and-example-workflows/qualification)
+* [A generic framework for the physiologically-based pharmacokinetic platform qualification of PK-Sim and its application to predicting cytochrome P450 3A4-mediated drug-drug interactions (https://doi.org/10.1002/psp4.12636)](https://doi.org/10.1002/psp4.12636)

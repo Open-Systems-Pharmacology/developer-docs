@@ -14,7 +14,7 @@
 * [Setting up the developer environment for C#](setup/getting\_started.md)
 
 ##  OSPSuite-R Package Specifics
- 
+
 ### OSPSuite-R Setup
 
 * [Setup OSPSuite-R on Windows](ospsuite-r-specifics/setup-ospsuite-r-on-windows.md)
@@ -51,6 +51,7 @@
 
 ## Software Engineering, Transparency and Security
 
-* [User Roles and Responsibilities](software-engineering/user-roles-and-responsibilities.md)
-* [Software Engineering](software-engineering/software-engineering.md)
-* [Transparency and Security](software-engineering/transparency-and-security.md)
+* Overview
+  * [User Roles and Responsibilities](software-engineering/user-roles-and-responsibilities.md)
+  * [Software Engineering](software-engineering/software-engineering.md)
+  * [Transparency and Security](software-engineering/transparency-and-security.md)

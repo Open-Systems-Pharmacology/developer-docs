@@ -229,7 +229,7 @@ Refer to chapter [Tests](https://style.tidyverse.org/tests.html)
 
 # Error messages
 
-Refer to chapter [Errors](https://style.tidyverse.org/error-messages.html)
+Refer to chapter [Errors](https://style.tidyverse.org/errors.html)
 
 # Rmarkdown
 
