@@ -17,9 +17,7 @@
 
 ### OSPSuite-R Setup
 
-* [Setup OSPSuite-R on Windows](ospsuite-r-specifics/setup-ospsuite-r-on-windows.md)
-* [Setup OSPSuite-R on CentOS7](ospsuite-r-specifics/Setup-ospsuite-R-on-CentOS7.md)
-* [Setup OSPSuite-R on Ubuntu](ospsuite-r-specifics/Setup-ospsuite-R-on-Ubuntu.md)
+* [Setup OSPSuite-R on Windows Or Ubuntu](ospsuite-r-specifics/setup-ospsuite-r-on-windows-or-ubuntu.md)
 
 ### R Development Resources
 
