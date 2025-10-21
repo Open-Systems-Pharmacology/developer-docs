@@ -142,7 +142,7 @@ public void values_should_set_correctly()
 
 # Integration Tests
 
-We use integration tests to test functionality that requires the loading of resource-heavy real objects and are generally oriented towards scenarios that run longer, open whole projects, load the whole context etc. There is also a difference in how we handle integration tests compared to normal unit tests in our Continuous Integration pipeline (AppVeyor). Unit tests are run on every build, but integration tests are only run on the nightly builds since they are regarded as more time- and resource- consuming.
+We use integration tests to test functionality that requires the loading of resource-heavy real objects and are generally oriented towards scenarios that run longer, open whole projects, load the whole context etc. There is also a difference in how we handle integration tests compared to normal unit tests in our Continuous Integration pipeline. Unit tests are run on every build, but integration tests are only run on the nightly builds since they are regarded as more time- and resource- consuming.
 
 Specifically for integration tests we extend the usual `ContextSpecification<T>` of normal unit tests in `ContextForIntegration<T> : ContextSpecification<T>`. There we create and mock a few more things to begin with, the main one being an IoC container that we also fill with registrations.  
 

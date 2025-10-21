@@ -36,7 +36,9 @@ Then you can always update one or both applications with local versions of OSPSu
 3) nuget_to_both.bat to update both MoBi and PK-Sim
 4) Rebuild the application solution with the new dependencies.
 
-This workflow will change the .csproj files in the application solutions to use the local version of OSPSuite.Core. Those OSPSuite.Core builds will not be available for other users or AppVeyor of course, so you need a new OSPSuite.Core build from AppVeyor to finalize development. First create a pull request in OSPSuite.Core and get it merged. Then you need to update the dependencies in the application .csproj to use the new version of OSPSuite.Core as built by AppVeyor.
+This workflow will change the .csproj files in the application solutions to use the local version of OSPSuite.Core. Those OSPSuite.Core builds will not be available for other users of course, so you need a new OSPSuite.Core build from GitHub packages repository to finalize development. 
+
+First create a pull request in OSPSuite.Core and get it merged. Then you need to update the dependencies in the application .csproj to use the new version of OSPSuite.Core as built by GitHub Actions.
 
 ## Debugging between solutions
 Beyond directly using the newly implemented code in OSPSuite.Core, you can also use the debugger to debug the code in Core from the other solutions. To do that you need to:
@@ -69,7 +71,7 @@ Now you can continue debugging. Note that if you have set a breakpoint in the pa
 
 ## Creating local nuget packages from Core
 
-Sometimes just copying the dlls from Core to PK-Sim or MoBi is not enough. This is the case when you write e.g. a new interface in Core that you need to implement in PK-Sim or MoBi. So let's say you have done such a change to your local OSPSuite.Core code and now you want to continue coding in MoBi, but you are not yet finished or for some other reason you do not yet want to merge your changes to the `develop` branch of Core and then update your MoBi nuget packages from the AppVeyor build. For such cases you can create nuget packages from your edited OSPSuite.Core codebase and install them to the other solutions or to OSPSuite.R.
+Sometimes just copying the dlls from Core to PK-Sim or MoBi is not enough. This is the case when you write e.g. a new interface in Core that you need to implement in PK-Sim or MoBi. So let's say you have done such a change to your local OSPSuite.Core code and now you want to continue coding in MoBi, but you are not yet finished or for some other reason you do not yet want to merge your changes to the `develop` branch of Core and then update your MoBi nuget packages from the CI build. For such cases you can create nuget packages from your edited OSPSuite.Core codebase and install them to the other solutions or to OSPSuite.R.
 
 In order for this to work a few scripts have been developed that create the nuget packages locally under "OSPSuite.Core\nuget_repo" and also apply the changes in the respective solutions, provided that the repository folders are under the same root folder. 
-Using the "pksim_nuget" batch file will create the nuget packages from the local OSPSuite.Core source code and update PK-Sim, "mobi_nuget" will do the same for MoBi, "nuget_to_both" creates nuget packages for and updates both PK-Sim and MoBi and finally "nuget_to_all" does this for PK-Sim, MoBi and OSPSuite.R.
+Using the "pksim_nuget" batch file will create the nuget packages from the local OSPSuite.Core source code and update PK-Sim, "mobi_nuget" will do the same for MoBi, "nuget_to_both" creates nuget packages for and updates both PK-Sim and MoBi.
