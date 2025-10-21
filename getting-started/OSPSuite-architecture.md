@@ -256,8 +256,7 @@ You can read about the algorithm used for the creation of an individual in this 
 
 The functionalities of OSPSuite can be used in the R programming language through the [OSPSuite-R package](https://www.open-systems-pharmacology.org/OSPSuite-R/). You can go through a comprehensive documentation of how to install and use the package [here](https://www.open-systems-pharmacology.org/OSPSuite-R/). You can also find a more detailed description of the code structure for the package as part of this documentation [here](../ospsuite-r-specifics/r-code-structure.md).For installing under various systems you can also refer to the current [documentation]:
 
-[Setup OSPSuite-R on Windows](../ospsuite-r-specifics/setup-ospsuite-r-on-windows.md)
-[Setup OSPSuite-R on Ubuntu](../ospsuite-r-specifics/Setup-ospsuite-R-on-Ubuntu.md)
+[Setup OSPSuite-R on Windows Or Ubuntu](../ospsuite-r-specifics/setup-ospsuite-r-on-windows-or-ubuntu.md)
 
 Concerning the data binding, there are two separate OSPSuite solutions that contain functionality that enables us to bind data to UI elements. You can read all about that [here](../NET-specifics/data-binding.md). 
 
