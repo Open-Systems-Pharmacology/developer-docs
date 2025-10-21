@@ -1,7 +1,7 @@
 # Developer Getting Started in C#
 
 ## Installing the prerequisites
-1. Install Visual Studio 2017 Community Edition or better. [Visual Studio Install](https://www.visualstudio.com/downloads/)
+1. Install the latest Visual Studio Community Edition or better. [Visual Studio Install](https://www.visualstudio.com/downloads/)
 
 1. Install Ruby and Rake. [Ruby Install](https://rubyinstaller.org/downloads/)
 
