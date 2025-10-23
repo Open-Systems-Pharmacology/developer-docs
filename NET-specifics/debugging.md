@@ -8,15 +8,15 @@ In this part of the documentation we will talk about debugging in both the C# an
 
 In order to be able to test some of the functionalities of the OSPSuite that reside in [OSPSuite.Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core) there has been created in Core the OSPSuite.Starter project. You simply have to set it up as a startup project:
 
-![Right click on OSPSuite.Starter project and select "Setup as startup project".](../assets/images/setting%20as%20startup%20project.png)
+![Right click on OSPSuite.Starter project and select "Setup as startup project".](../assets/images/setting_as_startup_project.png)
 
 Then you can start with the debugger in Visual Studio:
 
-![Start debugging.](../assets/images/starting%20with%20debugger.png)
+![Start debugging.](../assets/images/starting_with_debugger.png)
 
 As you can see in the window that appears you can test various Core functionalities both as a user and through breakpoints in code.
 
-![The starter view.](../assets/images/starter%20view.png)
+![The starter view.](../assets/images/starter_view.png)
 
 ## Developing between solutions
 
