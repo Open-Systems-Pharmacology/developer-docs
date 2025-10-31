@@ -2,24 +2,24 @@
 
 ## Introduction
 
-In this part of the documentation we will talk about the specifics of the [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) package. This is a package that offers the functionalities of OSPSuite to the R language. We will analyze its elements and code structure, as well as the components that enable us to interface between the OSPSuite codebase in the .NET universe and the R programming language. 
+This document describes the [OSPSuite-R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R) package structure. The package provides OSPSuite functionality in the R programming language. This document covers the package elements, code structure, and components that interface between the OSPSuite .NET codebase and R. 
 
 ## OSPSuite-R communication with .NET
 
-The `OSPSuite-R` package offers access to functionalities of OSPSuite that are implemented in .NET. The communication between R and .NET using C++ as an intermediate layer is provided by the [`{rsharp}` package](https://github.com/Open-Systems-Pharmacology/rsharp). .NET can communicate with C++ using a custom native host and C++ can then communicate with R through the R .C interface. Using `{rsharp}` we can load the libraries compiled from the .NET code and use them.
+The `OSPSuite-R` package provides access to OSPSuite functionality implemented in .NET. The [`{rsharp}` package](https://github.com/Open-Systems-Pharmacology/rsharp) enables communication between R and .NET using C++ as an intermediate layer. .NET communicates with C++ through a custom native host. C++ then communicates with R through the R `.C` interface. Use `{rsharp}` to load libraries compiled from the .NET code.
 
 <!-- TODO: update schema -->
 <!-- ![Schema of OSPSuite-R and OSPSuite .NET codebase communication.](../assets/images/r_dotnet_schema.png) -->
 
-On the .NET side of the OSPSuite, the main project that functions as an entry point for R is [OSPSuite.R in OSPSuite.Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/tree/develop/src/OSPSuite.R). Through it, the package gains access to the other Core libraries that are necessary, like OSPSuite.Core and OSPSuite.Infrastructure. Additionally, in order to access PK-Sim functionalities, a separate entry point exists in the PK-Sim codebase, in [PKSim.R](https://github.com/Open-Systems-Pharmacology/PK-Sim/tree/develop/src/PKSim.R).
+On the .NET side, the [OSPSuite.R project in OSPSuite.Core](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/tree/develop/src/OSPSuite.R) serves as the main entry point for R. This entry point provides access to required Core libraries, including OSPSuite.Core and OSPSuite.Infrastructure. To access PK-Sim functionality, use the separate entry point in the PK-Sim codebase: [PKSim.R](https://github.com/Open-Systems-Pharmacology/PK-Sim/tree/develop/src/PKSim.R).
 
 ## OSPSuite-R code structure
 
-The general file and code structure of the package follows the best practices of R packages. What is special in this package is that OSPSuite-R is strongly object-oriented. Usually R packages tend to be more functional-programming-oriented. This object-oriented tendency comes as a result of using many of the functionalities of PK-Sim and OSPSuite.Core, that are already structured in an object oriented way in .NET. 
+The package follows R package best practices for file and code structure. Unlike most R packages, OSPSuite-R uses an object-oriented design. This design reflects the object-oriented structure of PK-Sim and OSPSuite.Core in .NET. 
 
 ### Initializing the package
 
-As per convention with R packages, [zzz.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/zzz.R) is the last file to be evaluated when loading the package, since R loads package files [alphabetically](https://roxygen2.r-lib.org/articles/collate.html#:~:text=R%20loads%20files%20in%20alphabetical,t%20matter%20for%20most%20packages.). For this reason it is the place where `.onLoad()` function is called, to ensure that all the necessary functions defined in other files have already been evaluated. In our case, the `zzz.R` does not contain much more than a check that we are running under the necessary x64 version of R and then call .initPackage(). [init-package.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/init-package.R) then uses `{rsharp}` to call the entry point of the OSPSuite-R package in the .NET code of OSPSuite.Core.
+R loads package files [alphabetically](https://roxygen2.r-lib.org/articles/collate.html#:~:text=R%20loads%20files%20in%20alphabetical,t%20matter%20for%20most%20packages.), so [zzz.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/zzz.R) is evaluated last. This file calls `.onLoad()` to ensure all functions in other files are evaluated first. The `zzz.R` file checks that R is running the x64 version, then calls `.initPackage()`. The [init-package.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/init-package.R) file uses `{rsharp}` to call the OSPSuite-R package entry point in OSPSuite.Core.
 
 <!-- TODO: Update this section -->
 <!-- ### Package entry point to .NET
@@ -57,9 +57,9 @@ On the .NET side, the [OSPSuite.R project](https://github.com/Open-Systems-Pharm
 
 ### Object oriented design and `{rsharp}` encapsulation
 
-As already mentioned the OSPSuite-R package is strongly object oriented. In R there are various object-oriented frameworks, but in the case of OSPSuite-R we are using [R6](https://r6.r-lib.org/) to create objects and work with them. Since the .NET codebase of OSPSuite is object oriented, the calls that we do through `{rsharp}` have as a result the creation of objects in the .NET universe. Then we proceed to work on those objects through getters, setter, methods etc. Those objects that get passed to the R universe through `{rsharp}` we encapsulate in wrappers. Our main base wrapper class for .NET is [DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/dot-net-wrapper.R). All other wrapper classes for specific types of objects ( e.g. for a simulation) ultimately inherit from `DotNetWrapper`.
+OSPSuite-R uses an object-oriented design. The package uses the [R6](https://r6.r-lib.org/) framework to create and work with objects. Calls through `{rsharp}` create objects in the .NET environment. Access these objects through getters, setters, and methods. Encapsulate objects passed from .NET to R in wrapper classes. The base wrapper class is [DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/dot-net-wrapper.R). All specific wrapper classes (for example, for simulations) inherit from `DotNetWrapper`.
 
-As you can see in the code of the class, it takes care of the basic initialization of the object (`initialize` is the R6 equivalent of a C# constructor) by internally saving a reference to the .NET object:
+The class handles basic object initialization. The `initialize` method (the R6 equivalent of a C# constructor) saves a reference to the .NET object internally:
 
 [DotNetWrapper](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/dot-net-wrapper.R):
 ```
@@ -85,11 +85,11 @@ wrapReadOnlyProperty = function(propertyName, value) {
 }
 ``` -->
 
-As you can see the wrapper class encapsulates the `{rsharp}` calls that work on the objects. This is very important. In the OSPSuite-R package the user should never directly have to use or see `{rsharp}` calls: they are all encapsulated in the wrapper classes or their utilities (that function as extensions to those classes, we will get to that a bit later on).
+Wrapper classes encapsulate `{rsharp}` calls that work on objects. Users should never call `{rsharp}` directly. All `{rsharp}` calls are encapsulated in wrapper classes or their utility functions (see utilities files below).
 
-Specific .NET classes are being wrapped by their corresponding wrapper classes. Those wrapper classes HAVE to be defined in a separate file named after the R class. For example we have the R Simulation class that wraps an OSPSuite simulation and is defined in [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/simulation.R). 
+Wrap each .NET class with a corresponding wrapper class. Define wrapper classes in separate files named after the R class. For example, the R `Simulation` class wraps an OSPSuite simulation and is defined in [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/simulation.R).
 
-Note that this class derives from `ObjectBase`, that is basically a `DotNetWrapper` with a Name and Id added to it:
+The `Simulation` class derives from `ObjectBase`. `ObjectBase` extends `DotNetWrapper` by adding `Name` and `Id` properties:
 
 [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/simulation.R):
 ```
@@ -126,7 +126,7 @@ ObjectBase <- R6::R6Class(
 )
 ```
 
-As you can see in the R simulation class, we provide access to simulation properties (like f.e. the simulation Output Schema) using the functionalities of the `DotNetWrapper`:
+Access simulation properties (for example, the Output Schema) through `DotNetWrapper` functionality:
 
 [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/simulation.R)
 ```
@@ -139,7 +139,7 @@ outputSchema = function(value) {
   )
 }
 ```
-Please note that it is a requirement for these R wrapper classes to implement a meaningful print function. In our example:
+R wrapper classes must implement a meaningful `print` function. Example:
 
 [simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/simulation.R)
 ```
@@ -156,9 +156,9 @@ print = function(...) {
 ```
 
 
-Many times the basic access to the object methods and properties is not sufficient, and we need further functionalities on the objects. For this we create a functions that work on that objects and pack them in separate utilities files. For our example with simulation, we have [utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/utilities-simulation.R). These utilities files contain R code that works on the created objects of the class, but also if necessary `{rsharp}` calls to .NET functions that work on the objects. Note that `{rsharp}` functions that just expose properties or methods of the objects do NOT belong here, but in the R wrapper class. 
+Basic access to object methods and properties is often insufficient. Create utility functions for additional functionality and place them in separate utilities files. For example, see [utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/utilities-simulation.R). Utilities files contain R code that works on class objects. These files can also include `{rsharp}` calls to .NET functions that operate on objects. Don't place `{rsharp}` calls that only expose object properties or methods in utilities files. Put those in the R wrapper class.
 
-Please also note that per convention all functions that are only used internally by the package are named starting with a dot. For example `.runSingleSimulation` and not just `runSingleSimulation`:
+By convention, prefix internal package functions with a dot. For example, use `.runSingleSimulation` instead of `runSingleSimulation`:
 
 [utilities-simulation.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/utilities-simulation.R)
 ```
@@ -170,11 +170,13 @@ Please also note that per convention all functions that are only used internally
 ) { ... }
 ```
 
-The communication between R and .NET does not come without some overhead. This means that when we can avoid it we should. 
+Communication between R and .NET has performance overhead. Minimize cross-language calls when possible. 
 
 ### Tasks and task caching
 
-Often when working with objects we use tasks. Those tasks are objects defined and created on the .NET side that are reusable and can provide functionalities on other objects. They can be accessed through the [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) of OSPSuite.Core as usual - on the OSPSuite side they are created through the [IoC container](https://en.wikipedia.org/wiki/Inversion_of_control). Let's see for example how we can use the HasDimension utility function of the unit wrapper class to check if a dimension (provided as a string) is supported.
+Tasks are reusable objects defined on the .NET side that provide functionality for other objects. Access tasks through [Api.cs](https://github.com/Open-Systems-Pharmacology/OSPSuite.Core/blob/develop/src/OSPSuite.R/Api.cs) in OSPSuite.Core. The OSPSuite side creates tasks through the [IoC container](https://en.wikipedia.org/wiki/Inversion_of_control). 
+
+The following example shows how to use the `hasDimension` utility function to check if a dimension (provided as a string) is supported:
 
 [utilities-units.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/utilities-units.R):
 ```
@@ -191,7 +193,7 @@ hasDimension <- function(dimension) {
 ```
 
 
-As you can see in order to retrieve the Dimension Task, we call the internal function `.getNetTaskFromCache`. In order to avoid having to get them from .NET all the time, we cache them on the R side. As you can see in [get-net-task.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/get-net-task.R):
+The example calls the internal function `.getNetTaskFromCache` to retrieve the Dimension Task. To avoid repeated retrieval from .NET, tasks are cached on the R side. See [get-net-task.R](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/get-net-task.R):
 
 ```
 #' @title .getNetTaskFromCache
@@ -212,31 +214,41 @@ As you can see in order to retrieve the Dimension Task, we call the internal fun
 }
 ```
 
-we cache the tasks in the `tasksEnv[]` list. If we do not find a task in the cache we retrieve it from .NET through an `{rsharp}` call and we also add it to the cache for future use.
+Tasks are cached in the `tasksEnv[]` list. If a task is not found in the cache, retrieve it from .NET through an `{rsharp}` call and add it to the cache for future use.
 
 ### Tests
 
-The OSPSuite-R package is well tested and you can find all the code for the tests as usual under [testthat](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/tests/testthat). Apart from guaranteeing the correct and consistent functioning of the package, the tests are also a good entry point to finding out about how the rest of the code works, f.e. how objects get created and used and so on.
+The OSPSuite-R package includes comprehensive tests. Find test code in [testthat](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/tests/testthat). Tests ensure correct and consistent package functioning. They also serve as examples for understanding how objects are created and used.
 
-## Updating Core dlls
+## Updating Core DLLs
 
-The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. Those dlls are stored under  [inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/inst/lib) in the R package. When a newer version of the .NET codebase is released, those dlls need to be updated. To do this, we use a GitHub Actions workflow that automates the entire process.
+The R package stores local copies of DLLs from OSPSuite.Core and PK-Sim in [`inst/lib/`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/inst/lib). Update these DLLs when a newer version of the .NET codebase is released.
 
-To update the Core DLLs, use the GitHub Actions workflow `update-core-files.yaml`, which automates the entire process. To run this workflow manually:
+### Run the update workflow
 
-1. Navigate to the [workflow page](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/actions/workflows/update-core-files.yaml) on GitHub
-2. Click the "Run workflow" button
-3. Choose the branch you want to run the workflow on (typically `main`)
-4. (Optional) Customize the workflow inputs:
-   - Branch name: Custom branch name (defaults to `update-core-files-YYYYMMDD-HHMMSS`)
-   - PR title: Title for the generated Pull Request (defaults to "Update Core Files")
-   - PR body: Body text for the generated Pull Request (defaults to auto-generated description)
-5. Click "Run workflow" to start the process
+Use the `update-core-files.yaml` GitHub Actions workflow to update the Core DLLs. The workflow automates downloading files and creating a Pull Request.
 
-The workflow will automatically:
-- Run the R script `.github/scripts/update_core_files.R` to download and update core files from the latest PK-Sim build artifacts
-- Check for changes in the `inst/lib/` directory
-- If changes are detected, create a new branch, commit the updated files, and create a Pull Request
-- Optionally build SQLite libraries for macOS (arm64) if changes are detected
+To run the workflow:
 
-The workflow file can be found at [`.github/workflows/update-core-files.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/update-core-files.yaml).
+1. Open the [workflow page](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/actions/workflows/update-core-files.yaml) on GitHub.
+2. Click **Run workflow**.
+3. Select the branch to run the workflow on (typically `main`).
+4. (Optional) Configure workflow inputs:
+   - **Branch name**: Specify a custom branch name (default: `update-core-files-YYYYMMDD-HHMMSS`)
+   - **PR title**: Specify the Pull Request title (default: "Update Core Files")
+   - **PR body**: Specify the Pull Request description (default: auto-generated)
+5. Click **Run workflow**.
+
+### What the workflow does
+
+The workflow performs these steps:
+
+1. Runs the R script `.github/scripts/update_core_files.R` to download core files from the latest PK-Sim build artifacts.
+2. Checks for changes in the `inst/lib/` directory.
+3. If changes are detected:
+   - Creates a new branch.
+   - Commits the updated files.
+   - Creates a Pull Request.
+   - Builds SQLite libraries for macOS (arm64).
+
+The workflow file is located at [`.github/workflows/update-core-files.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/update-core-files.yaml).
