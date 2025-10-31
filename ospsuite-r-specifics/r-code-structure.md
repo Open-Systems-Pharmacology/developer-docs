@@ -231,15 +231,3 @@ The workflow will automatically:
 - Optionally build SQLite libraries for macOS (arm64) if changes are detected
 
 The workflow file can be found at [`.github/workflows/update-core-files.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/update-core-files.yaml).
-
-# Repository Submodules
-
-Exactly the same as with PKSim and MoBi repositories, the OSPSuite.R repository shares some common submodules 
-
-* [scripts](https://github.com/Open-Systems-Pharmacology/build-scripts) that contains scripts for building, updating and so on.
-
-* [PK Parameters](https://github.com/Open-Systems-Pharmacology/OSPSuite.PKParameters) that contains a list of PK Parameters supported by the OSPSuite
-
-* [Dimensions](https://github.com/Open-Systems-Pharmacology/OSPSuite.Dimensions) that contains a list of dimensions supported by the OSPSuite
-
-Supported PK Parameters and Dimensions are read on loading of the R package from the xml file that comes from the submodules. This means that when for example a new supported dimension is to be added for the OSPSuite, it need to be added only to the subrepository and is automatically available in all other projects. 
