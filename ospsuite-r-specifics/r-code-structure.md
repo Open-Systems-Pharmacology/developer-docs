@@ -211,32 +211,26 @@ The OSPSuite-R package is well tested and you can find all the code for the test
 
 ## Updating Core dlls
 
-The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. When a newer version of the .NET codebase is available, those dlls need to be updated semi-manually. Those dlls have to exist under [OSPSuite-R/inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/develop/inst/lib). 
+The R package keeps local copies of the necessary dlls coming from OSPSuite.Core and PK-Sim that are necessary for it to function. Those dlls are stored under  [inst/lib/](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/inst/lib) in the R package. When a newer version of the .NET codebase is released, those dlls need to be updated. To do this, we use a GitHub Actions workflow that automates the entire process.
 
-The first step to updating to a newer version of Core is updating the nuget package versions to the correct version. For this you have to manually edit the version numbers in packages.config, like the version number in OSPSuite.Core seen here underneath:
+To update the Core DLLs, use the GitHub Actions workflow `update-core-files.yaml`, which automates the entire process. To run this workflow manually:
 
-```
-<?xml version="1.0" encoding="utf-8"?>
-<packages>
-  .
-  .
-  .
+1. Navigate to the [workflow page](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/actions/workflows/update-core-files.yaml) on GitHub
+2. Click the "Run workflow" button
+3. Choose the branch you want to run the workflow on (typically `main`)
+4. (Optional) Customize the workflow inputs:
+   - Branch name: Custom branch name (defaults to `update-core-files-YYYYMMDD-HHMMSS`)
+   - PR title: Title for the generated Pull Request (defaults to "Update Core Files")
+   - PR body: Body text for the generated Pull Request (defaults to auto-generated description)
+5. Click "Run workflow" to start the process
 
-  <package id="OSPSuite.Core" version="12.0.242"/>
-  .
-  .
+The workflow will automatically:
+- Run the R script `.github/scripts/update_core_files.R` to download and update core files from the latest PK-Sim build artifacts
+- Check for changes in the `inst/lib/` directory
+- If changes are detected, create a new branch, commit the updated files, and create a Pull Request
+- Optionally build SQLite libraries for macOS (arm64) if changes are detected
 
-</packages>
-```
-
-Then you have to go to the command line in the OSPSuite-R repository main folder and run:
-```
-nuget restore packages.config -PackagesDirectory packages
-```
-Note that [nuget](https://learn.microsoft.com/en-us/nuget/install-nuget-client-tools?tabs=windows#nugetexe-cli) has to have been added to the Path (quick guide on how to do this [here](https://www.c-sharpcorner.com/article/how-to-addedit-path-environment-variable-in-windows-11/)), otherwise you will need to provide the full path to nuget.exe.
-
-This will fill the `OSPSuite-R/packages/`packages folder with the correct updated packages. Then you need to manually copy them and paste them to `OSPSuite-R/inst/lib/`.
-
+The workflow file can be found at [`.github/workflows/update-core-files.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/update-core-files.yaml).
 
 # Repository Submodules
 
