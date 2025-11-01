@@ -441,3 +441,6 @@ IList
 IDictionary
 ICache
 reviewable
+ospPrintClass
+ospPrintItems
+sourceFile
