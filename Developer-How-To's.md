@@ -69,7 +69,7 @@ profvis({
 
 ### Snapshot testing
 - `{ospsuite}` uses snapshots to test the behavior of plot functions. 
-<!-- TODO_LINK_INVALID Read [Introduction to snapshot testing in R](https://esqlabs.github.io/intro-to-snapshot-testing/#/title-slide) for information on how to. -->
+- Read [Introduction to snapshot testing in R](https://indrajeetpatil.github.io/intro-to-snapshot-testing/#/introduction-to-snapshot-testing-in-r) for information on how to.
 - Short summary:
   - The first time a test with snapshot is executed, it creates a snapshot file that will be considered **the truth**. Therefore it is important to check 
   this file for its validity.
