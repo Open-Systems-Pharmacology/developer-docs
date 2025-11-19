@@ -67,6 +67,17 @@ profvis({
 ### Graphics
 - [Export to SVG](https://stackoverflow.com/questions/12226822/how-to-save-a-plot-made-with-ggplot2-as-svg)
 
+### Snapshot testing 1Code has comments. Press enter to view.
+- `{ospsuite}` uses snapshots to test the behavior of plot functions. 
+- Read [Introduction to snapshot testing in R](https://indrajeetpatil.github.io/intro-to-snapshot-testing/#/introduction-to-snapshot-testing-in-r) for information on how to.
+- Short summary:
+  - The first time a test with snapshot is executed, it creates a snapshot file that will be considered **the truth**. Therefore it is important to check 
+  this file for its validity.
+  - If the behavior of the tested function changes, the test will fail, as the new output will differ from the snapshot.
+  - Run `snapshot_review()` to compare the new output with the snapshot.
+  - If the new behavior is correct, accept the snapshot by calling `snapshot_accept()`.
+- If build fails because of failing snapshot tests, **never** accept new snapshots without manual review.
+
 ### Setting up Linux environment for R development
 As an example, a Hyper-V Virtual Machine under Windows 10 is used. Currently tested with Ubuntu 19.10
 1. #### Install Ubuntu
