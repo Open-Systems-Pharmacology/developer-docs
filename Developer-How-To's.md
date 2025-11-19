@@ -67,7 +67,7 @@ profvis({
 ### Graphics
 - [Export to SVG](https://stackoverflow.com/questions/12226822/how-to-save-a-plot-made-with-ggplot2-as-svg)
 
-### Snapshot testing 1Code has comments. Press enter to view.
+### Snapshot testing
 - `{ospsuite}` uses snapshots to test the behavior of plot functions. 
 - Read [Introduction to snapshot testing in R](https://indrajeetpatil.github.io/intro-to-snapshot-testing/#/introduction-to-snapshot-testing-in-r) for information on how to.
 - Short summary:
