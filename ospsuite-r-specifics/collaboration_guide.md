@@ -134,7 +134,7 @@ The recommended workflow for releasing relies on the [`{usethis}`](https://useth
 
 11. Create a dedicated branch.
   ```r
-  usethis::pr_init(branch = paste0("dev v", new_version))
+  usethis::pr_init(branch = paste0("dev-v", new_version))
   ```
 
 12. Update the version number in the `DESCRIPTION` file. Follow the interactive prompts to accept and commit the changes.
