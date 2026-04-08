@@ -9,44 +9,39 @@ all reviewers of the OSPS R projects.
 isolated context.  
   1.1 Each change should be related to an issue created on the project's repository.  
   1.2 Each change should be made in a separate branch.  
-  1.3 Each change should be proposed through a pull request.  
-  
+  1.3 Each change should be proposed through a pull request.
+
 2. Each change or addition to the code should be documented and controlled.  
-  2.1 Each change that affects **user experience or outputs** be reflected in the documentation. If 
+  2.1 Each change that affects **user experience or outputs** should be reflected in the documentation. If 
   documentation is not present, then it should be created.  
   2.2 Each change should be tested. If new cases emerge, then they should be 
   tested, even if some tests are already present. If no tests are present, then
-  they should be created.  
-  
-3. Each change should be easily reviewable, understandable and traceable.   
-  3.1 Each change that affects **user experience or outputs** should have a corresponding entry in the `NEWS` file.  
-  3.2 Each change should be associated with a pull request which scope is limited to the change itself.  
+  they should be created.
 
-  
-4. Each change must respect the coding style of the project.    
-  4.1 Each change must respect the coding style of the project as defined in the [R Coding Standards](CODING_STANDARDS_R.md).  
-  4.2 Each change must be processed by the `{styler}` package before being proposed.  
-  
-  
-5. Each change should be reviewed before being merged.  
-  5.1 Each change should be reviewed by at least one other contributor through its associated pull request.  
-  5.2 Each change should be functional and comply with these rules before its associated pull request is set as "ready for review". If not ready or reviewer inputs are needed, the pull request should be marked as "draft".  
-  
-  
+3. Each change should be easily reviewable, understandable, and traceable.
+  3.1 Each change that affects **user experience or outputs** should have a corresponding entry in the `NEWS` file.
+  3.2 Each change should be associated with a pull request whose scope is limited to the change itself.
 
+4. Each change must respect the coding style of the project.
+  4.1 Each change must respect the coding style of the project as defined in the [R Coding Standards](CODING_STANDARDS_R.md).
+  4.2 Each change must be processed by the `{styler}` package before being proposed.
+
+5. Each change should be reviewed before being merged.
+  5.1 Each change should be reviewed by at least one other contributor through its associated pull request.
+  5.2 Each change should be functional and comply with these rules before its associated pull request is set as "ready for review". If not ready or reviewer inputs are needed, the pull request should be marked as "draft".
 
 ## Recommended Workflows
 
 ### Changing Code
 
-The recommended workflow for contributing to the OSPS R projects heavily relies on the [`{usethis}`](https://usethis.r-lib.org) package and it family of function [`pr_*()`](https://usethis.r-lib.org/articles/pr-functions.html).
+The recommended workflow for contributing to the OSPS R projects heavily relies on the [`{usethis}`](https://usethis.r-lib.org) package and its family of functions [`pr_*()`](https://usethis.r-lib.org/articles/pr-functions.html).
 
 #### Prerequisites
 
 This workflow implies that:
 
--   R and R Studio are installed,
--   A GitHub account is available and setup to work within RStudio,
+-   R and RStudio are installed,
+-   A GitHub account is available and set up to work with RStudio,
 -   The `{usethis}` package is installed,
 -   A local clone (from original repository or from a fork) has been created.
 
@@ -56,7 +51,7 @@ This workflow implies that:
 2.  Apply changes in codebase and save with commits
 3.  Once changes are implemented, make a pull request with `usethis::pr_push()`.
 4.  Review of the pull request may ask for additional changes, proceed with commits then use the `pr_push()` command again.
-5.  Finally, the reviewer merge the pull request, the local branch can be cleaned away using `usethis::pr_finish()`
+5.  Finally, the reviewer merges the pull request, the local branch can be cleaned away using `usethis::pr_finish()`
 
 #### Useful tips
 
