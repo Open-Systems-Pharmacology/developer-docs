@@ -63,81 +63,96 @@ This workflow implies that:
 -   At any moment you can get back to main branch using `usethis::pr_pause()`
 -   If you need to make some changes on a branch that already has a pull request open, you can retrieve it locally with `usethis::pr_fetch(XX)` with `XX` being the pull request's numerical identifier.
 
-### Release cycle
+### Releasing Versions
   
 #### Prerequisites
 
 This workflow implies that:
 
-- R and R Studio are installed,
-- A GitHub account is available and setup to work within RStudio,
+- R and RStudio are installed,
+- A GitHub account is available and set up to work with RStudio,
 - The `{usethis}` package is installed,
 - A local clone (from original repository or from a fork) has been created.
 - The current branch is the default branch (usually `main`).
 
+#### Pre-release checklist
+
+Before starting the release process, verify the following:
+
+- [ ] All CI checks pass on the branch to merge.
+- [ ] `NEWS` file is up to date and reflects all user-facing changes since the last release.
+
 #### Workflow
 
-The recommended workflow for contributing to the OSPS R projects heavily relies on the [`{usethis}`](https://usethis.r-lib.org) package.
+The recommended workflow for releasing relies on the [`{usethis}`](https://usethis.r-lib.org) package.
 
-1. Pick the new version number using the following command (refer to [this](https://r-pkgs.org/lifecycle.html#sec-lifecycle-version-number) to make the right choice).
+##### Creating the release
+
+1. Pick the new version number (refer to the [R Packages versioning guide](https://r-pkgs.org/lifecycle.html#sec-lifecycle-version-number) to make the right choice).
   ```r
   new_version <- usethis:::choose_version("What should the new version be?")
   ```
-2. Create a dedicated branch
 
+2. Create a dedicated branch.
   ```r
   usethis::pr_init(branch = paste0("release v", new_version))
   ```
-    
-3. Automatically update version number and DESCRIPTION file and accept to commit all the changes
 
+3. Automatically update the version number in the `DESCRIPTION` file. Follow the interactive prompts to accept and commit the changes.
   ```r
   usethis::use_version(which = labels(new_version))
   ```
-  ```
-  There are uncommitted changes and you're about to bump version
-  Do you want to proceed anyway?
-  
-  1: Negative
-  2: Definitely
-  3: No way
-  
-  Selection: 2
-  
-  ✔ Adding 'X' to Version
-  ✔ Replacing development heading in NEWS.md
-  There are 2 uncommitted files:
-  * 'DESCRIPTION'
-  * 'NEWS.md'
-  Is it ok to commit them?
-  
-  1: Not now
-  2: Yeah
-  3: No way
-  
-  
-  Selection: 2
-  ✔ Adding files
-  ✔ Making a commit with message 'Increment version number to ...'
-  ```
 
-4. Push the local branch and create the pull request by running:
-  
+4. Push the local branch and create the pull request.
   ```r
   usethis::pr_push()
   ```
 
-5. Once the pull request is approved and merged, the local branch can be cleaned away using `usethis::pr_finish()`.
+5. Once the pull request is approved and merged, clean up the local branch.
+  ```r
+  usethis::pr_finish()
+  ```
 
-6. Wait that CI/CD actions are validated and completed. Then switch to the default branch (usually `main`), pull from originh and create the release on github using: `usethis::use_github_release()`.
+##### Publishing the release
 
-7. Download the built packages from the GitHub action run from the PR merge and attach them to the release. The new version is now fully released !
+6. Wait until all CI/CD actions on the merge commit are validated and completed.
 
-8. The package must be put back to development mode. 
-For this, we will create another Pull Request in which we will repeat the previous steps but with a different version number. The development version number ends with a `.9000` so that both dev and users can easily distinguish between the two. This is automatically handled by usethis with:
-  
+7. Switch to the default branch and pull the latest changes.
+  ```r
+  usethis::pr_pause()  # if on another branch
+  git pull              # from the terminal
+  ```
+
+8. Create the release on GitHub.
+  ```r
+  usethis::use_github_release()
+  ```
+
+9. Download the built packages from the GitHub Actions run triggered by the PR merge and attach them to the release. The new version is now fully released!
+
+##### Restoring development mode
+
+10. Pick the development version number. Development versions end with `.9000` so that developers and users can easily distinguish them from release versions.
   ```r
   new_version <- usethis:::choose_version(which = "dev")
   ```
 
-9. Repeat steps 2 to 5.
+11. Create a dedicated branch.
+  ```r
+  usethis::pr_init(branch = paste0("dev v", new_version))
+  ```
+
+12. Update the version number in the `DESCRIPTION` file. Follow the interactive prompts to accept and commit the changes.
+  ```r
+  usethis::use_version(which = labels(new_version))
+  ```
+
+13. Push the local branch and create the pull request.
+  ```r
+  usethis::pr_push()
+  ```
+
+14. Once the pull request is approved and merged, clean up the local branch.
+  ```r
+  usethis::pr_finish()
+  ```
