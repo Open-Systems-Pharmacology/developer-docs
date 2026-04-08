@@ -90,7 +90,7 @@ The recommended workflow for releasing relies on the [`{usethis}`](https://useth
 
 2. Create a dedicated branch.
   ```r
-  usethis::pr_init(branch = paste0("release v", new_version))
+  usethis::pr_init(branch = paste0("release-v", new_version))
   ```
 
 3. Automatically update the version number in the `DESCRIPTION` file. Follow the interactive prompts to accept and commit the changes.
