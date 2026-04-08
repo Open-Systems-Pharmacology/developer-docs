@@ -63,15 +63,7 @@ This workflow implies that:
 -   At any moment you can get back to main branch using `usethis::pr_pause()`
 -   If you need to make some changes on a branch that already has a pull request open, you can retrieve it locally with `usethis::pr_fetch(XX)` with `XX` being the pull request's numerical identifier.
 
-<!--- ### Reviewing Code  --->
-
-
-### Releasing Versions
-
-**This section is only applicable for the following repositories:**
-
-  - `{ospsuite}`
-  - `{ospsuite.parameteridentification}`
+### Release cycle
   
 #### Prerequisites
 
@@ -94,7 +86,7 @@ The recommended workflow for contributing to the OSPS R projects heavily relies 
 2. Create a dedicated branch
 
   ```r
-  usethis::pr_init(branch = paste("release", new_version, sep = "-"))
+  usethis::pr_init(branch = paste0("release v", new_version))
   ```
     
 3. Automatically update version number and DESCRIPTION file and accept to commit all the changes
@@ -137,26 +129,15 @@ The recommended workflow for contributing to the OSPS R projects heavily relies 
 
 5. Once the pull request is approved and merged, the local branch can be cleaned away using `usethis::pr_finish()`.
 
-6. Make sure the current branch is the default branch (usually `main`) and create the release on github using: `usethis::use_github_release()`.
+6. Wait that CI/CD actions are validated and completed. Then switch to the default branch (usually `main`), pull from originh and create the release on github using: `usethis::use_github_release()`.
 
-7. Download the built packages from the GitHub action run from the PR merge and attach them to the release.
+7. Download the built packages from the GitHub action run from the PR merge and attach them to the release. The new version is now fully released !
 
-8. Now, the package must be put back to development mode. For this, we will create another Pull Request in which we will repeat the previous steps but with a different version number. The development version number ends with a `.9000` so that both dev and users can easily distinguish between the two.  
-  Pick "dev" after executing the following code:
+8. The package must be put back to development mode. 
+For this, we will create another Pull Request in which we will repeat the previous steps but with a different version number. The development version number ends with a `.9000` so that both dev and users can easily distinguish between the two. This is automatically handled by usethis with:
   
   ```r
-  new_version <- usethis:::choose_version("What should the new version be?")
-  ```
-  ```
-  Current version is X.Y.Z.
-  What should the new version be? (0 to exit) 
-  
-  1: major --> X+1.Y.Z
-  2: minor --> X.Y+1.Z
-  3: patch --> X.Y.Z+1
-  4:   dev --> X.Y.Z.9000
+  new_version <- usethis:::choose_version(which = "dev")
   ```
 
 9. Repeat steps 2 to 5.
-
-
