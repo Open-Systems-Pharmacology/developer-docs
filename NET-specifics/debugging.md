@@ -84,7 +84,7 @@ Each repository has a `nuget_to_ospsuite_r` batch file that:
 
 1. Packs the entire solution as NuGet packages into `OSPSuite.Core\nuget_repo`
 2. Updates the package version in `OSPSuite-R\shared\DependencyManager\src\DependencyManager.csproj`
-3. Builds the DependencyManager, which copies the resulting DLLs into `OSPSuite-R\inst\lib`
+3. Builds the dependency manager project, which copies the resulting DLLs into `OSPSuite-R\inst\lib`
 
 **Prerequisites:**
 
