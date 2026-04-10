@@ -595,7 +595,7 @@ Is used to restrict the creation of local protein parameters to specific contain
 * **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
 
 
-### tab_conditions
+### tab_conditions (container parameters)
 Specifies available (container) criteria conditions.
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
@@ -843,7 +843,7 @@ Defines the criteria of the quantities to be summed up for the combination {`cal
 * **tag** the tag of the single condition.
 
 
-### tab_conditions
+### tab_conditions (formulas)
 Specifies available (container) criteria conditions.
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
@@ -1222,7 +1222,7 @@ Defines the display properties (display name, description, icon) for some entiti
     - [tab\_compound\_process\_parameter\_mapping](#tab_compound_process_parameter_mapping)
     - [tab\_container\_parameter\_rhs](#tab_container_parameter_rhs)
     - [tab\_container\_parameter\_descriptor\_conditions](#tab_container_parameter_descriptor_conditions)
-    - [tab\_conditions](#tab_conditions)
+    - [tab\_conditions (container parameters)](#tab_conditions-container-parameters)
     - [tab\_container\_parameter\_fcurves](#tab_container_parameter_fcurves)
   - [Calculation method parameters](#calculation-method-parameters)
     - [tab\_calculation\_method\_parameter\_rates](#tab_calculation_method_parameter_rates)
@@ -1239,7 +1239,7 @@ Defines the display properties (display name, description, icon) for some entiti
     - [tab\_object\_paths](#tab_object_paths)
       - [Sum formulas](#sum-formulas)
     - [tab\_calculation\_method\_rate\_descriptor\_conditions](#tab_calculation_method_rate_descriptor_conditions)
-    - [tab\_conditions](#tab_conditions-1)
+    - [tab\_conditions (formulas)](#tab_conditions-formulas)
       - ["Black box" formulas](#black-box-formulas)
       - [Disease state parameters](#disease-state-parameters)
       - [Table formulas with offset](#table-formulas-with-offset)
