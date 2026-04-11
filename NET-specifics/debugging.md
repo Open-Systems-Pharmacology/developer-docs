@@ -89,7 +89,7 @@ Each repository has a `nuget_to_ospsuite_r` batch file that:
 **Prerequisites:**
 
 - Build the solution in Debug configuration before running the script (the pack step uses `--no-build`)
-- If you have an R session open in Positron (or any other IDE) with the ospsuite package loaded, **unload the assemblies first** to avoid locked DLL errors during the build
+- If you have an R session open in Positron (or any other IDE) with the ospsuite package loaded, **restart or close the session to unload locked assemblies**
 
 **Usage:**
 

@@ -1170,11 +1170,6 @@ Defines the display properties (display name, description, icon) for some entiti
 
 
 # Tables reference
-
-- [Introduction](#introduction)
-  - [DB Schema Diagrams](#db-schema-diagrams)
-- [General remarks](#general-remarks)
-- [Overview diagrams](#overview-diagrams)
   - [Containers](#containers)
     - [tab\_container\_names](#tab_container_names)
     - [tab\_container\_types](#tab_container_types)
@@ -1281,5 +1276,3 @@ Defines the display properties (display name, description, icon) for some entiti
     - [tab\_value\_origins](#tab_value_origins)
   - [Representation Info](#representation-info)
     - [tab\_representation\_info](#tab_representation_info)
-- [Full schema](#full-schema)
-- [Tables reference](#tables-reference)
