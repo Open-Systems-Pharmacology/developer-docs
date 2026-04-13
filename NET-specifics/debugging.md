@@ -69,9 +69,31 @@ devtools::load_all(".")
 ```
 Now you can continue debugging. Note that if you have set a breakpoint in the part of the OSPSuite.Core code that gets called during the loading of OSPSuite.R, the debugger will already stop on it when you call `load_all(".")`. 
 
-## Creating local nuget packages from Core
+## Updating PK-Sim and MoBi from a local OSPSuite.Core
 
 Sometimes just copying the dlls from Core to PK-Sim or MoBi is not enough. This is the case when you write e.g. a new interface in Core that you need to implement in PK-Sim or MoBi. So let's say you have done such a change to your local OSPSuite.Core code and now you want to continue coding in MoBi, but you are not yet finished or for some other reason you do not yet want to merge your changes to the `develop` branch of Core and then update your MoBi nuget packages from the CI build. For such cases you can create nuget packages from your edited OSPSuite.Core codebase and install them to the other solutions or to OSPSuite.R.
 
 In order for this to work a few scripts have been developed that create the nuget packages locally under "OSPSuite.Core\nuget_repo" and also apply the changes in the respective solutions, provided that the repository folders are under the same root folder. 
 Using the "pksim_nuget" batch file will create the nuget packages from the local OSPSuite.Core source code and update PK-Sim, "mobi_nuget" will do the same for MoBi, "nuget_to_both" creates nuget packages for and updates both PK-Sim and MoBi.
+
+## Updating OSPSuite-R from local MoBi and PK-Sim
+
+Similar to the Core-to-application workflow above, you can update OSPSuite-R with locally built MoBi.R and PKSim.R packages. This is useful when you are making changes to MoBi.R or PKSim.R code and want to test them in OSPSuite-R without publishing to GitHub Packages first.
+
+Each repository has a `nuget_to_ospsuite_r` batch file that:
+
+1. Packs the entire solution as NuGet packages into `OSPSuite.Core\nuget_repo`
+2. Updates the package version in `OSPSuite-R\shared\DependencyManager\src\DependencyManager.csproj`
+3. Builds the dependency manager project, which copies the resulting DLLs into `OSPSuite-R\inst\lib`
+
+**Prerequisites:**
+
+- Build the solution in Debug configuration before running the script (the pack step uses `--no-build`)
+- If you have an R session open in Positron (or any other IDE) with the ospsuite package loaded, **restart or close the session to unload locked assemblies**
+
+**Usage:**
+
+- From the **MoBi** repository root, run `nuget_to_ospsuite_r.bat` to update OSPSuite-R with local MoBi packages
+- From the **PK-Sim** repository root, run `nuget_to_ospsuite_r.bat` to update OSPSuite-R with local PK-Sim packages
+
+Both scripts assume that all repository folders (OSPSuite.Core, MoBi, PK-Sim, OSPSuite-R) are under the same parent directory.

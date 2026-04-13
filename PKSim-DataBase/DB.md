@@ -110,7 +110,7 @@ Defines the container hierarchy and includes **all possible containers** which c
 * **tab_containers.visible** defines if a container is shown in PK-Sim in hierarchy view (TODO rename column to **is_visible**).
 
 
-* **tab_containers.is_logical** defines if a container is *physical* or *logical* (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#spatial-structures) for details).
+* **tab_containers.is_logical** defines if a container is *physical* or *logical* (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/spatial-structures-bb) for details).
 
 
 ### tab_container_tags
@@ -261,7 +261,7 @@ Contains the following information about a process:
 
 * **action_type** is one of {`APPLICATION`, `INTERACTION`, `REACTION`, `TRANSPORT`}  (s. [enum ProcessActionType](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/ProcessActionType.cs)).
 
-* **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. [OSP Suite documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#reactions-and-molecules) for details.)
+* **create_process_rate_parameter** defines if the `Process Rate` parameter should be created for transport or reaction (s. OSP Suite documentation [molecules](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/molecules-bb) or [reactions](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/reactions-bb) for details.)
 
 
 ### tab_process_types
@@ -298,7 +298,7 @@ Describes the rate (kinetic) of a process
 
 
 ### tab_model_transport_molecule_names
-Restricts which molecules are transported by a passive transport for particular model. As per default, passive transport will transfer all floating molecules from its source container to the target container. In this table, some molecules can be excluded (`should_transport=0`) or transport can be restricted only to the specific molecules (`should_transport=1`). S. the [Passive Transports documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#passive-transports)
+Restricts which molecules are transported by a passive transport for particular model. As per default, passive transport will transfer all floating molecules from its source container to the target container. In this table, some molecules can be excluded (`should_transport=0`) or transport can be restricted only to the specific molecules (`should_transport=1`). S. the [Passive Transports documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/passive-transports-bb)
 (TODO rename the table, s. the issue https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2309)
 
 
@@ -494,7 +494,7 @@ Specifies a `{Container, Parameter}` combination.
 
 * **group_name** defines how parameters are displayed in the PK-Sim UI (s. below and also see the description in the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-pk-sim/pk-sim-documentation/pk-sim-simulations#running-a-simulation-in-an-individual)).
 
-* **build_mode** can be one of the following: `LOCAL`, `GLOBAL`, or `PROPERTY` (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#parameters-formulas-and-tags) for details).
+* **build_mode** can be one of the following: `LOCAL`, `GLOBAL`, or `PROPERTY` (s. the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags) for details).
 
 * **building_block_type** can be one of the following: `COMPOUND`, `EVENT`, `FORMULATION`, `INDIVIDUAL`, `PROTOCOL`, `SIMULATION`. Used to determine which parameters can be added to a container at the building block level and which at the simulation level.
 
@@ -595,7 +595,7 @@ Is used to restrict the creation of local protein parameters to specific contain
 * **operator** Specifies how to combine single criteria conditions for the combination {`container_id, container_type, container_name, parameter_name`}. Must be the same for all entries in this combination. Possible values are 'And' and 'Or'. 
 
 
-### tab_conditions
+### tab_conditions (container parameters)
 Specifies available (container) criteria conditions.
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
@@ -663,7 +663,7 @@ A **sum formula** is defined by the equation $$f(P_1, ... P_n; M_1, ..., M_k; C_
 * `Q_#i` is a *control variable* (parameter, molecule amount, etc.) defined by certain conditions
 * all other arguments have the same meaning as in an explicit formula
 
-A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-table-formulas-with-offset) for details):
+A **table formula with offset** is defined by 2 quantities (see the [OSP documentation](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#table-formulas-with-offset) for details):
 
 * **table object** with the `Table_formula` (defined by the support points { $$time_i;value_i$$} )
 * **offset object** with the `Offset_formula`.
@@ -679,7 +679,7 @@ A **table formula with X argument** is a generalization of *table formula with o
 The table's X argument is arbitrary, and the formula returns the value
 $$Table\_formula(XArgument\_formula(...))$$.
 
-S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas) and [Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#sum-formulas) for more details on formulas.
+S. the OSP Suite documentation: [Working with Formulas‌](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas) and [Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#sum-formulas) for more details on formulas.
 
 ![](images/overview_calculation_method_rates.png)
 
@@ -717,7 +717,7 @@ Defines the formula equation for the combination {`calculation_method, formula_r
     * `TableFormulaWithOffset_*`
     * `TableFormulaWithXArgument_*`
   
-* **formula** defines the equation for the combination {`calculation_method, formula_rate`}. Which operators, standard functions, etc. are allowed is described in the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas). 
+* **formula** defines the equation for the combination {`calculation_method, formula_rate`}. Which operators, standard functions, etc. are allowed is described in the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas). 
   * It is allowed to leave the **formula** field empty. Quantity with empty formula becomes mandatory user input in PK-Sim UI. This means that only **visible and editable quantities** are allowed to have an empty formula.
   * Formula can be set to $$\pm \infty$$. Valid values for this are:
     * `Inf` or `Infinity`
@@ -740,9 +740,9 @@ Parameters referenced by the formula of the combination {`calculation_method, fo
   * Alias must not contain any of the characters 
     `+ - * \ / ^ . , < > = ! ( ) [ ] { } ' " ? : ¬ | & ;`
   * Alias must not contain blanks.
-  * Alias cannot be one of the predefined *standard constants* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
-  * Alias cannot be one of the predefined *standard functions* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
-  * Alias cannot be one of the predefined *logical operators* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas)).
+  * Alias cannot be one of the predefined *standard constants* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas)).
+  * Alias cannot be one of the predefined *standard functions* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas)).
+  * Alias cannot be one of the predefined *logical operators* (s. the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas)).
 
 
 ### tab_rate_container_molecules
@@ -796,7 +796,7 @@ There are some "special" containers defined in *[tab_container_names](#tab_conta
 
 
 ### tab_object_paths
-Describes (relative) paths of quantities used in a formula (see the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#working-with-formulas) for details). Each entry of an object path is stored separately, with its own id and the id of its parent path entry. Tables *tab_rate_generic_XXX* have the reference to the **bottom element of the object path** (see the example below).
+Describes (relative) paths of quantities used in a formula (see the [OSP Suite documentation - Working with Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#formulas) for details). Each entry of an object path is stored separately, with its own id and the id of its parent path entry. Tables *tab_rate_generic_XXX* have the reference to the **bottom element of the object path** (see the example below).
 
 * **path_id** is the unique id of the path entry.
 * **parent_path_id** is the id of the parent path entry. If there is no parent path entry: the parent path id is set equal to the path id!
@@ -824,7 +824,7 @@ With this, the full path to the referenced parameter is: <br>
 `Neighborhoods|Brain_pls_Brain_int|MOLECULE|Partition coefficient (interstitial/plasma)`
 
 #### Sum formulas
-See the [OSP Suite documentation - Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#sum-formulas) for more details.
+See the [OSP Suite documentation - Sum Formulas](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/parameters-formulas-tags#sum-formulas) for more details.
 
 Sum formulas in the PK-Sim database must have the calculation method **DynamicSumFormulas**.
 
@@ -843,7 +843,7 @@ Defines the criteria of the quantities to be summed up for the combination {`cal
 * **tag** the tag of the single condition.
 
 
-### tab_conditions
+### tab_conditions (formulas)
 Specifies available (container) criteria conditions.
 Values must be the same as defined by the [`enum CriteriaCondition`](https://github.com/Open-Systems-Pharmacology/PK-Sim/blob/develop/src/PKSim.Infrastructure/ORM/FlatObjects/CriteriaCondition.cs) in PK-Sim.
 
@@ -1023,7 +1023,7 @@ Define which parameters or molecule amounts are modified by an event. The refere
 * **use_as_value** defines if the formula is assigned as a formula or as a value of the formula, calculated at the time point of the assignment.
 * **use_amount** (TODO delete - s. [the issue](https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2696))
 
-S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/model-building-components#event-groups-and-events) for more details.
+S. the [OSP Documentation on events](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/events-bb#event-groups-and-events) for more details.
 
 ## Observers
 ![](images/overview_observers.png)
@@ -1170,87 +1170,109 @@ Defines the display properties (display name, description, icon) for some entiti
 
 
 # Tables reference
-
-- [tab_active_transport_types](#tab_active_transport_types)
-- [tab_application_types](#tab_application_types)
-- [tab_applications](#tab_applications)
-- [tab_calculation_method_parameter_descr_conditions](#tab_calculation_method_parameter_descr_conditions)
-- [tab_calculation_method_parameter_rates](#tab_calculation_method_parameter_rates)
-- [tab_calculation_method_rate_descriptor_conditions](#tab_calculation_method_rate_descriptor_conditions)
-- [tab_calculation_method_rates](#tab_calculation_method_rates)
-- [tab_calculation_methods](#tab_calculation_methods)
-- [tab_categories](#tab_categories)
-- [tab_compound_process_parameter_mapping](#tab_compound_process_parameter_mapping)
-- [tab_container_molecule_start_formulas](#tab_container_molecule_start_formulas)
-- [tab_container_molecules](#tab_container_molecules)
-- [tab_container_names](#tab_container_names)
-- [tab_container_parameter_curves](#tab_container_parameter_curves)
-- [tab_container_parameter_descriptor_conditions](#tab_container_parameter_descriptor_conditions)
-- [tab_container_parameter_fcurves](#tab_container_parameter_fcurves)
-- [tab_container_parameter_rates](#tab_container_parameter_rates)
-- [tab_container_parameter_rhs](#tab_container_parameter_rhs)
-- [tab_container_parameter_values](#tab_container_parameter_values)
-- [tab_container_parameters](#tab_container_parameters)
-- [tab_container_rates](#tab_container_rates)
-- [tab_container_tags](#tab_container_tags)
-- [tab_container_types](#tab_container_types)
-- [tab_containers](#tab_containers)
-- [tab_criteria_conditions](#tab_criteria_conditions)
-- [tab_dimensions](#tab_dimensions)
-- [tab_disease_states](#tab_disease_states)
-- [tab_distribution_types](#tab_distribution_types)
-- [tab_event_changed_container_molecules](#tab_event_changed_container_molecules)
-- [tab_event_changed_container_parameters](#tab_event_changed_container_parameters)
-- [tab_event_changed_generic_molecules](#tab_event_changed_generic_molecules)
-- [tab_event_changed_generic_parameters](#tab_event_changed_generic_parameters)
-- [tab_event_conditions](#tab_event_conditions)
-- [tab_formulation_routes](#tab_formulation_routes)
-- [tab_genders](#tab_genders)
-- [tab_groups](#tab_groups)
-- [tab_kinetic_types](#tab_kinetic_types)
-- [tab_known_transporters](#tab_known_transporters)
-- [tab_known_transporters_containers](#tab_known_transporters_containers)
-- [tab_model_calculation_methods](#tab_model_calculation_methods)
-- [tab_model_container_molecules](#tab_model_container_molecules)
-- [tab_model_containers](#tab_model_containers)
-- [tab_model_observers](#tab_model_observers)
-- [tab_model_species](#tab_model_species)
-- [tab_model_transport_molecule_names](#tab_model_transport_molecule_names)
-- [tab_models](#tab_models)
-- [tab_molecule_parameters](#tab_molecule_parameters)
-- [tab_molecules](#tab_molecules)
-- [tab_neighborhoods](#tab_neighborhoods)
-- [tab_object_paths](#tab_object_paths)
-- [tab_observer_descriptor_conditions](#tab_observer_descriptor_conditions)
-- [tab_observer_rates](#tab_observer_rates)
-- [tab_observers](#tab_observers)
-- [tab_ontogenies](#tab_ontogenies)
-- [tab_organ_types](#tab_organ_types)
-- [tab_parameter_value_versions](#tab_parameter_value_versions)
-- [tab_parameters](#tab_parameters)
-- [tab_population_age](#tab_population_age)
-- [tab_population_containers](#tab_population_containers)
-- [tab_population_disease_states](#tab_population_disease_states)
-- [tab_population_genders](#tab_population_genders)
-- [tab_populations](#tab_populations)
-- [tab_process_descriptor_conditions](#tab_process_descriptor_conditions)
-- [tab_process_molecules](#tab_process_molecules)
-- [tab_process_rates](#tab_process_rates)
-- [tab_process_types](#tab_process_types)
-- [tab_processes](#tab_processes)
-- [tab_protein_names](#tab_protein_names)
-- [tab_protein_synonyms](#tab_protein_synonyms)
-- [tab_rate_container_molecules](#tab_rate_container_molecules)
-- [tab_rate_container_parameters](#tab_rate_container_parameters)
-- [tab_rate_generic_molecules](#tab_rate_generic_molecules)
-- [tab_rate_generic_parameters](#tab_rate_generic_parameters)
-- [tab_rates](#tab_rates)
-- [tab_references](#tab_references)
-- [tab_representation_info](#tab_representation_info)
-- [tab_species](#tab_species)
-- [tab_species_calculation_methods](#tab_species_calculation_methods)
-- [tab_species_parameter_value_versions](#tab_species_parameter_value_versions)
-- [tab_tags](#tab_tags)
-- [tab_transport_directions](#tab_transport_directions)
-- [tab_transports](#tab_transports)
-- [tab_value_origins](#tab_value_origins)
+  - [Containers](#containers)
+    - [tab\_container\_names](#tab_container_names)
+    - [tab\_container\_types](#tab_container_types)
+    - [tab\_organ\_types](#tab_organ_types)
+    - [tab\_containers](#tab_containers)
+    - [tab\_container\_tags](#tab_container_tags)
+    - [tab\_neighborhoods](#tab_neighborhoods)
+    - [tab\_population\_containers](#tab_population_containers)
+    - [tab\_model\_containers](#tab_model_containers)
+  - [Processes](#processes)
+    - [tab\_processes](#tab_processes)
+    - [tab\_process\_types](#tab_process_types)
+    - [tab\_kinetic\_types](#tab_kinetic_types)
+    - [tab\_process\_descriptor\_conditions](#tab_process_descriptor_conditions)
+    - [tab\_process\_molecules](#tab_process_molecules)
+    - [tab\_process\_rates](#tab_process_rates)
+    - [tab\_model\_transport\_molecule\_names](#tab_model_transport_molecule_names)
+    - [tab\_transports](#tab_transports)
+    - [tab\_transport\_directions](#tab_transport_directions)
+    - [tab\_known\_transporters](#tab_known_transporters)
+    - [tab\_known\_transporters\_containers](#tab_known_transporters_containers)
+    - [tab\_active\_transport\_types](#tab_active_transport_types)
+  - [Species and populations](#species-and-populations)
+    - [tab\_species](#tab_species)
+    - [tab\_populations](#tab_populations)
+    - [tab\_genders](#tab_genders)
+    - [tab\_population\_genders](#tab_population_genders)
+    - [tab\_population\_age](#tab_population_age)
+    - [tab\_species\_calculation\_methods](#tab_species_calculation_methods)
+    - [tab\_species\_parameter\_value\_versions](#tab_species_parameter_value_versions)
+    - [tab\_model\_species](#tab_model_species)
+    - [tab\_population\_disease\_states](#tab_population_disease_states)
+    - [tab\_disease\_states](#tab_disease_states)
+    - [tab\_ontogenies](#tab_ontogenies)
+  - [Container parameters](#container-parameters)
+    - [tab\_parameters](#tab_parameters)
+    - [tab\_dimensions](#tab_dimensions)
+    - [tab\_container\_parameters](#tab_container_parameters)
+    - [tab\_groups](#tab_groups)
+    - [tab\_molecule\_parameters](#tab_molecule_parameters)
+    - [tab\_container\_parameter\_rates](#tab_container_parameter_rates)
+    - [tab\_container\_parameter\_values](#tab_container_parameter_values)
+    - [tab\_container\_parameter\_curves](#tab_container_parameter_curves)
+    - [tab\_distribution\_types](#tab_distribution_types)
+    - [tab\_compound\_process\_parameter\_mapping](#tab_compound_process_parameter_mapping)
+    - [tab\_container\_parameter\_rhs](#tab_container_parameter_rhs)
+    - [tab\_container\_parameter\_descriptor\_conditions](#tab_container_parameter_descriptor_conditions)
+    - [tab\_conditions (container parameters)](#tab_conditions-container-parameters)
+    - [tab\_container\_parameter\_fcurves](#tab_container_parameter_fcurves)
+  - [Calculation method parameters](#calculation-method-parameters)
+    - [tab\_calculation\_method\_parameter\_rates](#tab_calculation_method_parameter_rates)
+    - [tab\_calculation\_method\_parameter\_descr\_conditions](#tab_calculation_method_parameter_descr_conditions)
+  - [Formulas](#formulas)
+    - [tab\_rates](#tab_rates)
+    - [tab\_calculation\_methods](#tab_calculation_methods)
+    - [tab\_categories](#tab_categories)
+    - [tab\_calculation\_method\_rates](#tab_calculation_method_rates)
+    - [tab\_rate\_container\_parameters](#tab_rate_container_parameters)
+    - [tab\_rate\_container\_molecules](#tab_rate_container_molecules)
+    - [tab\_rate\_generic\_parameters](#tab_rate_generic_parameters)
+    - [tab\_rate\_generic\_molecules](#tab_rate_generic_molecules)
+    - [tab\_object\_paths](#tab_object_paths)
+      - [Sum formulas](#sum-formulas)
+    - [tab\_calculation\_method\_rate\_descriptor\_conditions](#tab_calculation_method_rate_descriptor_conditions)
+    - [tab\_conditions (formulas)](#tab_conditions-formulas)
+      - ["Black box" formulas](#black-box-formulas)
+      - [Disease state parameters](#disease-state-parameters)
+      - [Table formulas with offset](#table-formulas-with-offset)
+      - [Table formulas with X argument](#table-formulas-with-x-argument)
+  - [Calculation methods and parameter value versions](#calculation-methods-and-parameter-value-versions)
+    - [tab\_models](#tab_models)
+    - [tab\_parameter\_value\_versions](#tab_parameter_value_versions)
+    - [tab\_model\_calculation\_methods](#tab_model_calculation_methods)
+  - [Applications and formulations](#applications-and-formulations)
+    - [tab\_formulation\_routes](#tab_formulation_routes)
+    - [tab\_applications](#tab_applications)
+    - [tab\_application\_types](#tab_application_types)
+  - [Events](#events)
+    - [tab\_event\_conditions](#tab_event_conditions)
+    - [tab\_event\_changed\_container\_molecules](#tab_event_changed_container_molecules)
+    - [tab\_event\_changed\_container\_parameters](#tab_event_changed_container_parameters)
+    - [tab\_event\_changed\_generic\_molecules](#tab_event_changed_generic_molecules)
+    - [tab\_event\_changed\_generic\_parameters](#tab_event_changed_generic_parameters)
+  - [Observers](#observers)
+    - [tab\_observers](#tab_observers)
+    - [tab\_observer\_rates](#tab_observer_rates)
+    - [tab\_observer\_descriptor\_conditions](#tab_observer_descriptor_conditions)
+  - [Entities defined by formulas](#entities-defined-by-formulas)
+    - [tab\_container\_rates](#tab_container_rates)
+  - [Proteins](#proteins)
+    - [tab\_protein\_names](#tab_protein_names)
+    - [tab\_protein\_synonyms](#tab_protein_synonyms)
+  - [Models](#models)
+    - [tab\_model\_observers](#tab_model_observers)
+    - [tab\_molecules](#tab_molecules)
+    - [tab\_container\_molecules](#tab_container_molecules)
+    - [tab\_model\_container\_molecules](#tab_model_container_molecules)
+    - [tab\_container\_molecule\_start\_formulas](#tab_container_molecule_start_formulas)
+  - [Tags](#tags)
+    - [tab\_tags](#tab_tags)
+    - [tab\_criteria\_conditions](#tab_criteria_conditions)
+  - [Value origins](#value-origins)
+    - [tab\_references](#tab_references)
+    - [tab\_value\_origins](#tab_value_origins)
+  - [Representation Info](#representation-info)
+    - [tab\_representation\_info](#tab_representation_info)
