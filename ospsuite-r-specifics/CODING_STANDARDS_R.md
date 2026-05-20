@@ -1,11 +1,11 @@
 # Coding Standards for R
 
-We will follow the <https://style.tidyverse.org/> style guide with very few changes to benefit from two R packages supporting this style guide:
+We will follow the <https://style.tidyverse.org/> style guide with very few changes to benefit from tools supporting this style guide:
 
-- [`{styler}`](http://styler.r-lib.org/)
-- [`{lintr}`](https://github.com/jimhester/lintr)
+- [`air`](https://posit-dev.github.io/air/) — the project formatter.
+- [`{lintr}`](https://github.com/jimhester/lintr) — linting.
 
-This coding standards will outline the more important aspects of the aforementioned style.
+These coding standards outline the more important aspects of the aforementioned style.
 
 # Modifications from tidyverse Coding Standards
 
@@ -168,7 +168,7 @@ If a class has a private method, its name should start with `.` to highlight thi
 
 ## Spacing
 
-Use the `styler` add-in for RStudio. It will style the files for you. For more, see [here](https://style.tidyverse.org/syntax.html#spacing)
+Run `air format` (or the `air` RStudio addin) to apply the project's spacing rules. For background on the underlying style, see the [tidyverse style guide on spacing](https://style.tidyverse.org/syntax.html#spacing).
 
 ## Global Variables and Constants
 
@@ -194,7 +194,7 @@ Use `<-`, not `=`, for assignment.
 
 Don't put `;` at the end of a line, and don't use `;` to put multiple commands on one line.
 
-**Note:** All these styling issues, and much more, are corrected automatically with `{styler}`.
+**Note:** All these styling issues, and much more, are corrected automatically by `air format`.
 
 ### Code blocks
 
@@ -235,7 +235,7 @@ Refer to chapter [Errors](https://style.tidyverse.org/errors.html)
 
 Package vignettes are written using `{rmarkdown}` package. Here are some good practices to follow while writing these documents:
 
-- It is strongly recommended that only alphanumeric characters (`a-z`, `A-Z` and `0-9`) and dashes (`-`) are used in chunk labels, because they are not special characters and will surely work for all output formats. Other characters, spaces and underscores in particular, may cause trouble in certain packages, such as `{bookdown}`, `{styler}`. 
+- It is strongly recommended that only alphanumeric characters (`a-z`, `A-Z` and `0-9`) and dashes (`-`) are used in chunk labels, because they are not special characters and will surely work for all output formats. Other characters, spaces and underscores in particular, may cause trouble in certain packages, such as `{bookdown}`. 
 Ref: <https://bookdown.org/yihui/rmarkdown/r-code.html>
 
 ````
