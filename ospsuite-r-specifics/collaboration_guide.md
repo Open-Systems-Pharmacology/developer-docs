@@ -76,6 +76,7 @@ Reviewers should verify the following before approving:
 - [ ] Documentation (roxygen, vignettes, pkgdown site) reflects user-facing changes (Rule 2.1).
 - [ ] `NEWS.md` has an entry when the change affects user experience or outputs (Rule 3.1).
 - [ ] The pull request description is clear and the commit history is readable.
+- [ ] In the case of an automated AI review of a pull request (e.g., CodeRabbit or GitHub Copilot), all improvements suggested by the AI reviewer must either be fixed or set to "Resolved" with a comment.
 
 ## Releasing versions
 
