@@ -445,3 +445,4 @@ ospPrintClass
 ospPrintItems
 sourceFile
 CodeRabbit
+CorePKSimXmlSerializerRepository
