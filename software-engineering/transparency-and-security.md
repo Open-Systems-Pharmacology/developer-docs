@@ -63,7 +63,7 @@ Example: [https://github.com/Open-Systems-Pharmacology/Suite/commits/master](htt
   * All produced build artifacts
   
 
-Example: [https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish.yml](https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish.yml)
+Example: [https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish_v13.yml](https://github.com/Open-Systems-Pharmacology/Suite/actions/workflows/build-and-publish_v13.yml)
 
 * Build history entries cannot be modified
 
