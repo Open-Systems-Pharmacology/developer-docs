@@ -22,8 +22,10 @@ The suite uses GitHub Actions as a CI server, which also provides the NuGet feed
 1. Register the feed with your GitHub username and the token
 
    ```
-   dotnet nuget add source --username <GITHUB USERNAME> --password <PERSONAL ACCESS TOKEN> --store-password-in-clear-text --name OSP-GitHub-Packages "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
+   dotnet nuget add source --username <GITHUB USERNAME> --password <PERSONAL ACCESS TOKEN> --name OSP-GitHub-Packages "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
    ```
+
+   On Windows, the token is stored encrypted in your user-level NuGet configuration. Password encryption is not supported on Linux and macOS, so add `--store-password-in-clear-text` to the command there.
 
 ## Building and Running
 
