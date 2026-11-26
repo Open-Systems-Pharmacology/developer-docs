@@ -444,3 +444,5 @@ reviewable
 ospPrintClass
 ospPrintItems
 sourceFile
+CodeRabbit
+CorePKSimXmlSerializerRepository

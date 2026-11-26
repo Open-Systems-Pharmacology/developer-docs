@@ -13,12 +13,19 @@
  
    * Obtain your license from DevExpress [DevExpress Order](https://www.devexpress.com/Support/Order/). Then get the installer for the version mentioned above that's required [DevExpress Install](https://www.devexpress.com/ClientCenter/DownloadManager/)
   
-1. Install nuget.exe and ensure that it is in your `PATH` variable [NuGet Install](https://dist.nuget.org/index.html)
+## Authenticating the OSP package feed
 
-1. Add `OSPSuite.Core` as a nuget source using the following command
-```
-  nuget sources add -name OSP-GitHub-Packages -source https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json
-```
+The suite uses GitHub Actions as a CI server, which also provides the NuGet feed that the OSP packages (e.g. `OSPSuite.Core`) are published to. GitHub Packages requires authentication even for public packages, so the feed must be registered on your system with your GitHub credentials before the solutions can restore their packages. Registering it once also prevents you from having to enter your GitHub credentials with each new instance of Visual Studio.
+
+1. Create a [personal access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) on GitHub with the `read:packages` scope.
+
+1. Register the feed with your GitHub username and the token
+
+   ```
+   dotnet nuget add source --username <GITHUB USERNAME> --password <PERSONAL ACCESS TOKEN> --name OSP-GitHub-Packages "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
+   ```
+
+   On Windows, the token is stored encrypted in your user-level NuGet configuration. Password encryption is not supported on Linux and macOS, so add `--store-password-in-clear-text` to the command there.
 
 ## Building and Running
 
@@ -33,17 +40,3 @@
 1. Run Tests
 
 1. Run the Application
-
-## Useful Tips
-
-1. The suite is using GitHub Actions as a CI server which also provides a nuget feed that should be registered on your system. This will prevent you from having to enter GitHub password with each new instance of Visual Studio.
-
-```
-nuget sources add -Name OSP-GitHub-Packages -source https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json -User <GITHUB USERNAME> -Password <PERSONAL ACCESS TOKEN>
-```
-
-or
-
-```
-dotnet nuget add source --username <GITHUB USERNAME> --password <PERSONAL ACCESS TOKEN> --store-password-in-clear-text --name OSP-GitHub-Packages "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-```

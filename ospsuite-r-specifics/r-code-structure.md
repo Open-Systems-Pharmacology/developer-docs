@@ -222,33 +222,30 @@ The OSPSuite-R package includes comprehensive tests. Find test code in [testthat
 
 ## Updating Core DLLs
 
-The R package stores local copies of DLLs from OSPSuite.Core and PK-Sim in [`inst/lib/`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/inst/lib). Update these DLLs when a newer version of the .NET codebase is released.
+The R package stores local copies of DLLs from OSPSuite.Core and PK-Sim in [`inst/lib/`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/inst/lib). These DLLs are built from the NuGet packages referenced in the [`DependencyManager`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/tree/main/shared/DependencyManager) project. Update them when a newer version of the .NET codebase is released.
 
 ### Run the update workflow
 
-Use the `update-core-files.yaml` GitHub Actions workflow to update the Core DLLs. The workflow automates downloading files and creating a Pull Request.
+Use the `build-libraries.yaml` GitHub Actions workflow to update the Core DLLs. The workflow automates rebuilding the files and creating a Pull Request.
 
 To run the workflow:
 
-1. Open the [workflow page](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/actions/workflows/update-core-files.yaml) on GitHub.
-2. Click **Run workflow**.
-3. Select the branch to run the workflow on (typically `main`).
-4. (Optional) Configure workflow inputs:
-   - **Branch name**: Specify a custom branch name (default: `update-core-files-YYYYMMDD-HHMMSS`)
-   - **PR title**: Specify the Pull Request title (default: "Update Core Files")
-   - **PR body**: Specify the Pull Request description (default: auto-generated)
-5. Click **Run workflow**.
+1. In [`shared/DependencyManager/src/DependencyManager.csproj`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/shared/DependencyManager/src/DependencyManager.csproj), update the `Version` attribute of the `PackageReference` elements to the desired versions.
+2. Commit and push the change to a branch.
+3. Open the [workflow page](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/actions/workflows/build-libraries.yaml) on GitHub.
+4. Click **Run workflow**.
+5. Select the branch that contains the version change.
+6. Click **Run workflow**.
+
+The workflow only runs when started manually. It is not triggered by pushes.
 
 ### What the workflow does
 
 The workflow performs these steps:
 
-1. Runs the R script `.github/scripts/update_core_files.R` to download core files from the latest PK-Sim build artifacts.
-2. Checks for changes in the `inst/lib/` directory.
-3. If changes are detected:
-   - Creates a new branch.
-   - Commits the updated files.
-   - Creates a Pull Request.
-   - Builds SQLite libraries for macOS (arm64).
+1. Builds the `DependencyManager` project, which downloads the referenced NuGet packages and copies the required files to the `inst/lib/` directory.
+2. If changes are detected:
+   - Commits the updated files to a new branch.
+   - Creates a Pull Request targeting the branch the workflow was run on.
 
-The workflow file is located at [`.github/workflows/update-core-files.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/update-core-files.yaml).
+The workflow file is located at [`.github/workflows/build-libraries.yaml`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/.github/workflows/build-libraries.yaml).
