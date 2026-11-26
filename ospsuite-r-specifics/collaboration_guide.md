@@ -44,7 +44,7 @@ The workflows in this guide assume that:
 - The `{usethis}` package is installed.
 - A local clone (from the original repository or from a fork) has been created.
 
-Releasing a version additionally assumes that the current branch is the default branch (usually `main`).
+Releasing a version needs no local setup. It is done with GitHub Actions workflows, so it additionally assumes permission to run workflows and merge pull requests in the package repository.
 
 ## Contributing changes
 
@@ -82,14 +82,27 @@ Reviewers should verify the following before approving:
 
 ### Versioning model
 
-OSPS R packages use a two-state versioning model automated by the [`description_manager.yaml`](https://github.com/Open-Systems-Pharmacology/Workflows/blob/main/.github/workflows/description_manager.yaml) reusable GitHub workflow. The workflow runs on each push to the default branch and updates the `DESCRIPTION` file:
+OSPS R packages use a two-state versioning model. The state is given by the `Version` field of the `DESCRIPTION` file on the default branch, and it also decides where the package takes its OSPS dependencies from:
 
-- **Release versions** (for example, `0.2.0`) — the version is left untouched, a `v0.2.0` git tag is created, and entries in the `Remotes` field are pinned to `@*release` so the released package depends on released versions of other OSPS packages.
-- **Development versions** (for example, `0.2.0.9000`) — the fourth component is auto-incremented on every push to the default branch (`.9000` → `.9001` → ...), no tag is created, and `Remotes` entries remain unpinned.
+- **Development versions** (for example, `0.2.0.9000`) — the fourth component is incremented on every push to the default branch (`.9000` → `.9001` → ...). OSPS dependencies are listed in the `Remotes` field and are installed from their development versions on GitHub.
+- **Release versions** (for example, `0.2.0`) — the version is left untouched by pushes. `DESCRIPTION` has no `Remotes` field: OSPS dependencies are installed as their latest releases from the [OSP R-universe](https://open-systems-pharmacology.r-universe.dev), which is listed in `Additional_repositories`.
 
 The `.9000`+ suffix distinguishes in-development builds from released versions; see the [R Packages versioning guide](https://r-pkgs.org/lifecycle.html#sec-lifecycle-version-number) for background.
 
-Because version bumps are automated, contributors **must not** manually edit the version field in `DESCRIPTION` outside of the release workflow described later in this section.
+The version is managed by reusable GitHub workflows from the [Workflows repository](https://github.com/Open-Systems-Pharmacology/Workflows#osp-r-package-ci). Each package repository calls them from its own `.github/workflows/` folder:
+
+| Reusable workflow | Started by | What it does |
+| --- | --- | --- |
+| [`bump-dev-version.yaml`](https://github.com/Open-Systems-Pharmacology/Workflows/blob/main/.github/workflows/bump-dev-version.yaml) | Every push to the default branch | Increments the `.9000`+ suffix of a development version. Does nothing on a release version. |
+| [`release-pr.yaml`](https://github.com/Open-Systems-Pharmacology/Workflows/blob/main/.github/workflows/release-pr.yaml) | A maintainer, manually | Sets the release version, switches the OSPS dependencies to the R-universe, and opens the release pull request. |
+| [`publish-release.yaml`](https://github.com/Open-Systems-Pharmacology/Workflows/blob/main/.github/workflows/publish-release.yaml) | A maintainer, manually, after the release pull request is merged | Creates the `v<version>` git tag and the GitHub Release, with the built packages attached. |
+| [`dev-pr.yaml`](https://github.com/Open-Systems-Pharmacology/Workflows/blob/main/.github/workflows/dev-pr.yaml) | A maintainer, manually, after the release is published | Sets the next development version, restores the `Remotes` field, and opens the "back to development" pull request. |
+
+Nothing is tagged or published automatically: merging a release version to the default branch does not create a tag or a GitHub Release.
+
+Because the version is managed by these workflows, contributors **must not** manually edit the version field in `DESCRIPTION`. A maintainer who changes the version by hand (for example, with `usethis::use_version()`) must also switch the dependency fields; see the [dependency model](https://github.com/Open-Systems-Pharmacology/Workflows#dependency-model) in the Workflows repository.
+
+The steps in the rest of this section refer to the workflows by the names used in the [caller templates](https://github.com/Open-Systems-Pharmacology/Workflows#setting-up-a-consuming-repository) of the Workflows repository. A repository that names its caller workflows differently shows them under those names in its **Actions** tab.
 
 ### Pre-release checklist
 
@@ -98,84 +111,52 @@ Before releasing, verify the following on the default branch:
 - [ ] All CI checks pass on the latest commit.
 - [ ] `devtools::check()` runs locally with no errors, warnings, or notes.
 - [ ] The pkgdown site builds cleanly (`pkgdown::build_site()`).
-- [ ] `NEWS.md` is up to date and reflects all user-facing changes since the last release.
-- [ ] The chosen version number is consistent with [semantic versioning](https://r-pkgs.org/lifecycle.html#sec-lifecycle-version-number) and the nature of the changes (major / minor / patch).
+- [ ] `NEWS.md` is up to date and reflects all user-facing changes since the last release. The entries are under the `(development version)` heading, which the release workflow renames to the release version.
+- [ ] The OSPS packages that the package depends on have been released, and the [R-universe](https://open-systems-pharmacology.r-universe.dev/builds) has built those releases. A release version installs its OSPS dependencies from there.
+- [ ] The chosen release type (major / minor / patch) is consistent with [semantic versioning](https://r-pkgs.org/lifecycle.html#sec-lifecycle-version-number) and the nature of the changes.
 
 ### Creating the release
 
-1. Pick the new version number.
-   ```r
-   new_version <- usethis:::choose_version("What should the new version be?")
-   ```
+1. In the package repository on GitHub, open the **Actions** tab and select the **Release PR** workflow (`release-pr.yaml`).
 
-2. Create a dedicated branch.
-   ```r
-   usethis::pr_init(branch = paste0("release-v", new_version))
-   ```
+2. Click **Run workflow**, keep the default branch selected, and choose which version component to bump: `patch`, `minor`, or `major`. From the development version `0.2.0.9005`, these give `0.2.1`, `0.3.0`, and `1.0.0`.
 
-3. Set the release version in `DESCRIPTION`. Follow the interactive prompts to accept and commit the changes.
-   ```r
-   usethis::use_version(which = labels(new_version))
-   ```
+3. Wait for the workflow to open a pull request named `Release <version>` from the branch `release-pr-<version>`. The pull request:
+   - Sets the release version in `DESCRIPTION` with `usethis::use_version()`.
+   - Renames the `(development version)` heading of `NEWS.md` to the release version.
+   - Removes the `Remotes` field and adds the R-universe to `Additional_repositories`. The development remotes are kept in the `Config/osp/dev-remotes` field.
+   - Updates `renv.lock`, if the package has one.
 
-4. Push the local branch and create the pull request.
-   ```r
-   usethis::pr_push()
-   ```
+4. Review the pull request. Its CI checks install the released OSPS dependencies, so they validate the package as users will install it.
 
-5. Once the pull request is approved and merged, clean up the local branch.
-   ```r
-   usethis::pr_finish()
-   ```
+5. Merge the pull request once it is approved and all checks pass.
 
 ### Publishing the release
 
-1. Wait until all CI/CD actions on the merge commit are validated and completed. The `description_manager.yaml` workflow will:
-   - Detect the release version (no `.9000`+ suffix).
-   - Pin `Remotes` entries to `@*release`.
+1. In the **Actions** tab, select the **Publish Release Workflow** (`publish.yaml`), click **Run workflow**, and keep the default branch selected. Do this before anything else is merged, because the tag is placed on the latest commit of the default branch.
+
+2. Wait for the workflow to complete. It will:
+   - Run `R CMD check` and build the packages for each operating system.
+   - Stop without tagging if `DESCRIPTION` still has a `Remotes` field.
    - Create the `v<version>` git tag.
-   - Commit the result back to the default branch.
+   - Create the GitHub Release `v<version>`, with release notes taken from the `NEWS.md` section of that version and the built packages attached.
 
-2. Switch to the default branch and pull the latest changes.
-   ```r
-   usethis::pr_pause()  # if on another branch
-   git pull             # from the terminal
-   ```
+3. Open the release on GitHub and check its notes and attached packages. The new version is now fully released.
 
-3. Create the release on GitHub.
-   ```r
-   usethis::use_github_release()
-   ```
-
-4. Download the built packages from the GitHub Actions run triggered by the PR merge and attach them to the release. The new version is now fully released.
+If something is wrong, fix it on the default branch and run the workflow again: it moves the tag to the latest commit and updates the existing release. The workflow does nothing when the default branch is on a development version.
 
 ### Restoring development mode
 
-After the release tag is created, set the next development version. Subsequent pushes to the default branch will be auto-incremented by `description_manager.yaml`.
+Restore development mode right after the release is published, so that the default branch does not stay on the release version.
 
-1. Pick the development version number. Development versions end with `.9000` so that developers and users can easily distinguish them from release versions.
-   ```r
-   new_version <- usethis:::choose_version(which = "dev")
-   ```
+1. In the **Actions** tab, select the **Dev PR** workflow (`dev-pr.yaml`) and click **Run workflow**. Some repositories start this workflow automatically when a release is published; in that case the pull request of the next step already exists.
 
-2. Create a dedicated branch.
-   ```r
-   usethis::pr_init(branch = paste0("dev-v", new_version))
-   ```
+2. Wait for the workflow to open a pull request named `Restore development mode (<version>)` from the branch `dev-pr-<version>`. The pull request:
+   - Sets the development version in `DESCRIPTION` with `usethis::use_dev_version()` (for example, `0.2.0` becomes `0.2.0.9000`). Development versions end with `.9000`+ so that developers and users can easily distinguish them from release versions.
+   - Adds a new `(development version)` heading to `NEWS.md`.
+   - Restores the `Remotes` field and removes the R-universe from `Additional_repositories`.
+   - Updates `renv.lock`, if the package has one.
 
-3. Set the development version in `DESCRIPTION`. Follow the interactive prompts to accept and commit the changes.
-   ```r
-   usethis::use_version(which = labels(new_version))
-   ```
+3. Review the pull request and merge it once it is approved.
 
-4. Push the local branch and create the pull request.
-   ```r
-   usethis::pr_push()
-   ```
-
-5. Once the pull request is approved and merged, clean up the local branch.
-   ```r
-   usethis::pr_finish()
-   ```
-
-From this point on, `description_manager.yaml` auto-bumps the `.9000`+ suffix on every push to the default branch until the next release.
+From this point on, `bump-dev-version.yaml` increments the `.9000`+ suffix on every push to the default branch until the next release.
